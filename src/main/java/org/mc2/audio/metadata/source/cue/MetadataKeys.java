@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 /**
  * Enumeration of 'common' metadata derived from Command keys.
- * For a complete metadata list see: rg.jaudiotagger.tag.FieldKey 
+ * For a more complete metadata list see: rg.jaudiotagger.tag.FieldKey 
  *
  * @author marcoc1712
  */

@@ -21,7 +21,6 @@
 
 package org.mc2.audio.metadata.source.cue;
 
-import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
