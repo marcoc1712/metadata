@@ -22,39 +22,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.mc2.audio.metadata.exceptions;
 
-package TestSources;
-
-import java.io.File;
-import java.io.PrintStream;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
- *
- * @author marco
+ * The file is not a CUE Sheet or is invalid.
  */
-public class TestAudiofile {
 
-    @Before
-    public void setUp() throws Exception {
-        
-        System.setOut(new PrintStream(System.out, true, "utf-8"));
-        
-    }
-    @Test
-    public void TestRead() throws Exception{
+public class InvalidAudioFileFormatException extends MetadataException {
+    
+    public InvalidAudioFileFormatException() {
+		super();
+	}
 
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "dff_02-822-400 (dsd64)_TAG.dff";
+	public InvalidAudioFileFormatException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-        String path = directory+"/"+filename;
-        File file = new File(path);
-        
-        AudioFile audiofile = AudioFileIO.read(file);
-        System.out.println("AudioHEader: "+audiofile.getAudioHeader());
-        System.out.println("Tag: "+audiofile.getTag());  
-    }
+	public InvalidAudioFileFormatException(String message) {
+		super(message);
+	}
+
+	public InvalidAudioFileFormatException(Throwable cause) {
+		super(cause);
+	}   
 }

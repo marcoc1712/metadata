@@ -26,12 +26,9 @@
 package TestSources;
 
 import java.io.PrintStream;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
-import org.jaudiotagger.tag.flac.FlacTag;
 import org.junit.Before;
 import org.junit.Test;
+import org.mc2.audio.metadata.source.tags.file.AudioFile;
 import org.mc2.audio.metadata.source.tags.file.Flac;
 
 public class FlacTest {
@@ -49,42 +46,40 @@ public class FlacTest {
         //String filename = "flac_16_44100_TAG.flac";
         
         String path = directory+"/"+filename;
-        Flac flac = new Flac(path);
-       
-        AudioFile f = flac.getAudiofile();
         
-        FlacTag tag = (FlacTag) f.getTag();
+        Flac audiofile = (Flac)AudioFile.get(path);
+        
         
         System.out.println("FILE: "+path );
         System.out.println("AUDIO HEADAER:");
             
-            //System.out.println(f.getAudioHeader());
+            //System.out.println(audiofile.getAudioHeader());
 
-            System.out.println("- audioDataLength: "+f.getAudioHeader().getAudioDataLength());
-            System.out.println("- audioDataStartPosition: "+f.getAudioHeader().getAudioDataStartPosition());
-            System.out.println("- audioDataEndPosition: "+f.getAudioHeader().getAudioDataEndPosition());
-            System.out.println("- byteRate: "+f.getAudioHeader().getByteRate());
-            System.out.println("- bitRate: "+f.getAudioHeader().getBitRate());
-            System.out.println("- bitRateAsNumber: "+f.getAudioHeader().getBitRateAsNumber());
-            System.out.println("- sampleRate: "+f.getAudioHeader().getSampleRate());
-            System.out.println("- sampleRateAsNumber: "+f.getAudioHeader().getSampleRateAsNumber());
-            System.out.println("- bitsPerSample: "+f.getAudioHeader().getBitsPerSample());
-            System.out.println("- channels: "+f.getAudioHeader().getChannels());
-            System.out.println("- encodingType: "+f.getAudioHeader().getEncodingType());
-            System.out.println("- format: "+f.getAudioHeader().getFormat());
-            System.out.println("- noOfSamples: "+f.getAudioHeader().getNoOfSamples());
-            System.out.println("- isVariableBitRate: "+f.getAudioHeader().isVariableBitRate());
-            System.out.println("- trackLength: "+f.getAudioHeader().getTrackLength());
-            System.out.println("- preciseTrackLength: "+f.getAudioHeader().getPreciseTrackLength());
-            System.out.println("- isLossless: "+f.getAudioHeader().isLossless());
+            System.out.println("- audioDataLength: "+audiofile.getAudioHeader().getAudioDataLength());
+            System.out.println("- audioDataStartPosition: "+audiofile.getAudioHeader().getAudioDataStartPosition());
+            System.out.println("- audioDataEndPosition: "+audiofile.getAudioHeader().getAudioDataEndPosition());
+            System.out.println("- byteRate: "+audiofile.getAudioHeader().getByteRate());
+            System.out.println("- bitRate: "+audiofile.getAudioHeader().getBitRate());
+            System.out.println("- bitRateAsNumber: "+audiofile.getAudioHeader().getBitRateAsNumber());
+            System.out.println("- sampleRate: "+audiofile.getAudioHeader().getSampleRate());
+            System.out.println("- sampleRateAsNumber: "+audiofile.getAudioHeader().getSampleRateAsNumber());
+            System.out.println("- bitsPerSample: "+audiofile.getAudioHeader().getBitsPerSample());
+            System.out.println("- channels: "+audiofile.getAudioHeader().getChannels());
+            System.out.println("- encodingType: "+audiofile.getAudioHeader().getEncodingType());
+            System.out.println("- format: "+audiofile.getAudioHeader().getFormat());
+            System.out.println("- noOfSamples: "+audiofile.getAudioHeader().getNoOfSamples());
+            System.out.println("- isVariableBitRate: "+audiofile.getAudioHeader().isVariableBitRate());
+            System.out.println("- trackLength: "+audiofile.getAudioHeader().getTrackLength());
+            System.out.println("- preciseTrackLength: "+audiofile.getAudioHeader().getPreciseTrackLength());
+            System.out.println("- isLossless: "+audiofile.getAudioHeader().isLossless());
         
         System.out.println("TAGS:");
         //System.out.println(tag);
-        TestUtils.printTagFields(flac.geTagFields());
+        TestUtils.printTagFields(audiofile.geTagFields());
         
         System.out.println("METADATA:");
         
-            TestUtils.printMetadata(flac.getMetadata());
+            TestUtils.printMetadata(audiofile.getMetadata());
             System.out.println("");
         
         System.out.println("TESTS:");
@@ -104,37 +99,4 @@ public class FlacTest {
         
         */
     }  
-    //@Test
-    public void TestJaudioTaggerFlacWriteTag() throws Exception{
-       
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "flac_16_44100_TAG.flac";
-        
-        String path = directory+"/"+filename;
-
-        Flac flac = new Flac(path);
-       
-        AudioFile f = flac.getAudiofile();
-        
-        Tag tag = f.getTag();
-        
-        System.out.println("FILE: "+path );
-        System.out.println("AUDIO HEADAER:");
-        
-        TestUtils.printTagFields(flac.geTagFields());
-        
-        tag.setField(FieldKey.ARTIST,"Artist a");
-        tag.addField(FieldKey.ARTIST,"Artist b");
-        tag.setField(FieldKey.WORK,"Work a");
-        tag.addField(FieldKey.WORK,"Work b");
-        f.commit();
-        
-        TestUtils.printTagFields(flac.geTagFields());
-
-        tag.deleteField(FieldKey.ARTIST);
-        tag.deleteField(FieldKey.WORK);
-        f.commit();
-        
-        TestUtils.printTagFields(flac.geTagFields());
-    }
 }

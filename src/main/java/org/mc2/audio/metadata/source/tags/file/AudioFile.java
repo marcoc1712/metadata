@@ -28,14 +28,16 @@ package org.mc2.audio.metadata.source.tags.file;
 import java.io.File;
 import java.util.ArrayList;
 import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagField;
 import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileFormatException;
 import org.mc2.audio.metadata.source.MetadataSource;
 import org.mc2.audio.metadata.source.tags.TagsSource;
 import org.mc2.audio.metadata.source.tags.schema.TagSchema;
-
 
 /**
  *
@@ -43,20 +45,69 @@ import org.mc2.audio.metadata.source.tags.schema.TagSchema;
  */
 public abstract class AudioFile implements TagsSource, MetadataSource{
 
-    
-    
     private final File file;
     private org.jaudiotagger.audio.AudioFile audiofile;
     private String path;
     private Tag tag;
     private TagSchema tagSchema;
+    
+    public static AudioFile get(String path) throws Exception{
+        
+        return get(new File(path));
+    }
+    public static AudioFile get(File file) throws Exception{
+        
+        if (file == null) throw new InvalidAudioFileException ("Invalid file");
+        
+        String name = file.getName().toLowerCase();
+        int i = name.lastIndexOf(".");
+        if (i == -1) {
+            throw new InvalidAudioFileFormatException ("File format not suupported");
+        }
 
-    public AudioFile (String  path) throws Exception {
+        String extension = name.substring(i + 1);
+            
+        if(SupportedFileFormat.FLAC.getFilesuffix().equals(extension)) {
+            return new Flac (file);
+        } else if(SupportedFileFormat.OGG.getFilesuffix().equals(extension)) {
+            return new Ogg (file);
+        } else if(SupportedFileFormat.MP3.getFilesuffix().equals(extension))  {
+            return new Mp3(file);
+        } else if(SupportedFileFormat.MP4.getFilesuffix().equals(extension))  {
+            return new Mp4(file);
+        } else if(SupportedFileFormat.M4A.getFilesuffix().equals(extension)) {
+            return new M4a(file);
+        } else if(SupportedFileFormat.M4P.getFilesuffix().equals(extension)) {
+            return new M4p(file);
+        } else if(SupportedFileFormat.WMA.getFilesuffix().equals(extension)) {
+            return new Wma(file);
+        } else if(SupportedFileFormat.WAV.getFilesuffix().equals(extension)) {
+            return new Wav(file);
+        } else if(SupportedFileFormat.RA.getFilesuffix().equals(extension)) {
+            return new Ra(file);
+        } else if(SupportedFileFormat.RM.getFilesuffix().equals(extension)){
+            return new Rm(file);
+        } else if(SupportedFileFormat.AIF.getFilesuffix().equals(extension)) {
+            return new Aif(file);
+        } else if(SupportedFileFormat.AIFC.getFilesuffix().equals(extension)) {
+            return new Aifc(file);
+        } else if(SupportedFileFormat.AIFF.getFilesuffix().equals(extension)) {
+            return new Aiff(file);
+        } else if(SupportedFileFormat.DSF.getFilesuffix().equals(extension)) {
+            return new Dsf(file);
+        } else if(SupportedFileFormat.DFF.getFilesuffix().equals(extension)){
+            return new Dff(file);
+        } else {
+            throw new InvalidAudioFileFormatException ("File format not suupported");
+        }
+    }
+    
+    protected AudioFile (String  path) throws Exception {
         this.file = new File(path);
         init(file);
     }
      
-    public AudioFile(File file) throws Exception {
+    protected AudioFile(File file) throws Exception {
         this.file = file;
         init(file);
     }
@@ -76,6 +127,13 @@ public abstract class AudioFile implements TagsSource, MetadataSource{
      */
     public File getFile() {
         return file;
+    }
+    
+    /**
+     * @return the Header
+     */
+    public AudioHeader getAudioHeader() {
+        return audiofile.getAudioHeader();
     }
     /**
      * @return the audiofile
