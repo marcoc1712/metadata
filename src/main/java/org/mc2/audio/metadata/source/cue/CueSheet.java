@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import jwbroek.cuelib.FileData;
+//import jwbroek.cuelib.FileData;
 import jwbroek.cuelib.LineOfInput;
 import org.mc2.audio.metadata.Metadata;
 import org.mc2.audio.metadata.source.MetadataSource;
@@ -34,26 +34,26 @@ import org.mc2.util.miscellaneous.CalendarUtils;
  *
  * @author marcoc1712
  */
-public class Mc2CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
+public class CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
     
     /**
-    * LineOfInput that compose this Mc2CueSheet.
+    * LineOfInput that compose this CueSheet.
     */
     private List<LineOfInput> lines = new ArrayList<>();
   
     private Charset encoding = StandardCharsets.ISO_8859_1;
     private final AlbumSection section;
     
-    public Mc2CueSheet(){
+    public CueSheet(){
         super();
         this.section = new AlbumSection(this);
     }
-    public List<Mc2FileData> getFileDataList(){
+    public List<FileData> getFileDataList(){
     
-        List<Mc2FileData> out = new ArrayList<>();
-        for (FileData fileData: super.getFileData()){
+        List<FileData> out = new ArrayList<>();
+        for (jwbroek.cuelib.FileData fileData: super.getFileData()){
             
-            out.add((Mc2FileData) fileData);
+            out.add((FileData) fileData);
         }
         return out;
     }
@@ -143,18 +143,18 @@ public class Mc2CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSour
         
         int offset = 0;
         
-        for (Mc2FileData fileData : this.getFileDataList()){
+        for (FileData fileData : this.getFileDataList()){
             
             fileData.setOffset(offset);
             
-            Mc2TrackIndex previousIndex = null;
+            TrackIndex previousIndex = null;
             
-            for (Mc2TrackData track : fileData.getTrackDataList()) {
+            for (TrackData track : fileData.getTrackDataList()) {
                 
                 int trackStart = fileData.getOffset()+track.getTrackIndexList().get(0).getPosition().getTotalFrames();
                 track.setOffset(trackStart);
                 
-                for (Mc2TrackIndex index : track.getTrackIndexList()) {
+                for (TrackIndex index : track.getTrackIndexList()) {
                     
                     int IndexOffset = index.getPosition().getTotalFrames();
                     
@@ -180,11 +180,11 @@ public class Mc2CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSour
             offset=offset+fileData.getLength();   
         }
     }
-    private void addIndexLengthToTrack(Mc2TrackIndex index,List<Mc2TrackData> trackList){
+    private void addIndexLengthToTrack(TrackIndex index,List<TrackData> trackList){
         
         int tracknum= index.getTrackData().getNumber();
         
-        for (Mc2TrackData track : trackList) {
+        for (TrackData track : trackList) {
             
             if (track.getNumber()==tracknum) {    
                 track.setLength(track.getLength()+index.getLength());

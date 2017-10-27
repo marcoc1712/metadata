@@ -29,7 +29,7 @@ import org.mc2.audio.metadata.source.cue.CueSheetMetadaParser;
 import java.io.File;
 import java.io.IOException;
 import org.mc2.audio.metadata.exceptions.InvalidCueSheetException;
-import org.mc2.audio.metadata.source.cue.Mc2CueSheet;
+import org.mc2.audio.metadata.source.cue.CueSheet;
 /**
  *
  * @author marco
@@ -38,7 +38,7 @@ public class CueFile {
 
     private File cueFile;
     private String path;
-    private Mc2CueSheet cuesheet;
+    private CueSheet cuesheet;
 
     public CueFile(String  path) throws IOException, InvalidCueSheetException{
         this.path = path;
@@ -63,7 +63,7 @@ public class CueFile {
                lowercaseName.endsWith(".qbu");
     }
     
-    private Mc2CueSheet getCuesheet() {
+    private CueSheet getCuesheet() {
         return cuesheet;
     }
 

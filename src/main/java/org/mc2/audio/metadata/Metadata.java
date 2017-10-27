@@ -30,11 +30,13 @@ import java.util.List;
 
 /**
  * An unique Metadata.
- * It normally correspond to a single TAG field in an audio file or command 
- * in a cue sheet (the originKey), but if more than one with exactly the same 
- * meaning are found in different sources (i.e. wav id3v2 tags and cue sheet), 
- * then we could store more origin. Every origin then could store more values,
- * both validated or discharged.
+ * It normally correspond to a single TAG field in an audio file or COMMAND 
+ * in a cue sheet, but if more than one instance is found either in different 
+ * sources (i.e. wav id3v2 tags and cue sheet) or different command/tags in same 
+ * file (i.e GATALOG and REM CATALOGNUMBER in cue), then we store more origin for
+ * the same Matadata.
+ * 
+ * Note that every metadata origin could store more values by itself.
  * 
  * @author marco
  */
@@ -161,7 +163,7 @@ public class Metadata {
                this.getInvalidValues().isEmpty();
     }   
     /**
-     * @return the values
+     * @return the valid values
      */
     public ArrayList<String> getValues() {
       

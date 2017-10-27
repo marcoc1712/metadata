@@ -34,7 +34,7 @@ import static org.mc2.audio.metadata.source.cue.MetadataKeys.getAlbumLevelMetada
 public class Section implements MetadataSource{
     
     private String sourceId;
-    private final Mc2CueSheet cuesheet;
+    private final CueSheet cuesheet;
     
     /**
      * Maps of Rem Commands not directly recognized as metadata.
@@ -46,12 +46,12 @@ public class Section implements MetadataSource{
     private final ArrayList<Command> commandList = new ArrayList<>();
     private final ArrayList<Metadata> metadataList = new ArrayList<>();
     
-    public Section(Mc2CueSheet cuesheet){
+    public Section(CueSheet cuesheet){
         this.cuesheet = cuesheet;
         
     }
     
-    public final Mc2CueSheet getCuesheet() {
+    public final CueSheet getCuesheet() {
         return cuesheet;
     }
     

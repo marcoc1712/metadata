@@ -25,9 +25,9 @@ package org.mc2.audio.metadata.source.cue;
  */
 public class TrackSection extends Section {
     
-     private final Mc2TrackData trackdata;
+     private final TrackData trackdata;
      
-     public TrackSection(Mc2CueSheet cuesheet, Mc2TrackData trackdata){
+     public TrackSection(CueSheet cuesheet, TrackData trackdata){
         super (cuesheet);
         this.trackdata = trackdata;
     }
@@ -35,7 +35,7 @@ public class TrackSection extends Section {
     /**
      * @return the trackdata
      */
-    public Mc2TrackData getTrackdata() {
+    public TrackData getTrackdata() {
         return trackdata;
     }
 }

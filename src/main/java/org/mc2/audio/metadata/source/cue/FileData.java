@@ -24,9 +24,9 @@ package org.mc2.audio.metadata.source.cue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import jwbroek.cuelib.FileData;
+//import jwbroek.cuelib.FileData;
 import jwbroek.cuelib.LineOfInput;
-import jwbroek.cuelib.TrackData;
+//import jwbroek.cuelib.TrackData;
 
 import static org.mc2.audio.metadata.source.cue.CueSheetCommandParser.addWarning;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
@@ -35,7 +35,7 @@ import org.mc2.audio.metadata.source.tags.file.AudioFile;
  *
  * @author marcoc1712
  */
-public class Mc2FileData extends FileData {
+public class FileData extends jwbroek.cuelib.FileData {
 
     private final static String WARNING_DATA_FILE_DOES_NOT_EXISTS           = 
         "Data file does not exists.";
@@ -49,17 +49,17 @@ public class Mc2FileData extends FileData {
     private int length;
     private int offset;
 
-    public Mc2FileData(Mc2CueSheet cuesheet) {
+    public FileData(CueSheet cuesheet) {
         super(cuesheet);
     }
     
-    public Mc2FileData(LineOfInput input, String file, String fileType) {
-        super((Mc2CueSheet)input.getAssociatedSheet(),file, fileType);
+    public FileData(LineOfInput input, String file, String fileType) {
+        super((CueSheet)input.getAssociatedSheet(),file, fileType);
         
         datafile = new File(this.getFile());
         if (!datafile.exists()){
             
-            File souceFile = new File(((Mc2CueSheet)input.getAssociatedSheet()).getSourceId());
+            File souceFile = new File(((CueSheet)input.getAssociatedSheet()).getSourceId());
         
             if (souceFile.exists()){
                 souceFile.getParentFile();
@@ -111,28 +111,28 @@ public class Mc2FileData extends FileData {
     
     /** @return file length in msec */
     public Long getLengthInMillis(){
-        return Mc2CueSheet.getMilliseconds(getLength());
+        return CueSheet.getMilliseconds(getLength());
     }
     /** @return file length string */
     public String getLengthString(){
 
-        return Mc2CueSheet.getTimeString(getLengthInMillis());
+        return CueSheet.getTimeString(getLengthInMillis());
     }
     /** @return file offset in msec */
     public Long getOffsetInMillis(){
-        return Mc2CueSheet.getMilliseconds(getOffset());
+        return CueSheet.getMilliseconds(getOffset());
     }
     /** @return file offset string */
     public String getOffsetString(){
 
-        return Mc2CueSheet.getTimeString(getOffsetInMillis());
+        return CueSheet.getTimeString(getOffsetInMillis());
     }
-    public List<Mc2TrackData> getTrackDataList(){
+    public List<TrackData> getTrackDataList(){
     
-        List<Mc2TrackData> out = new ArrayList<>();
-        for (TrackData trackData: super.getTrackData()){
+        List<TrackData> out = new ArrayList<>();
+        for (jwbroek.cuelib.TrackData trackData: super.getTrackData()){
             
-            out.add((Mc2TrackData) trackData);
+            out.add((TrackData) trackData);
         }
         return out;
     

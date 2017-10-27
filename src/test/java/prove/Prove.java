@@ -27,7 +27,7 @@ package prove;
 
 import java.io.PrintStream;
 import java.util.HashMap;
-import jwbroek.cuelib.CueSheet.MetaDataField;
+//import jwbroek.cuelib.CueSheet.MetaDataField;
 import org.jaudiotagger.tag.FieldKey;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class Prove {
         HashMap<String, String> tagToCue = new HashMap<>();
         HashMap<String, String> cueTotag = new HashMap<>();
 
-        for (MetaDataField cueKey : MetaDataField.values()){
+        for (jwbroek.cuelib.CueSheet.MetaDataField cueKey : jwbroek.cuelib.CueSheet.MetaDataField.values()){
             
             for (FieldKey tagkey : FieldKey.values()){
                 

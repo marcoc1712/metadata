@@ -28,12 +28,12 @@ import jwbroek.cuelib.Position;
  * @author marco
  */
 
-public class Mc2TrackIndex extends Index{
+public class TrackIndex extends Index{
     
-    private Mc2TrackData trackData;
+    private TrackData trackData;
     private int length;
     
-    Mc2TrackIndex(Mc2TrackData trackData, int indexNumber, Position position) {
+    TrackIndex(TrackData trackData, int indexNumber, Position position) {
         super(indexNumber,position);
         this.trackData= trackData;
         this.length= 0;
@@ -42,7 +42,7 @@ public class Mc2TrackIndex extends Index{
      /**
      * @return the trackData
      */
-    public Mc2TrackData getTrackData() {
+    public TrackData getTrackData() {
         return trackData;
     }
     
@@ -61,22 +61,22 @@ public class Mc2TrackIndex extends Index{
     }
     /** @return track offset in msec */
    public Long getOffsetInMillis(){
-       return Mc2CueSheet.getMilliseconds(getOffset());
+       return CueSheet.getMilliseconds(getOffset());
    }
    /** @return track length in msec */
    public Long getLengthInMillis(){
-       return Mc2CueSheet.getMilliseconds(getLength());
+       return CueSheet.getMilliseconds(getLength());
    }
 
    /** @return track offset string */
    public String getOffsetString(){
 
-       return Mc2CueSheet.getTimeString(getOffsetInMillis());
+       return CueSheet.getTimeString(getOffsetInMillis());
    }
    /** @return track length string */
    public String getLengthString(){
 
-       return Mc2CueSheet.getTimeString(getLengthInMillis());
+       return CueSheet.getTimeString(getLengthInMillis());
    }
    /**
      * @param length the length to set

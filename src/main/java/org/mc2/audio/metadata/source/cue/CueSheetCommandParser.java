@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 import jwbroek.cuelib.Index;
 import jwbroek.cuelib.LineOfInput;
 import jwbroek.cuelib.Position;
-import jwbroek.cuelib.TrackData;
+//import jwbroek.cuelib.TrackData;
 import org.apache.commons.io.input.BOMInputStream;
 import org.mc2.audio.metadata.source.cue.CommandKeys.COMMAND_KEY;
 
@@ -139,7 +139,7 @@ final public class CueSheetCommandParser {
     * @return A representation of the cue sheet.
     * @throws IOException
     */
-    public static Mc2CueSheet parse(final InputStream inputStream, String source) throws IOException {
+    public static CueSheet parse(final InputStream inputStream, String source) throws IOException {
         logger.entering(CueSheetCommandParser.class.getCanonicalName(), "parse(InputStream)", inputStream);
 
         // use a BufferedInputStream becouse we need do mark BEFORE testing
@@ -154,7 +154,7 @@ final public class CueSheetCommandParser {
 
         BOMInputStream bOMInputStream = new BOMInputStream(buffered);
 
-        final Mc2CueSheet result;
+        final CueSheet result;
         
         if (bOMInputStream.hasBOM()) {
             // has a UTF-8 BOM
@@ -168,7 +168,7 @@ final public class CueSheetCommandParser {
             result.setEncoding(StandardCharsets.ISO_8859_1);
         }
         //result.setSourceId(source);   
-        //final Mc2CueSheet result = CueParser.parse(new LineNumberReader(new InputStreamReader(inputStream)));
+        //final CueSheet result = CueParser.parse(new LineNumberReader(new InputStreamReader(inputStream)));
 
         logger.exiting(CueSheetCommandParser.class.getCanonicalName(), "parse(InputStream)", result);
 
@@ -181,11 +181,11 @@ final public class CueSheetCommandParser {
     * @return A representation of the cue sheet.
     * @throws IOException
     */
-    public static Mc2CueSheet parse(final File file) throws IOException {
+    public static CueSheet parse(final File file) throws IOException {
         logger.entering(CueSheetCommandParser.class.getCanonicalName(), "parse(File)", file);
 
         InputStream inputStream = new FileInputStream(file);
-        final Mc2CueSheet result = parse(inputStream,file.getCanonicalPath());
+        final CueSheet result = parse(inputStream,file.getCanonicalPath());
 
         logger.exiting(CueSheetCommandParser.class.getCanonicalName(), "parse(File)", result);
         return result;
@@ -198,12 +198,12 @@ final public class CueSheetCommandParser {
     * @return A representation of the cue sheet.
     * @throws IOException
     */
-    public static Mc2CueSheet parse(final LineNumberReader reader, String source) throws IOException {
+    public static CueSheet parse(final LineNumberReader reader, String source) throws IOException {
         
         logger.entering(CueSheetCommandParser.class.getCanonicalName(), "parse(LineNumberReader)", reader);
         logger.fine("Parsing cue sheet.");
 
-        final Mc2CueSheet result = new Mc2CueSheet();
+        final CueSheet result = new CueSheet();
         result.setSourceId(source);
 
         try {
@@ -360,7 +360,7 @@ final public class CueSheetCommandParser {
               file = file.substring(1, file.length()-1);
             }
 
-            input.getAssociatedSheet().getFileData().add  ( new Mc2FileData  ( input
+            input.getAssociatedSheet().getFileData().add  ( new FileData  ( input
                                                                           , file
                                                                           , fileMatcher.group(2).toUpperCase()
                                                                           )
@@ -411,7 +411,7 @@ final public class CueSheetCommandParser {
               addWarning(input, WARNING_NONCOMPLIANT_DATA_TYPE);
             }
 
-            List<TrackData> trackDataList = input.getAssociatedSheet().getAllTrackData();
+            List<jwbroek.cuelib.TrackData> trackDataList = input.getAssociatedSheet().getAllTrackData();
 
             // First track must have number 1; all next ones sequential.
             if (  trackDataList.isEmpty() && trackNumber != 1
@@ -420,8 +420,8 @@ final public class CueSheetCommandParser {
                 addWarning(input, WARNING_INVALID_TRACK_NUMBER);
             }
 
-            Mc2FileData lastFileData = getLastFileData(input);
-            lastFileData.getTrackData().add(new Mc2TrackData(lastFileData, trackNumber, dataType,0,0));
+            FileData lastFileData = getLastFileData(input);
+            lastFileData.getTrackData().add(new TrackData(lastFileData, trackNumber, dataType,0,0));
         }
         else {
           
@@ -447,7 +447,7 @@ final public class CueSheetCommandParser {
 
         if (pregapMatcher.matches()) {
           
-            Mc2TrackData trackData = getLastTrackData(input);
+            TrackData trackData = getLastTrackData(input);
             
             if (trackData.getPregap() != null) {
               addWarning(input, WARNING_DATUM_APPEARS_TOO_OFTEN);
@@ -491,8 +491,8 @@ final public class CueSheetCommandParser {
               addWarning(input, WARNING_WRONG_NUMBER_OF_DIGITS);
             }
 
-            Mc2TrackData trackData = getLastTrackData(input);
-            List<Mc2TrackIndex> trackIndices = trackData.getTrackIndexList();
+            TrackData trackData = getLastTrackData(input);
+            List<TrackIndex> trackIndices = trackData.getTrackIndexList();
 
             // Postgap data must come after all index data. Only check for first index. No need to repeat this warning for
             // all indices that follow.
@@ -525,7 +525,7 @@ final public class CueSheetCommandParser {
                 addWarning(input, WARNING_INVALID_FIRST_POSITION);
             }
 
-            trackIndices.add(new Mc2TrackIndex(trackData, indexNumber, position));
+            trackIndices.add(new TrackIndex(trackData, indexNumber, position));
         }
         else {
             
@@ -549,7 +549,7 @@ final public class CueSheetCommandParser {
         Matcher postgapMatcher = PATTERN_POSTGAP.matcher(input.getInput());
 
         if (postgapMatcher.matches()) {
-            Mc2TrackData trackData = getLastTrackData(input);
+            TrackData trackData = getLastTrackData(input);
 
             if (trackData.getPostgap() != null) {
               addWarning(input, WARNING_DATUM_APPEARS_TOO_OFTEN);
@@ -647,7 +647,7 @@ final public class CueSheetCommandParser {
     **/
     private static boolean isAtAlbumLevel (final LineOfInput input){
 
-        // First check file data, as getLastFileData will create a Mc2FileData instance if there is none
+        // First check file data, as getLastFileData will create a FileData instance if there is none
        // and we don't actually want to create such an instance.
 
        return (  input.getAssociatedSheet().getFileData().isEmpty() || 
@@ -660,17 +660,17 @@ final public class CueSheetCommandParser {
     * @return The last {@link jwbroek.cuelib.FileData} element. If none exist, an empty one is created and a warning
     * added.
     */
-    private static Mc2FileData getLastFileData(final LineOfInput input) {
+    private static FileData getLastFileData(final LineOfInput input) {
         logger.entering(CueSheetCommandParser.class.getCanonicalName(), "getLastFileData(LineOfInput)", input);
 
         List<jwbroek.cuelib.FileData> fileDataList = input.getAssociatedSheet().getFileData();
 
         if (fileDataList.isEmpty()) {
-          fileDataList.add(new Mc2FileData((Mc2CueSheet)input.getAssociatedSheet()));
+          fileDataList.add(new FileData((CueSheet)input.getAssociatedSheet()));
           addWarning(input, WARNING_NO_FILE_SPECIFIED);
         }
 
-        Mc2FileData result = (Mc2FileData)fileDataList.get(fileDataList.size()-1);
+        FileData result = (FileData)fileDataList.get(fileDataList.size()-1);
         logger.exiting(CueSheetCommandParser.class.getCanonicalName(), "getLastFileData(LineOfInput)", result);
         return result;
     }
@@ -681,19 +681,19 @@ final public class CueSheetCommandParser {
     * @return The last {@link jwbroek.cuelib.TrackData} element. If none exist, an empty one is created and a
     * warning added.
     */
-    private static Mc2TrackData getLastTrackData(final LineOfInput input) {
+    private static TrackData getLastTrackData(final LineOfInput input) {
     
         logger.entering(CueSheetCommandParser.class.getCanonicalName(), "getLastTrackData(LineOfInput)", input);
 
-        Mc2FileData lastFileData = getLastFileData(input);
-        List<Mc2TrackData> trackDataList = lastFileData.getTrackDataList();
+        FileData lastFileData = getLastFileData(input);
+        List<TrackData> trackDataList = lastFileData.getTrackDataList();
 
         if (trackDataList.isEmpty()) {
-          trackDataList.add(new Mc2TrackData(lastFileData));
+          trackDataList.add(new TrackData(lastFileData));
           addWarning(input, WARNING_NO_TRACK_SPECIFIED);
         }
 
-        Mc2TrackData result = trackDataList.get(trackDataList.size()-1); 
+        TrackData result = trackDataList.get(trackDataList.size()-1); 
         logger.exiting(CueSheetCommandParser.class.getCanonicalName(), "getLastTrackData(LineOfInput)", result);
         return result;
     }
@@ -715,19 +715,19 @@ final public class CueSheetCommandParser {
         
         if ( isAtAlbumLevel(input)) {
         
-            Mc2CueSheet cuesheet = (Mc2CueSheet) input.getAssociatedSheet();
+            CueSheet cuesheet = (CueSheet) input.getAssociatedSheet();
              addCommandLine(commandKey, remSubKey, cuesheet, input.getLineNumber(), value);
 
         } else {
         
-            Mc2TrackData trackData = getLastTrackData(input);
+            TrackData trackData = getLastTrackData(input);
             addCommandLine(commandKey, remSubKey, trackData, input.getLineNumber(), value);
         }
 
         logger.exiting(CueSheetCommandParser.class.getCanonicalName(), "parseCatalog(command, LineOfInput)");
     }
     
-    private static void addCommandLine(COMMAND_KEY commandKey, String remSubKey,Mc2CueSheet cuesheet, int lineNo, String value){
+    private static void addCommandLine(COMMAND_KEY commandKey, String remSubKey,CueSheet cuesheet, int lineNo, String value){
 
         for (Command command : cuesheet.getCommands()){
         
@@ -740,7 +740,7 @@ final public class CueSheetCommandParser {
         }
         cuesheet.getCommands().add(new Command(commandKey,remSubKey,lineNo, value)); 
     }
-    private static void addCommandLine(COMMAND_KEY commandKey, String remSubKey,Mc2TrackData trackData, int lineNo, String value){
+    private static void addCommandLine(COMMAND_KEY commandKey, String remSubKey,TrackData trackData, int lineNo, String value){
 
         for (Command command : trackData.getCommandList()){
         
@@ -754,7 +754,7 @@ final public class CueSheetCommandParser {
         trackData.getCommandList().add(new Command(commandKey,remSubKey,lineNo, value)); 
     }
     /**
-    * Write a warning to the logging and the {@link jwbroek.cuelib.CueSheet} associated with the
+    * Write a warning to the logging and the {@link CueSheet} associated with the
     * {@link jwbroek.cuelib.LineOfInput}.
     * @param input The {@link jwbroek.cuelib.LineOfInput} the warning pertains to.
     * @param warning The warning to write.

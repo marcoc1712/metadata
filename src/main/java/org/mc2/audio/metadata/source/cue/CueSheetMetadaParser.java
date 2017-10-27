@@ -85,7 +85,7 @@ public class CueSheetMetadaParser {
     * @return A representation of the cue sheet.
     * @throws IOException
     */
-    public static Mc2CueSheet parse(final InputStream inputStream, String source) throws IOException {
+    public static CueSheet parse(final InputStream inputStream, String source) throws IOException {
         
         return parse(CueSheetCommandParser.parse(inputStream, source));
     }
@@ -95,7 +95,7 @@ public class CueSheetMetadaParser {
     * @return A representation of the cue sheet.
     * @throws IOException
     */
-    public static Mc2CueSheet parse(final File file) throws IOException {
+    public static CueSheet parse(final File file) throws IOException {
         
         return parse(CueSheetCommandParser.parse(file));
     }
@@ -106,17 +106,17 @@ public class CueSheetMetadaParser {
     * @return A representation of the cue sheet.
     * @throws IOException
     */
-    public static Mc2CueSheet parse(final LineNumberReader reader, String source) throws IOException {
+    public static CueSheet parse(final LineNumberReader reader, String source) throws IOException {
 
         return parse(CueSheetCommandParser.parse(reader, source));
     }
     
     /**
     * Parse cuesheet validCommands and valorize metadata.
-    * @param cuesheet The {@link org.mc2.audio.metadata.source.cue.Mc2CueSheet} to be analized to produce metadata.
+    * @param cuesheet The {@link org.mc2.audio.metadata.source.cue.CueSheet} to be analized to produce metadata.
     * @return A Metadata representation of the cue sheet.
     */
-    public static Mc2CueSheet parse(Mc2CueSheet cuesheet){
+    public static CueSheet parse(CueSheet cuesheet){
         
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parse(PlainCueSheet)", cuesheet);
         logger.fine("Parsing cue sheet.");
@@ -143,9 +143,9 @@ public class CueSheetMetadaParser {
         
         int offset = 0;
         
-        for (Mc2FileData file : cuesheet.getFileDataList()){
+        for (FileData file : cuesheet.getFileDataList()){
     
-            for (Mc2TrackData track : file.getTrackDataList()){
+            for (TrackData track : file.getTrackDataList()){
                 
                 for (Command command : track.getCommandList()){
                     
@@ -171,7 +171,7 @@ public class CueSheetMetadaParser {
     * Parse a command and extract metadata
     * @param command the command to parse.
     */
-    private static void parseCommand(Mc2CueSheet cuesheet, Command command) {
+    private static void parseCommand(CueSheet cuesheet, Command command) {
         
        COMMAND_KEY commandKey = command.getCommandKey();
         
@@ -203,7 +203,7 @@ public class CueSheetMetadaParser {
     * Parse a command and extract metadata
     * @param command the command to parse.
     */
-    private static void parseCommand(Mc2TrackData track, Command command) {
+    private static void parseCommand(TrackData track, Command command) {
         
        COMMAND_KEY commandKey = command.getCommandKey();
         
@@ -241,7 +241,7 @@ public class CueSheetMetadaParser {
    * @param input
    */
     
-   private static void parseCatalog(Mc2CueSheet cuesheet, Command command ) {
+   private static void parseCatalog(CueSheet cuesheet, Command command ) {
        
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseCatalog(Command)", command);
 
@@ -292,7 +292,7 @@ public class CueSheetMetadaParser {
     * 
     * @param input
     */
-    private static void parseCdTextFile(Mc2CueSheet cuesheet, Command command ) {
+    private static void parseCdTextFile(CueSheet cuesheet, Command command ) {
         
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseCdTextFile(Command)", command);
         
@@ -570,7 +570,7 @@ public class CueSheetMetadaParser {
     * 
     * @param input
     */
-    private static void parseIsrc(Mc2TrackData track, Command command ) {
+    private static void parseIsrc(TrackData track, Command command ) {
        
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseIsrc(Command)", command);
 
@@ -1069,7 +1069,7 @@ public class CueSheetMetadaParser {
     * @param input The content of the line the warning pertains to.
     * @param warning The warning to write.
     */
-    protected static void addWarning(ArrayList<Message> messages, Mc2CueSheet cuesheet, final int lineNumber, final String input, final String warning) {
+    protected static void addWarning(ArrayList<Message> messages, CueSheet cuesheet, final int lineNumber, final String input, final String warning) {
         logger.warning(warning);
         Message msg= new Warning(input, lineNumber, warning);
         cuesheet.getMessages().add( msg);
@@ -1083,7 +1083,7 @@ public class CueSheetMetadaParser {
     * @param input The content of the line the warning pertains to.
     * @param warning The warning to write.
     */
-    protected static void addWarning(ArrayList<Message> messages, Mc2TrackData trackData, final int lineNumber, final String input, final String warning) {
+    protected static void addWarning(ArrayList<Message> messages, TrackData trackData, final int lineNumber, final String input, final String warning) {
         logger.warning(warning);
         Message msg= new Warning(input, lineNumber, warning);
         trackData.getParent().getParent().getMessages().add( msg);

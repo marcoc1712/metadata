@@ -22,7 +22,7 @@ package org.mc2.audio.metadata.source.cue;
 
 import java.util.ArrayList;
 import java.util.List;
-import jwbroek.cuelib.TrackData;
+//import jwbroek.cuelib.TrackData;
 import org.mc2.audio.metadata.Metadata;
 import org.mc2.audio.metadata.source.MetadataSource;
 
@@ -30,24 +30,24 @@ import org.mc2.audio.metadata.source.MetadataSource;
  *
  * @author marcoc1712
  */
-public class Mc2TrackData extends TrackData implements MetadataSource{
+public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSource{
 
     private final TrackSection section;
     private int offset;
     private int length;
     
-    private List<Mc2TrackIndex> trackIndexList= new ArrayList<>();
+    private List<TrackIndex> trackIndexList= new ArrayList<>();
     
-    Mc2TrackData(Mc2FileData fileData, int trackNumber, String dataType, int offset, int length) {
+    TrackData(FileData fileData, int trackNumber, String dataType, int offset, int length) {
         super(fileData,trackNumber,dataType);
-        this.section = new TrackSection((Mc2CueSheet)fileData.getParent(),this);
+        this.section = new TrackSection((CueSheet)fileData.getParent(),this);
         this.offset = offset;
         this.length= length;
     }
 
-    Mc2TrackData(Mc2FileData fileData) {
+    TrackData(FileData fileData) {
         super(fileData);
-        this.section = new TrackSection((Mc2CueSheet)fileData.getParent(),this);
+        this.section = new TrackSection((CueSheet)fileData.getParent(),this);
         this.offset = 0;
         this.length= 0;
     }
@@ -103,14 +103,14 @@ public class Mc2TrackData extends TrackData implements MetadataSource{
     /**
      * @return the trackIndexList
      */
-    public List<Mc2TrackIndex> getTrackIndexList() {
+    public List<TrackIndex> getTrackIndexList() {
         return trackIndexList;
     }
     /**
      * add a trackindex to the track.
      * @param trackIndex
      */
-    public void addTrackIndex(Mc2TrackIndex trackIndex){
+    public void addTrackIndex(TrackIndex trackIndex){
         this.getTrackIndexList().add(trackIndex);
         setLength(getLength()+trackIndex.getLength());
     }
@@ -134,29 +134,29 @@ public class Mc2TrackData extends TrackData implements MetadataSource{
     
     /** @return track offset in msec */
     public Long getOffsetInMillis(){
-        return Mc2CueSheet.getMilliseconds(getOffset());
+        return CueSheet.getMilliseconds(getOffset());
     }
     /** @return track length in msec */
     public Long getLengthInMillis(){
-        return Mc2CueSheet.getMilliseconds(getLength());
+        return CueSheet.getMilliseconds(getLength());
     }
      /** @return track end in msec */
     public Long getEndInMillis(){
-        return Mc2CueSheet.getMilliseconds(getEnd());
+        return CueSheet.getMilliseconds(getEnd());
     }
     /** @return track offset string */
     public String getOffsetString(){
 
-        return Mc2CueSheet.getTimeString(getOffsetInMillis());
+        return CueSheet.getTimeString(getOffsetInMillis());
     }
     /** @return track length string */
     public String getLengthString(){
 
-        return Mc2CueSheet.getTimeString(getLengthInMillis());
+        return CueSheet.getTimeString(getLengthInMillis());
     }
     /** @return track end string */
     public String getEndString(){
 
-        return Mc2CueSheet.getTimeString(getEndInMillis());
+        return CueSheet.getTimeString(getEndInMillis());
     }
 }

@@ -34,10 +34,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mc2.audio.metadata.source.cue.Command;
 import org.mc2.audio.metadata.source.cue.CueSheetMetadaParser;
-import org.mc2.audio.metadata.source.cue.Mc2CueSheet;
-import org.mc2.audio.metadata.source.cue.Mc2FileData;
-import org.mc2.audio.metadata.source.cue.Mc2TrackData;
-import org.mc2.audio.metadata.source.cue.Mc2TrackIndex;
+import org.mc2.audio.metadata.source.cue.CueSheet;
+import org.mc2.audio.metadata.source.cue.FileData;
+import org.mc2.audio.metadata.source.cue.TrackData;
+import org.mc2.audio.metadata.source.cue.TrackIndex;
 
 public class CueTest {
     @Before
@@ -57,7 +57,7 @@ public class CueTest {
         File cuefile = new File(path);
         
         
-        Mc2CueSheet cuesheet = (Mc2CueSheet) CueSheetMetadaParser.parse(cuefile);
+        CueSheet cuesheet = (CueSheet) CueSheetMetadaParser.parse(cuefile);
         
         System.out.println("========================================================================");
         System.out.println("\n");
@@ -76,7 +76,7 @@ public class CueTest {
         
         TestUtils.printMetadata(cuesheet.getMetadata());
 
-        for (Mc2FileData file : cuesheet.getFileDataList()){
+        for (FileData file : cuesheet.getFileDataList()){
             System.out.println("");
             System.out.println("- FILE: "+file.getFile()+ " ");
             System.out.println(" - type: "+file.getFileType());
@@ -89,7 +89,7 @@ public class CueTest {
 
             TestUtils.printAudioFile(file.getAudiofile());
             
-            for (Mc2TrackData track : file.getTrackDataList()){
+            for (TrackData track : file.getTrackDataList()){
                 
                 System.out.println("");
                 System.out.println(" - TRACK: "+track.getNumber());
@@ -151,9 +151,9 @@ public class CueTest {
     
     }
 
-    private void printIndices(String inline,  List<Mc2TrackIndex> indexes){
+    private void printIndices(String inline,  List<TrackIndex> indexes){
         
-        for (Mc2TrackIndex trackIndex : indexes) {
+        for (TrackIndex trackIndex : indexes) {
             System.out.println(inline+"- INDEX: " +trackIndex.getNumber()+" "+getPositionString(trackIndex.getPosition()));
         
             System.out.println(inline+" - offeset: "+trackIndex.getOffsetString()+", "
