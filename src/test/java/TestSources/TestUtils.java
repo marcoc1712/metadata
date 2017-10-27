@@ -25,15 +25,77 @@
 
 package TestSources;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.TagField;
+import org.jaudiotagger.tag.images.Artwork;
+import org.jaudiotagger.tag.reference.PictureTypes;
 import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.source.tags.file.AudioFile;
 
 /**
  *
  * @author marco
  */
 public class TestUtils {
+    
+    protected static void printAudioFile(AudioFile audiofile) throws IOException{
+    
+        
+        System.out.println("FILE: "+audiofile.getFile().getCanonicalPath());
+        
+        System.out.println("AUDIO HEADAER:"); 
+        TestUtils.printAudioHeader(audiofile.getAudioHeader());
+
+        System.out.println("TAGS:");
+        TestUtils.printTagFields(audiofile.geTagFields());
+
+        System.out.println("METADATA:");
+        TestUtils.printMetadata(audiofile.getMetadata());
+        
+        System.out.println("ARTWORKS:");
+        
+        printArtworks(audiofile.getEmbeddedArtworks());
+    
+    }
+    protected static void printArtworks(ArrayList<Artwork> artworks){
+        
+        for (Artwork artwork : artworks){
+            
+            String description =  PictureTypes.getInstanceOf().getValueForId(artwork.getPictureType());
+            if (description.isEmpty()){description = artwork.getDescription(); }
+            
+            description = description+  ": "+artwork.getMimeType() + 
+                                        " [ h: "+artwork.getHeight()+
+                                        ", w: "+ artwork.getWidth()+"]";
+                                
+
+            System.out.println("- embedded artwork: "+ description);
+        }
+    
+    }
+    protected static void printAudioHeader(AudioHeader audioHeader){
+        
+        System.out.println("- audioDataLength: "+audioHeader.getAudioDataLength());
+        System.out.println("- audioDataStartPosition: "+audioHeader.getAudioDataStartPosition());
+        System.out.println("- audioDataEndPosition: "+audioHeader.getAudioDataEndPosition());
+        System.out.println("- byteRate: "+audioHeader.getByteRate());
+        System.out.println("- bitRate: "+audioHeader.getBitRate());
+        System.out.println("- bitRateAsNumber: "+audioHeader.getBitRateAsNumber());
+        System.out.println("- sampleRate: "+audioHeader.getSampleRate());
+        System.out.println("- sampleRateAsNumber: "+audioHeader.getSampleRateAsNumber());
+        System.out.println("- bitsPerSample: "+audioHeader.getBitsPerSample());
+        System.out.println("- channels: "+audioHeader.getChannels());
+        System.out.println("- encodingType: "+audioHeader.getEncodingType());
+        System.out.println("- format: "+audioHeader.getFormat());
+        System.out.println("- noOfSamples: "+audioHeader.getNoOfSamples());
+        System.out.println("- isVariableBitRate: "+audioHeader.isVariableBitRate());
+        System.out.println("- trackLength: "+audioHeader.getTrackLength());
+        System.out.println("- preciseTrackLength: "+audioHeader.getPreciseTrackLength());
+        System.out.println("- isLossless: "+audioHeader.isLossless());
+        
+    }
     
     protected static void printTagFields(ArrayList<TagField> tagFields){
         

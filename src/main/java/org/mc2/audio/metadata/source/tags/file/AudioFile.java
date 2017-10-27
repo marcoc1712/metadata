@@ -32,6 +32,7 @@ import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagField;
+import org.jaudiotagger.tag.images.Artwork;
 import org.mc2.audio.metadata.Metadata;
 import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
 import org.mc2.audio.metadata.exceptions.InvalidAudioFileFormatException;
@@ -62,7 +63,7 @@ public abstract class AudioFile implements TagsSource, MetadataSource{
         String name = file.getName().toLowerCase();
         int i = name.lastIndexOf(".");
         if (i == -1) {
-            throw new InvalidAudioFileFormatException ("File format not suupported");
+            throw new InvalidAudioFileFormatException ("File format not supported");
         }
 
         String extension = name.substring(i + 1);
@@ -223,5 +224,9 @@ public abstract class AudioFile implements TagsSource, MetadataSource{
     
     public Metadata getMetadata(FieldKey fieldKey) {
         return getTagSchema().getMetadata(fieldKey);
+    }
+    
+    public ArrayList<Artwork> getEmbeddedArtworks(){
+        return (ArrayList)getTag().getArtworkList();
     }
 }

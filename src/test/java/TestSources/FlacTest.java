@@ -38,65 +38,41 @@ public class FlacTest {
         System.setOut(new PrintStream(System.out, true, "utf-8"));
         
     }
-    @Test
-    public void TestJaudioTaggerFlacReadTag() throws Exception{
+    //@Test
+    public void TestTags() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-         String filename = "flac_16_44100_EMBEDDED_CUE.flac";
-        //String filename = "flac_16_44100_TAG.flac";
+        String filename = "flac_16_44100_TAG.flac";
         
         String path = directory+"/"+filename;
         
         Flac audiofile = (Flac)AudioFile.get(path);
         
-        
-        System.out.println("FILE: "+path );
-        System.out.println("AUDIO HEADAER:");
-            
-            //System.out.println(audiofile.getAudioHeader());
+        TestUtils.printAudioFile(audiofile);
+    } 
+    //@Test
+    public void TestEmbeddedCueSheet() throws Exception{
 
-            System.out.println("- audioDataLength: "+audiofile.getAudioHeader().getAudioDataLength());
-            System.out.println("- audioDataStartPosition: "+audiofile.getAudioHeader().getAudioDataStartPosition());
-            System.out.println("- audioDataEndPosition: "+audiofile.getAudioHeader().getAudioDataEndPosition());
-            System.out.println("- byteRate: "+audiofile.getAudioHeader().getByteRate());
-            System.out.println("- bitRate: "+audiofile.getAudioHeader().getBitRate());
-            System.out.println("- bitRateAsNumber: "+audiofile.getAudioHeader().getBitRateAsNumber());
-            System.out.println("- sampleRate: "+audiofile.getAudioHeader().getSampleRate());
-            System.out.println("- sampleRateAsNumber: "+audiofile.getAudioHeader().getSampleRateAsNumber());
-            System.out.println("- bitsPerSample: "+audiofile.getAudioHeader().getBitsPerSample());
-            System.out.println("- channels: "+audiofile.getAudioHeader().getChannels());
-            System.out.println("- encodingType: "+audiofile.getAudioHeader().getEncodingType());
-            System.out.println("- format: "+audiofile.getAudioHeader().getFormat());
-            System.out.println("- noOfSamples: "+audiofile.getAudioHeader().getNoOfSamples());
-            System.out.println("- isVariableBitRate: "+audiofile.getAudioHeader().isVariableBitRate());
-            System.out.println("- trackLength: "+audiofile.getAudioHeader().getTrackLength());
-            System.out.println("- preciseTrackLength: "+audiofile.getAudioHeader().getPreciseTrackLength());
-            System.out.println("- isLossless: "+audiofile.getAudioHeader().isLossless());
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String filename = "flac_16_44100_EMBEDDED_CUE.flac";
+                
+        String path = directory+"/"+filename;
         
-        System.out.println("TAGS:");
-        //System.out.println(tag);
-        TestUtils.printTagFields(audiofile.geTagFields());
+        Flac audiofile = (Flac)AudioFile.get(path);
         
-        System.out.println("METADATA:");
+        TestUtils.printAudioFile(audiofile);
+    }
+    @Test 
+    public void TestEmbeddedCover() throws Exception{
+
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String filename = "flac_16_44100_EMBEDDED_COVER.flac";
+       
+        String path = directory+"/"+filename;
         
-            TestUtils.printMetadata(audiofile.getMetadata());
-            System.out.println("");
-        
-        System.out.println("TESTS:");
-        
-        //TestUtils.printMetadata();
-        
-        /*
-        
-        
-        System.out.println("ciccia: "+tag.getFirst("CICCIA"));
-        
-        List<TagField>  list = tag.getFields("CICCIA");
-        for(TagField field:list)
-        {
-            System.out.println("- ciccia: "+field);
-        }
-        
-        */
+        Flac audiofile = (Flac)AudioFile.get(path);
+
+        TestUtils.printAudioFile(audiofile);
+
     }  
 }

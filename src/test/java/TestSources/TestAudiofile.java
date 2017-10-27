@@ -27,10 +27,9 @@ package TestSources;
 
 import java.io.File;
 import java.io.PrintStream;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
 import org.junit.Before;
 import org.junit.Test;
+import org.mc2.audio.metadata.source.tags.file.AudioFile;
 
 /**
  *
@@ -48,13 +47,18 @@ public class TestAudiofile {
     public void TestRead() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "dff_02-822-400 (dsd64)_TAG.dff";
-
+        //String filename = "dff_02-822-400 (dsd64)_TAG.dff";
+        //String filename = "flac_16_44100_TAG.flac";
+        String filename = "flac_16_44100_EMBEDDED_COVER.flac"; 
+        
         String path = directory+"/"+filename;
         File file = new File(path);
         
-        AudioFile audiofile = AudioFileIO.read(file);
-        System.out.println("AudioHEader: "+audiofile.getAudioHeader());
-        System.out.println("Tag: "+audiofile.getTag());  
+        AudioFile audiofile = AudioFile.get(file);
+        
+        TestUtils.printAudioFile(audiofile);
+        
+        
+         
     }
 }

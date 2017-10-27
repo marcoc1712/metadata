@@ -172,12 +172,12 @@ public class Mc2CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSour
             }
             
             if (previousIndex != null){
-                int len = fileData.getLenght()-previousIndex.getOffset();
+                int len = fileData.getLength()-previousIndex.getOffset();
                 previousIndex.setLength(len);
                 addIndexLengthToTrack(previousIndex, fileData.getTrackDataList());
             }
             
-            offset=offset+fileData.getLenght();   
+            offset=offset+fileData.getLength();   
         }
     }
     private void addIndexLengthToTrack(Mc2TrackIndex index,List<Mc2TrackData> trackList){

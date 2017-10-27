@@ -22,20 +22,14 @@
 package org.mc2.audio.metadata.source.cue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import jwbroek.cuelib.FileData;
 import jwbroek.cuelib.LineOfInput;
 import jwbroek.cuelib.TrackData;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.exceptions.CannotReadException;
-import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
-import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
-import org.jaudiotagger.tag.TagException;
-import org.mc2.audio.metadata.exceptions.InvalidDataFileException;
+
 import static org.mc2.audio.metadata.source.cue.CueSheetCommandParser.addWarning;
+import org.mc2.audio.metadata.source.tags.file.AudioFile;
 
 /**
  *
@@ -51,7 +45,8 @@ public class Mc2FileData extends FileData {
         "Problems reading Data file Haader: ";
      
     private File datafile; 
-    private int lenght;
+    private AudioFile audiofile;
+    private int length;
     private int offset;
 
     public Mc2FileData(Mc2CueSheet cuesheet) {
@@ -82,23 +77,24 @@ public class Mc2FileData extends FileData {
             addWarning(input, WARNING_CAN_NOT_READ_DATA_FILE);
         
         } else{
-        
+
             try {
-                
-                lenght = calcFileLength(datafile);
-            
-            } catch (InvalidDataFileException ex){
+                audiofile =  AudioFile.get(datafile);
+                int seconds = audiofile.getAudioHeader().getTrackLength();
+
+                length=  seconds*75;
+
+            } catch (Exception  ex) {
                 addWarning(input, WARNING_PROBLEMS_READING_DATA_FILE_HEADER+
                                   ex.getMessage());
             }
-            
         }
     }
     /**
-     * @return the lenght
+     * @return the length
      */
-    public int getLenght() {
-        return lenght;
+    public int getLength() {
+        return length;
     }
         /**
      * @param offset the offset to set
@@ -115,7 +111,7 @@ public class Mc2FileData extends FileData {
     
     /** @return file length in msec */
     public Long getLengthInMillis(){
-        return Mc2CueSheet.getMilliseconds(getLenght());
+        return Mc2CueSheet.getMilliseconds(getLength());
     }
     /** @return file length string */
     public String getLengthString(){
@@ -141,22 +137,11 @@ public class Mc2FileData extends FileData {
         return out;
     
     }
+
     /**
-    * @return the filelenght
-    */
-    private int calcFileLength(File datafile) throws InvalidDataFileException {
-
-       try {
-           AudioFile audiofile =  AudioFileIO.read(datafile);
-           int seconds = audiofile.getAudioHeader().getTrackLength();
-           //System.out.println("- seconds: "+seconds);
-           return  seconds*75;
-
-       } catch (CannotReadException | IOException | ReadOnlyFileException |
-                InvalidAudioFrameException| TagException ex) {
-
-           throw new InvalidDataFileException(ex);
-       }
+     * @return the audiofile
+     */
+    public AudioFile getAudiofile() {
+        return audiofile;
     }
-
 }

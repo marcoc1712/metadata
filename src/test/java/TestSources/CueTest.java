@@ -85,8 +85,10 @@ public class CueTest {
                                             +file.getOffset()+" sectors"); 
             System.out.println(" - length: "+file.getLengthString()+", "
                                             +file.getLengthInMillis()+ " ms, "
-                                            +file.getLenght()+" sectors");
-           
+                                            +file.getLength()+" sectors");
+
+            TestUtils.printAudioFile(file.getAudiofile());
+            
             for (Mc2TrackData track : file.getTrackDataList()){
                 
                 System.out.println("");
