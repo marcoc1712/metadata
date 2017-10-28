@@ -23,7 +23,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package TestSources;
+package Test.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ import org.mc2.audio.metadata.source.tags.file.AudioFile;
  */
 public class TestUtils {
     
-    protected static void printAudioFile(AudioFile audiofile) throws IOException{
+    public static void printAudioFile(AudioFile audiofile) throws IOException{
     
         
         System.out.println("FILE: "+audiofile.getFile().getCanonicalPath());
@@ -59,7 +59,7 @@ public class TestUtils {
         printArtworks(audiofile.getEmbeddedArtworks());
     
     }
-    protected static void printArtworks(ArrayList<Artwork> artworks){
+    public static void printArtworks(ArrayList<Artwork> artworks){
         
         for (Artwork artwork : artworks){
             
@@ -75,7 +75,7 @@ public class TestUtils {
         }
     
     }
-    protected static void printAudioHeader(AudioHeader audioHeader){
+    public static void printAudioHeader(AudioHeader audioHeader){
         
         System.out.println("- audioDataLength: "+audioHeader.getAudioDataLength());
         System.out.println("- audioDataStartPosition: "+audioHeader.getAudioDataStartPosition());
@@ -97,7 +97,7 @@ public class TestUtils {
         
     }
     
-    protected static void printTagFields(ArrayList<TagField> tagFields){
+    public static void printTagFields(ArrayList<TagField> tagFields){
         
         for (TagField tagfield : tagFields){
             
@@ -105,14 +105,14 @@ public class TestUtils {
         }
     }
     
-    protected static void printMetadata(ArrayList<Metadata> metadataList){
+    public static void printMetadata(ArrayList<Metadata> metadataList){
         
         for (Metadata metadata : metadataList){
             printMetadata(metadata);
         }
     }
     
-    protected static void printMetadata(Metadata metadata){
+    public static void printMetadata(Metadata metadata){
         
         String status="";
         switch (metadata.getStatus()) {

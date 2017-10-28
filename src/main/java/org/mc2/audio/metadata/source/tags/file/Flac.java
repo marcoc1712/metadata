@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import org.jaudiotagger.tag.flac.FlacTag;
 import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTag;
 import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
 import org.mc2.audio.metadata.source.tags.schema.VorbisCommentTagSchema;
 
 /**
@@ -38,15 +39,15 @@ import org.mc2.audio.metadata.source.tags.schema.VorbisCommentTagSchema;
  */
 public class Flac extends AudioFile{
     
-    public Flac(String path) throws Exception {
+    public Flac(String path) throws InvalidAudioFileException {
         super(path); 
     }
     
-    public Flac(File file) throws Exception {
+    public Flac(File file) throws InvalidAudioFileException {
          super(file);
     }
     @Override
-    protected void initOptions() throws Exception {
+    protected void initOptions() {
         
         // i.e. 
         //TagOptionSingleton.getInstance().setVorbisAlbumArtistReadOptions(VorbisAlbumArtistReadOptions.READ_ALBUMARTIST);
@@ -54,7 +55,7 @@ public class Flac extends AudioFile{
 
     }  
     @Override
-    protected void initSchema() throws Exception {
+    protected void initSchema(){
         
         VorbisCommentTag vorbisCommentTag = getTag().getVorbisCommentTag();
         super.setTagSchema(new VorbisCommentTagSchema(vorbisCommentTag, this));

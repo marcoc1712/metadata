@@ -22,8 +22,6 @@
 package org.mc2.audio.metadata.source.cue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import org.mc2.audio.metadata.Metadata;
 import org.mc2.audio.metadata.source.MetadataSource;
 import static org.mc2.audio.metadata.source.cue.MetadataKeys.getAlbumLevelMetadataAlias;
@@ -36,19 +34,18 @@ public class Section implements MetadataSource{
     private String sourceId;
     private final CueSheet cuesheet;
     
-    /**
-     * Maps of Rem Commands not directly recognized as metadata.
-     * May be empty.
-     * 
-     */
-    private Map<String, String> remCommands = new HashMap<>();
-    
     private final ArrayList<Command> commandList = new ArrayList<>();
     private final ArrayList<Metadata> metadataList = new ArrayList<>();
     
     public Section(CueSheet cuesheet){
-        this.cuesheet = cuesheet;
-        
+        this.cuesheet = cuesheet;  
+    }
+    /**
+     * @param source the sourceId to set
+     */
+    
+    public void setSourceId(String source) {
+        this.sourceId = source;
     }
     
     public final CueSheet getCuesheet() {
@@ -78,13 +75,6 @@ public class Section implements MetadataSource{
         return sourceId;
     }
 
-    /**
-     * @param source the sourceId to set
-     */
-    public void setSourceId(String source) {
-        this.sourceId = source;
-    }
-    
     public Metadata getMedata(String genericKey){
         
         String alias = genericKey;

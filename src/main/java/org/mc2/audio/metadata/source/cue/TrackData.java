@@ -23,8 +23,10 @@ package org.mc2.audio.metadata.source.cue;
 import java.util.ArrayList;
 import java.util.List;
 //import jwbroek.cuelib.TrackData;
+//import jwbroek.cuelib.Index;
 import org.mc2.audio.metadata.Metadata;
 import org.mc2.audio.metadata.source.MetadataSource;
+import org.mc2.audio.metadata.source.tags.file.AudioFile;
 
 /**
  *
@@ -35,9 +37,7 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
     private final TrackSection section;
     private int offset;
     private int length;
-    
-    private List<TrackIndex> trackIndexList= new ArrayList<>();
-    
+        
     TrackData(FileData fileData, int trackNumber, String dataType, int offset, int length) {
         super(fileData,trackNumber,dataType);
         this.section = new TrackSection((CueSheet)fileData.getParent(),this);
@@ -104,25 +104,50 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
      * @return the trackIndexList
      */
     public List<TrackIndex> getTrackIndexList() {
-        return trackIndexList;
+        
+        List<TrackIndex> out = new ArrayList<>();
+        for (jwbroek.cuelib.Index index: super.getIndices()){
+            
+            out.add((TrackIndex) index);
+        }
+        return out;
     }
     /**
      * add a trackindex to the track.
      * @param trackIndex
      */
     public void addTrackIndex(TrackIndex trackIndex){
-        this.getTrackIndexList().add(trackIndex);
+        super.getIndices().add(trackIndex);
         setLength(getLength()+trackIndex.getLength());
     }
     
     @Override
     public ArrayList<Metadata> getMetadata(){
-
-            return getTrackSection().getMetadata();
+        
+        ArrayList<Metadata> out = getTrackSection().getMetadata();
+        out.addAll(getAddtionalMetadataFromFile());
+        return out;
     }
     public Metadata getMedata(String genericKey){
 
         return this.getTrackSection().getMedata(genericKey);
+    }
+    
+    public AudioFile getAudiofile(){
+        
+        if (section.getCuesheet().getFileDataList().size()!= 1){
+            
+            return ((FileData)getParent()).getAudiofile();
+        }
+        return null;
+        
+    }
+    private ArrayList<Metadata> getAddtionalMetadataFromFile(){
+        
+    if (section.getCuesheet().getFileDataList().size()== 1){ return new ArrayList<>();}
+
+    return ((FileData)getParent()).getAudiofile().getMetadata();
+    
     }
    /**
      * @return the source
@@ -159,4 +184,5 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
 
         return CueSheet.getTimeString(getEndInMillis());
     }
+
 }

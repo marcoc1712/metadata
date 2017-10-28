@@ -23,56 +23,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package TestSources;
+package Test.sources;
 
+import Test.utils.TestUtils;
 import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.audio.metadata.source.tags.file.Flac;
+import org.mc2.audio.metadata.source.tags.file.M4a;
 
-public class FlacTest {
+public class M4aTest {
     @Before
     public void setUp() throws Exception {
         
         System.setOut(new PrintStream(System.out, true, "utf-8"));
         
     }
-    //@Test
-    public void TestTags() throws Exception{
+    @Test
+    public void TestJaudioTaggerOggReadTag() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "flac_16_44100_TAG.flac";
-        
+        String filename = "alc_16_44100.m4a";
+
         String path = directory+"/"+filename;
         
-        Flac audiofile = (Flac)AudioFile.get(path);
+        M4a audiofile = (M4a)AudioFile.get(path);
         
         TestUtils.printAudioFile(audiofile);
-    } 
-    //@Test
-    public void TestEmbeddedCueSheet() throws Exception{
-
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "flac_16_44100_EMBEDDED_CUE.flac";
-                
-        String path = directory+"/"+filename;
-        
-        Flac audiofile = (Flac)AudioFile.get(path);
-        
-        TestUtils.printAudioFile(audiofile);
-    }
-    @Test 
-    public void TestEmbeddedCover() throws Exception{
-
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "flac_16_44100_EMBEDDED_COVER.flac";
-       
-        String path = directory+"/"+filename;
-        
-        Flac audiofile = (Flac)AudioFile.get(path);
-
-        TestUtils.printAudioFile(audiofile);
-
     }  
 }

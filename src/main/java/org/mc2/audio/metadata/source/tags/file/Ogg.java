@@ -29,6 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import org.jaudiotagger.tag.vorbiscomment.VorbisCommentTag;
 import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
 import org.mc2.audio.metadata.source.tags.schema.VorbisCommentTagSchema;
 
 /**
@@ -37,15 +38,15 @@ import org.mc2.audio.metadata.source.tags.schema.VorbisCommentTagSchema;
  */
 public class Ogg extends AudioFile{
     
-    public Ogg(String path) throws Exception {
+    public Ogg(String path) throws InvalidAudioFileException {
         super(path); 
     }
     
-    public Ogg(File file) throws Exception {
+    public Ogg(File file) throws InvalidAudioFileException  {
          super(file);
     }
     @Override
-    protected void initOptions() throws Exception {
+    protected void initOptions()  {
         
         // i.e. 
         //TagOptionSingleton.getInstance().setVorbisAlbumArtistReadOptions(VorbisAlbumArtistReadOptions.READ_ALBUMARTIST);
@@ -53,7 +54,7 @@ public class Ogg extends AudioFile{
 
     }  
     @Override
-    protected void initSchema() throws Exception {
+    protected void initSchema()  {
         
         VorbisCommentTag vorbisCommentTag = getTag();
         super.setTagSchema(new VorbisCommentTagSchema(vorbisCommentTag, this));

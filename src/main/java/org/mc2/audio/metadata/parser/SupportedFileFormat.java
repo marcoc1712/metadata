@@ -22,32 +22,52 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.mc2.audio.metadata.parser;
 
-package TestSources;
+/**
+ *
+ * @author marco
+ */
+/**
+ * Files formats currently supported by Library.
+ * Each enum value is associated with a file suffix (extension).
+ */
+public enum SupportedFileFormat
+{
+    OGG("ogg"),
+    MP3("mp3"),
+    FLAC("flac"),
+    MP4("mp4"),
+    M4A("m4a"),
+    M4P("m4p"),
+    WMA("wma"),
+    WAV("wav"),
+    //RA("ra"),
+    //RM("rm"),
+    M4B("m4b"),
+    AIF("aif"),
+    AIFF("aiff"),
+    AIFC("aifc"),
+    DSF("dsf"),
+    DFF("dff"),
+    CUE("cue"),
+    //QBU("qbu"),
+    ;
 
-import java.io.PrintStream;
-import org.junit.Before;
-import org.junit.Test;
-import org.mc2.audio.metadata.source.tags.file.Aif;
-import org.mc2.audio.metadata.source.tags.file.AudioFile;
+    private String filesuffix;
 
-
-public class AifTest {
-    @Before
-    public void setUp() throws Exception {
-        
-        System.setOut(new PrintStream(System.out, true, "utf-8"));
-        
+    /** Constructor for internal use by this enum.
+     */
+    SupportedFileFormat(String filesuffix)
+    {
+        this.filesuffix = filesuffix;
     }
-    @Test
-    public void TestJaudioTaggerOggReadTag() throws Exception{
 
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "aif_16_44100.aif";
-        String path = directory+"/"+filename;
-        
-        Aif audiofile = (Aif)AudioFile.get(path);
-       
-        TestUtils.printAudioFile(audiofile);
-    }  
+    /**
+     *  Returns the file suffix (lower case without initial .) associated with the format.
+     */
+    public String getFilesuffix()
+    {
+        return filesuffix;
+    }
 }

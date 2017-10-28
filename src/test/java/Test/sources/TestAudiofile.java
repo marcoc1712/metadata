@@ -23,15 +23,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package TestSources;
+package Test.sources;
 
+import Test.utils.TestUtils;
+import java.io.File;
 import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.audio.metadata.source.tags.file.M4a;
 
-public class M4aTest {
+/**
+ *
+ * @author marco
+ */
+public class TestAudiofile {
+
     @Before
     public void setUp() throws Exception {
         
@@ -39,15 +45,21 @@ public class M4aTest {
         
     }
     @Test
-    public void TestJaudioTaggerOggReadTag() throws Exception{
+    public void TestRead() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "alc_16_44100.m4a";
-
-        String path = directory+"/"+filename;
+        //String filename = "dff_02-822-400 (dsd64)_TAG.dff";
+        //String filename = "flac_16_44100_TAG.flac";
+        String filename = "flac_16_44100_EMBEDDED_COVER.flac"; 
         
-        M4a audiofile = (M4a)AudioFile.get(path);
+        String path = directory+"/"+filename;
+        File file = new File(path);
+        
+        AudioFile audiofile = AudioFile.get(file);
         
         TestUtils.printAudioFile(audiofile);
-    }  
+        
+        
+         
+    }
 }

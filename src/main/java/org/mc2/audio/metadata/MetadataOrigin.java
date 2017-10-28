@@ -31,8 +31,7 @@ import java.util.ArrayList;
  * An  unique Metadata in a source.
  * It normally correspond to a single TAG field in an audio file or command 
  * in a cue sheet (the originKey), but if more than one with exactly the same 
- * meaning are found, then we could store more values both validated or discarded, 
- * that's why have lists. 
+ * meaning are found, then we could store more values.
  * 
  * @author marco
  */

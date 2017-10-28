@@ -23,61 +23,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package TestSources;
+package Test.sources;
 
+import Test.utils.TestUtils;
 import java.io.PrintStream;
-//import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
 import org.junit.Before;
 import org.junit.Test;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.audio.metadata.source.tags.file.Wav;
+import org.mc2.audio.metadata.source.tags.file.Ra;
 
-public class WavTest {
-    
+public class RaTest {
     @Before
     public void setUp() throws Exception {
         
         System.setOut(new PrintStream(System.out, true, "utf-8"));
         
-    } 
-
+    }
     @Test
-    public void TestJaudioTaggerWavReadTag() throws Exception{
-        
-        
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione/02_Sec";
-        String filename = "wav_16_044100_TAGS.wav";
-        //String filename = "flac_16_44100_TAG.flac";
+    public void TestJaudioTaggerOggReadTag() throws Exception{
+
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String filename = "alc_16_44100.ra";
         
         String path = directory+"/"+filename;
         
-        Wav audiofile = (Wav)AudioFile.get(path);
+        Ra audiofile = (Ra) AudioFile.get(path);
         
         TestUtils.printAudioFile(audiofile);
-
-
-    }
-    //@Test
-    public void TestJaudioTaggerWavWriteTag() throws Exception{
-        
-        
-        String path= "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione/02_Sec/wav_16_044100_TAGS.wav";
-        org.jaudiotagger.audio.AudioFile f = new Wav(path).getAudiofile();
-        
-        Tag tag = f.getTag();
-                
-        tag.setField(FieldKey.ARTIST,"Artist a");
-        tag.addField(FieldKey.ARTIST,"Artist b");
-        tag.setField(FieldKey.WORK,"Work a");
-        tag.addField(FieldKey.WORK,"Work b");
-        f.commit();
-        System.out.println(tag);
-       
-        tag.deleteField(FieldKey.ARTIST);
-        tag.deleteField(FieldKey.WORK);
-        f.commit();
-        
     }
 }

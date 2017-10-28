@@ -29,6 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import org.jaudiotagger.tag.mp4.Mp4Tag;
 import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
 import org.mc2.audio.metadata.source.tags.schema.Mp4TagSchema;
 
 /**
@@ -37,20 +38,20 @@ import org.mc2.audio.metadata.source.tags.schema.Mp4TagSchema;
  */
 public class Mp4 extends AudioFile{
     
-    public Mp4(String path) throws Exception {
+    public Mp4(String path) throws InvalidAudioFileException  {
         super(path); 
     }
     
-    public Mp4(File file) throws Exception {
+    public Mp4(File file) throws InvalidAudioFileException {
          super(file);
     }
     @Override
-    protected void initOptions() throws Exception {
+    protected void initOptions()  {
        
           //Add here reader/Writer format options.
     }  
     @Override
-    protected void initSchema() throws Exception {
+    protected void initSchema() {
         
         Mp4Tag Mp4Tag = getTag();
         super.setTagSchema(new Mp4TagSchema(Mp4Tag, this));

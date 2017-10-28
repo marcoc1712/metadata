@@ -22,8 +22,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package TestSources;
+package Test.sources;
 
+import Test.utils.TestUtils;
 import java.io.PrintStream;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.tag.FieldKey;

@@ -28,6 +28,7 @@ package org.mc2.audio.metadata.source.cue.file;
 import org.mc2.audio.metadata.source.cue.CueSheetMetadaParser;
 import java.io.File;
 import java.io.IOException;
+import org.apache.commons.io.FilenameUtils;
 import org.mc2.audio.metadata.exceptions.InvalidCueSheetException;
 import org.mc2.audio.metadata.source.cue.CueSheet;
 /**
@@ -55,17 +56,31 @@ public class CueFile {
         this.cuesheet = CueSheetMetadaParser.parse(file);
 
     }
+    public static boolean isCueFile(File file) throws IOException{
+        
+        String ext =  FilenameUtils.getExtension(file.getCanonicalPath());
 
-    public final boolean isCueFile(){
-
-        String lowercaseName = cueFile.getName().toLowerCase();
-        return lowercaseName.endsWith(".cue")||
-               lowercaseName.endsWith(".qbu");
+        try{
+            return SupportedCueFileFormat.valueOf(ext.toUpperCase()) != null;
+        } catch (IllegalArgumentException ex){
+            return false;
+        }
+        
     }
-    
-    private CueSheet getCuesheet() {
+    /**
+     * @return the File
+     */
+    public File getFile() {
+        return cueFile;
+    }
+    /**
+     * @return the Cuesheet
+     */
+    public CueSheet getCuesheet() {
         return cuesheet;
     }
-
+    private final boolean isCueFile() throws IOException{
+        return isCueFile(getFile());
+    }
 }
     

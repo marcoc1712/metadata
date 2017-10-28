@@ -23,14 +23,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package TestSources;
+package Test.sources;
 
+import Test.utils.TestUtils;
 import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
-import org.mc2.audio.metadata.source.tags.file.Ogg;
+import org.mc2.audio.metadata.source.tags.file.AudioFile;
+import org.mc2.audio.metadata.source.tags.file.Mp3;
 
-public class OggTest {
+public class Mp3Test {
     @Before
     public void setUp() throws Exception {
         
@@ -41,12 +43,12 @@ public class OggTest {
     public void TestJaudioTaggerOggReadTag() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "ogg_16_44100_TAG.ogg";
+        String filename = "MP3_16_44100_TAG.mp3";
         
         String path = directory+"/"+filename;
         
-        Ogg audiofile = (Ogg)org.mc2.audio.metadata.source.tags.file.AudioFile.get(path);
+        Mp3 audiofile = (Mp3)AudioFile.get(path);
         
         TestUtils.printAudioFile(audiofile);
-    }
+    } 
 }

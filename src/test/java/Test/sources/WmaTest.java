@@ -23,21 +23,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.mc2.audio.metadata.source.tags.file;
+package Test.sources;
 
-import java.io.File;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
+import Test.utils.TestUtils;
+import java.io.PrintStream;
+import org.junit.Before;
+import org.junit.Test;
+import org.mc2.audio.metadata.source.tags.file.AudioFile;
+import org.mc2.audio.metadata.source.tags.file.Wma;
 
-/**
- *
- * @author marcoc1712
- */
-public class Aif extends Aiff{
-    
-    public Aif(String path) throws InvalidAudioFileException {
-        super(path);
+public class WmaTest {
+    @Before
+    public void setUp() throws Exception {
+        
+        System.setOut(new PrintStream(System.out, true, "utf-8"));
+        
     }
-    public Aif(File file) throws InvalidAudioFileException {
-         super(file);
+    @Test
+    public void TestReader() throws Exception{
+
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String filename = "WMA_16_44100_TAG.wma";
+        
+        String path = directory+"/"+filename;
+        
+        Wma audiofile = (Wma) AudioFile.get(path);
+        
+        TestUtils.printAudioFile(audiofile);
+        
     }
 }

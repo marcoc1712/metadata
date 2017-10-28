@@ -29,6 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import org.jaudiotagger.audio.real.RealTag;
 import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
 import org.mc2.audio.metadata.source.tags.schema.RealTagSchema;
 
 /**
@@ -37,20 +38,20 @@ import org.mc2.audio.metadata.source.tags.schema.RealTagSchema;
  */
 public class Rm extends AudioFile{
     
-    public Rm(String path) throws Exception {
+    public Rm(String path) throws InvalidAudioFileException{
         super(path); 
     }
     
-    public Rm(File file) throws Exception {
+    public Rm(File file) throws InvalidAudioFileException {
          super(file);
     }
     @Override
-    protected void initOptions() throws Exception {
+    protected void initOptions(){
        
           //Add here reader/Writer format options.
     }  
     @Override
-    protected void initSchema() throws Exception {
+    protected void initSchema() {
         
         RealTag realTag = getTag();
         super.setTagSchema(new RealTagSchema(realTag, this));

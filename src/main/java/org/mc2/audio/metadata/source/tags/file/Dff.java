@@ -28,6 +28,7 @@ package org.mc2.audio.metadata.source.tags.file;
 import java.io.File;
 import java.util.ArrayList;
 import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
 import org.mc2.audio.metadata.source.tags.schema.GenericTagSchema;
 /**
  *
@@ -35,16 +36,16 @@ import org.mc2.audio.metadata.source.tags.schema.GenericTagSchema;
  */
 public class Dff extends AudioFile {
 
-    public Dff(String path) throws Exception {
+    public Dff(String path) throws InvalidAudioFileException  {
         super(path); 
     }
     
-    public Dff(File file) throws Exception {
+    public Dff(File file) throws InvalidAudioFileException  {
          super(file);
     }
     
     @Override
-    protected void initOptions() throws Exception {
+    protected void initOptions() {
         
         
         //Default is ID3_V24.
@@ -54,7 +55,7 @@ public class Dff extends AudioFile {
         
     }
     @Override
-    protected void initSchema() throws Exception {
+    protected void initSchema() {
         super.setTagSchema(new GenericTagSchema(getTag(), this));
     }
 

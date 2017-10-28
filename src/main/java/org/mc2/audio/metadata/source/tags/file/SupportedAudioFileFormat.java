@@ -30,7 +30,7 @@ package org.mc2.audio.metadata.source.tags.file;
  * Files formats currently supported by Library.
  * Each enum value is associated with a file suffix (extension).
  */
-public enum SupportedFileFormat
+public enum SupportedAudioFileFormat
 {
     OGG("ogg"),
     MP3("mp3"),
@@ -53,7 +53,7 @@ public enum SupportedFileFormat
 
     /** Constructor for internal use by this enum.
      */
-    SupportedFileFormat(String filesuffix) {
+    SupportedAudioFileFormat(String filesuffix) {
         this.filesuffix = filesuffix;
     }
 

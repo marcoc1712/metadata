@@ -29,6 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import org.jaudiotagger.tag.asf.AsfTag;
 import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
 import org.mc2.audio.metadata.source.tags.schema.AsfTagSchema;
 /**
  *
@@ -36,20 +37,20 @@ import org.mc2.audio.metadata.source.tags.schema.AsfTagSchema;
  */
 public class Wma extends AudioFile {
 
-    public Wma(String path) throws Exception {
+    public Wma(String path) throws InvalidAudioFileException{
         super(path); 
     }
     
-    public Wma(File file) throws Exception {
+    public Wma(File file) throws InvalidAudioFileException{
          super(file);
     }
     
     @Override
-    protected void initOptions() throws Exception {
+    protected void initOptions(){
 
     }
     @Override
-    protected void initSchema() throws Exception {
+    protected void initSchema(){
         AsfTag asfTag = getTag();
         super.setTagSchema(new AsfTagSchema(asfTag, this));
 

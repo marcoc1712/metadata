@@ -29,6 +29,7 @@ import java.util.List;
 import jwbroek.cuelib.LineOfInput;
 import org.mc2.audio.metadata.Metadata;
 import org.mc2.audio.metadata.source.MetadataSource;
+import org.mc2.audio.metadata.source.tags.file.AudioFile;
 import org.mc2.util.miscellaneous.CalendarUtils;
 /**
  *
@@ -70,9 +71,29 @@ public class CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
     }
     @Override
     public ArrayList<Metadata> getMetadata(){
-
-            return getAlbumSection().getMetadata();
+        
+        ArrayList<Metadata> out =  getAlbumSection().getMetadata();
+        out.addAll(getAddtionalMetadataFromFile());
+        return out;
     }
+    
+    private ArrayList<Metadata> getAddtionalMetadataFromFile(){
+        
+        if (getFileDataList().size()!= 1){ return new ArrayList<>();}
+
+        return getFileDataList().get(0).getAudiofile().getMetadata();
+    }
+    
+    public AudioFile getAudiofile(){
+        
+        if (getFileDataList().size()== 1){
+            
+            return getFileDataList().get(0).getAudiofile();
+        }
+        return null;
+        
+    }
+            
     public Metadata getMedata(String genericKey){
 
         return this.getAlbumSection().getMedata(genericKey);
@@ -125,16 +146,20 @@ public class CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
      * @param millis 
      * @return string 
     */
-    protected static String getTimeString(Long millis){
+    public static String getTimeString(Long millis){
 
         return CalendarUtils.calcDurationString(millis);
+    }
+    public static String getTimeString(int sectors){
+
+        return CalendarUtils.calcDurationString(new Long(sectors*1000/75));
     }
     
     /** Convert sectors into msec.
      * @param sectors 
      * @return Long 
     */
-    protected static Long getMilliseconds(int sectors){
+    public static Long getMilliseconds(int sectors){
         
         return new Long(sectors*1000/75);
     }

@@ -22,8 +22,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package TestSources;
+package Test.structures;
 
+import Test.utils.TestUtils;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
@@ -32,14 +33,17 @@ import jwbroek.cuelib.Message;
 import jwbroek.cuelib.Position;
 import org.junit.Before;
 import org.junit.Test;
+import org.mc2.audio.metadata.parser.AlbumParser;
 import org.mc2.audio.metadata.source.cue.Command;
 import org.mc2.audio.metadata.source.cue.CueSheetMetadaParser;
 import org.mc2.audio.metadata.source.cue.CueSheet;
 import org.mc2.audio.metadata.source.cue.FileData;
 import org.mc2.audio.metadata.source.cue.TrackData;
 import org.mc2.audio.metadata.source.cue.TrackIndex;
+import org.mc2.audio.metadata.structures.Album;
+import org.mc2.audio.metadata.structures.Track;
 
-public class CueTest {
+public class AlbumTest {
     @Before
     public void setUp() throws Exception {
         
@@ -47,7 +51,62 @@ public class CueTest {
         
     }
     @Test
-    public void TestCueSheetParser() throws Exception{
+    public void TestCUeeAndSingleFile() throws Exception{
+         
+        String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\Albinoni Adagios - Anthony Camden, Julia Girdwood (1993 Naxos)";
+        
+        
+        Album album = AlbumParser.parse(directory);
+        
+        
+        System.out.println("========================================================================");
+        System.out.println("\n");
+        System.out.println("Directory:"+ directory);
+        System.out.println("");
+        System.out.println("Files:");
+        
+        for (File file : album.getFileList()){
+            System.out.println("- "+file.getName());
+        }
+        
+        
+        
+        System.out.println("");
+        System.out.println("ALBUM:");
+       
+        if (album.getCueFileList().size() > 1 && 
+            album.getAudioFileList().size() > 0){
+            
+            System.out.println("WARNING: cue sheets and audio files defines Album ");
+           
+        } else if (album.getCueFileList().size() > 1) {
+        
+            System.out.println("WARNING: more than one cue sheet defines Album(s) ");
+        
+        } else if (album.getAudioFileList().size() > 1){
+        
+            System.out.println("WARNING: more than one audio file defines Album(s) ");
+        }
+        
+        System.out.println(" - METADATA:");
+        TestUtils.printMetadata(album.getMetadataList());
+
+        
+        for (Track track : album.getTrackList()){
+                
+            System.out.println("");
+            System.out.println(" - TRACK: "+track.getTrackNo() +" ["+CueSheet.getTimeString(track.getLength())+"]");
+
+            System.out.println("");
+            System.out.println("  - METADATA:");
+
+            TestUtils.printMetadata(track.getMetadataList());
+
+        }
+        System.out.println("");
+    }
+    //@Test
+    public void TestMultiFIlesAndMuiltitrackPerFiile() throws Exception{
          
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         String filename = "flac_Due_files.cue";
@@ -148,7 +207,6 @@ public class CueTest {
             System.out.println("    "+line.getLineNumber()+" "+line.getInput());
         }
         System.out.println("");
-    
     }
 
     private void printIndices(String inline,  List<TrackIndex> indexes){

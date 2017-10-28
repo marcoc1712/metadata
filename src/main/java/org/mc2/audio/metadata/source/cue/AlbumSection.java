@@ -25,7 +25,6 @@ package org.mc2.audio.metadata.source.cue;
  */
 public class AlbumSection extends Section {
 
-   
     public AlbumSection(CueSheet cuesheet){
         super (cuesheet);
     }

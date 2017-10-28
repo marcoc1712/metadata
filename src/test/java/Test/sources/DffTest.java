@@ -22,22 +22,31 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package Test.sources;
 
-package org.mc2.audio.metadata.source.tags.file;
+import Test.utils.TestUtils;
+import java.io.PrintStream;
+import org.junit.Before;
+import org.junit.Test;
+import org.mc2.audio.metadata.source.tags.file.Dff;
 
-import java.io.File;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
-
-/**
- *
- * @author marcoc1712
- */
-public class Aif extends Aiff{
-    
-    public Aif(String path) throws InvalidAudioFileException {
-        super(path);
+public class DffTest {
+    @Before
+    public void setUp() throws Exception {
+        
+        System.setOut(new PrintStream(System.out, true, "utf-8"));
+        
     }
-    public Aif(File file) throws InvalidAudioFileException {
-         super(file);
+    @Test
+    public void TestJaudioTaggerOggReadTag() throws Exception{
+
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String filename = "dff_02-822-400 (dsd64)_TAG.dff";
+        String path = directory+"/"+filename;
+        
+        Dff audiofile = (Dff)org.mc2.audio.metadata.source.tags.file.AudioFile.get(path);
+
+        TestUtils.printAudioFile(audiofile);
+        
     }
 }

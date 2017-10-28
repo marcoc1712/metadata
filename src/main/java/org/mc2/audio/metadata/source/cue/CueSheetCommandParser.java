@@ -524,8 +524,7 @@ final public class CueSheetCommandParser {
                 
                 addWarning(input, WARNING_INVALID_FIRST_POSITION);
             }
-
-            trackIndices.add(new TrackIndex(trackData, indexNumber, position));
+            trackData.addTrackIndex(new TrackIndex(trackData, indexNumber, position));
         }
         else {
             

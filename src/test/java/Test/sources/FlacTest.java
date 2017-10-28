@@ -23,42 +23,57 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package TestSources;
+package Test.sources;
 
-import java.io.File;
+import Test.utils.TestUtils;
 import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
+import org.mc2.audio.metadata.source.tags.file.Flac;
 
-/**
- *
- * @author marco
- */
-public class TestAudiofile {
-
+public class FlacTest {
     @Before
     public void setUp() throws Exception {
         
         System.setOut(new PrintStream(System.out, true, "utf-8"));
         
     }
-    @Test
-    public void TestRead() throws Exception{
+    //@Test
+    public void TestTags() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        //String filename = "dff_02-822-400 (dsd64)_TAG.dff";
-        //String filename = "flac_16_44100_TAG.flac";
-        String filename = "flac_16_44100_EMBEDDED_COVER.flac"; 
+        String filename = "flac_16_44100_TAG.flac";
         
         String path = directory+"/"+filename;
-        File file = new File(path);
         
-        AudioFile audiofile = AudioFile.get(file);
+        Flac audiofile = (Flac)AudioFile.get(path);
         
         TestUtils.printAudioFile(audiofile);
+    } 
+    //@Test
+    public void TestEmbeddedCueSheet() throws Exception{
+
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String filename = "flac_16_44100_EMBEDDED_CUE.flac";
+                
+        String path = directory+"/"+filename;
         
+        Flac audiofile = (Flac)AudioFile.get(path);
         
-         
+        TestUtils.printAudioFile(audiofile);
     }
+    @Test 
+    public void TestEmbeddedCover() throws Exception{
+
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String filename = "flac_16_44100_EMBEDDED_COVER.flac";
+       
+        String path = directory+"/"+filename;
+        
+        Flac audiofile = (Flac)AudioFile.get(path);
+
+        TestUtils.printAudioFile(audiofile);
+
+    }  
 }

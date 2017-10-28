@@ -31,22 +31,23 @@ import java.util.ArrayList;
 import org.mc2.audio.metadata.source.tags.schema.ID3v2.ID3v2TagsSchema;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
 /**
  *
  * @author marco
  */
 public class Dsf extends AudioFile {
 
-    public Dsf(String path) throws Exception {
+    public Dsf(String path) throws InvalidAudioFileException {
         super(path); 
     }
     
-    public Dsf(File file) throws Exception {
+    public Dsf(File file) throws InvalidAudioFileException  {
          super(file);
     }
     
     @Override
-    protected void initOptions() throws Exception {
+    protected void initOptions() {
         
         
         //Default is ID3_V24.
@@ -56,7 +57,7 @@ public class Dsf extends AudioFile {
         
     }
     @Override
-    protected void initSchema() throws Exception {
+    protected void initSchema() {
         AbstractID3v2Tag abstractId3v2Tag = getTag();
         super.setTagSchema(new ID3v2TagsSchema(abstractId3v2Tag, this));
        

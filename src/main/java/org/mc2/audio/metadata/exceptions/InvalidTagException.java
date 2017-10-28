@@ -22,30 +22,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package TestSources;
+package org.mc2.audio.metadata.exceptions;
 
-import java.io.PrintStream;
-import org.junit.Before;
-import org.junit.Test;
-import org.mc2.audio.metadata.source.tags.file.Dff;
 
-public class DffTest {
-    @Before
-    public void setUp() throws Exception {
-        
-        System.setOut(new PrintStream(System.out, true, "utf-8"));
-        
-    }
-    @Test
-    public void TestJaudioTaggerOggReadTag() throws Exception{
+/**
+ * The file is not a CUE Sheet or is invalid.
+ */
 
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "dff_02-822-400 (dsd64)_TAG.dff";
-        String path = directory+"/"+filename;
-        
-        Dff audiofile = (Dff)org.mc2.audio.metadata.source.tags.file.AudioFile.get(path);
+public class InvalidTagException extends MetadataException {
+    
+    public InvalidTagException() {
+		super();
+	}
 
-        TestUtils.printAudioFile(audiofile);
-        
-    }
+	public InvalidTagException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public InvalidTagException(String message) {
+		super(message);
+	}
+
+	public InvalidTagException(Throwable cause) {
+		super(cause);
+	}   
 }

@@ -26,11 +26,16 @@
 package org.mc2.audio.metadata.source.tags.file;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.images.Artwork;
 import org.mc2.audio.metadata.Metadata;
@@ -56,7 +61,7 @@ public abstract class AudioFile implements TagsSource, MetadataSource{
         
         return get(new File(path));
     }
-    public static AudioFile get(File file) throws Exception{
+    public static AudioFile get(File file) throws InvalidAudioFileException, InvalidAudioFileFormatException{
         
         if (file == null) throw new InvalidAudioFileException ("Invalid file");
         
@@ -68,60 +73,64 @@ public abstract class AudioFile implements TagsSource, MetadataSource{
 
         String extension = name.substring(i + 1);
             
-        if(SupportedFileFormat.FLAC.getFilesuffix().equals(extension)) {
+        if(SupportedAudioFileFormat.FLAC.getFilesuffix().equals(extension)) {
             return new Flac (file);
-        } else if(SupportedFileFormat.OGG.getFilesuffix().equals(extension)) {
+        } else if(SupportedAudioFileFormat.OGG.getFilesuffix().equals(extension)) {
             return new Ogg (file);
-        } else if(SupportedFileFormat.MP3.getFilesuffix().equals(extension))  {
+        } else if(SupportedAudioFileFormat.MP3.getFilesuffix().equals(extension))  {
             return new Mp3(file);
-        } else if(SupportedFileFormat.MP4.getFilesuffix().equals(extension))  {
+        } else if(SupportedAudioFileFormat.MP4.getFilesuffix().equals(extension))  {
             return new Mp4(file);
-        } else if(SupportedFileFormat.M4A.getFilesuffix().equals(extension)) {
+        } else if(SupportedAudioFileFormat.M4A.getFilesuffix().equals(extension)) {
             return new M4a(file);
-        } else if(SupportedFileFormat.M4P.getFilesuffix().equals(extension)) {
+        } else if(SupportedAudioFileFormat.M4P.getFilesuffix().equals(extension)) {
             return new M4p(file);
-        } else if(SupportedFileFormat.WMA.getFilesuffix().equals(extension)) {
+        } else if(SupportedAudioFileFormat.WMA.getFilesuffix().equals(extension)) {
             return new Wma(file);
-        } else if(SupportedFileFormat.WAV.getFilesuffix().equals(extension)) {
+        } else if(SupportedAudioFileFormat.WAV.getFilesuffix().equals(extension)) {
             return new Wav(file);
-        } else if(SupportedFileFormat.RA.getFilesuffix().equals(extension)) {
+        } else if(SupportedAudioFileFormat.RA.getFilesuffix().equals(extension)) {
             return new Ra(file);
-        } else if(SupportedFileFormat.RM.getFilesuffix().equals(extension)){
+        } else if(SupportedAudioFileFormat.RM.getFilesuffix().equals(extension)){
             return new Rm(file);
-        } else if(SupportedFileFormat.AIF.getFilesuffix().equals(extension)) {
+        } else if(SupportedAudioFileFormat.AIF.getFilesuffix().equals(extension)) {
             return new Aif(file);
-        } else if(SupportedFileFormat.AIFC.getFilesuffix().equals(extension)) {
+        } else if(SupportedAudioFileFormat.AIFC.getFilesuffix().equals(extension)) {
             return new Aifc(file);
-        } else if(SupportedFileFormat.AIFF.getFilesuffix().equals(extension)) {
+        } else if(SupportedAudioFileFormat.AIFF.getFilesuffix().equals(extension)) {
             return new Aiff(file);
-        } else if(SupportedFileFormat.DSF.getFilesuffix().equals(extension)) {
+        } else if(SupportedAudioFileFormat.DSF.getFilesuffix().equals(extension)) {
             return new Dsf(file);
-        } else if(SupportedFileFormat.DFF.getFilesuffix().equals(extension)){
+        } else if(SupportedAudioFileFormat.DFF.getFilesuffix().equals(extension)){
             return new Dff(file);
         } else {
             throw new InvalidAudioFileFormatException ("File format not suupported");
         }
     }
     
-    protected AudioFile (String  path) throws Exception {
+    protected AudioFile (String  path) throws InvalidAudioFileException {
         this.file = new File(path);
         init(file);
     }
      
-    protected AudioFile(File file) throws Exception {
+    protected AudioFile(File file) throws InvalidAudioFileException {
         this.file = file;
         init(file);
     }
     
-    protected abstract void  initOptions()throws Exception;
-    protected abstract void  initSchema()throws Exception;
+    protected abstract void  initOptions();
+    protected abstract void  initSchema();
     
-    protected final void init(File file)throws Exception {
+    protected final void init(File file) throws  InvalidAudioFileException {
         initOptions();
-        audiofile=  AudioFileIO.read(file);    
-        tag = this.audiofile.getTag();
-        path = this.file.getCanonicalPath();
-        initSchema();
+        try {    
+            audiofile=  AudioFileIO.read(file);
+            tag = this.audiofile.getTag();
+            path = this.file.getCanonicalPath();
+            initSchema();
+        } catch (IOException | CannotReadException | ReadOnlyFileException | TagException | InvalidAudioFrameException ex) {
+            throw new InvalidAudioFileException(ex);
+        }
     }
    /**
      * @return the file

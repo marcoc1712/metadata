@@ -31,26 +31,27 @@ import org.jaudiotagger.tag.aiff.AiffTag;
 import org.mc2.audio.metadata.source.tags.schema.ID3v2.ID3v2TagsSchema;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
 /**
  *
  * @author marco
  */
 public class Aiff extends AudioFile {
 
-    public Aiff(String path) throws Exception {
+    public Aiff(String path) throws InvalidAudioFileException {
         super(path); 
     }
     
-    public Aiff(File file) throws Exception {
+    public Aiff(File file) throws InvalidAudioFileException {
          super(file);
     }
     
     @Override
-    protected void initOptions() throws Exception {
+    protected void initOptions(){
 
     }
     @Override
-    protected void initSchema() throws Exception {
+    protected void initSchema(){
         AbstractID3v2Tag abstractId3v2Tag = getTag().getID3Tag();
         super.setTagSchema(new ID3v2TagsSchema(abstractId3v2Tag, this));
 

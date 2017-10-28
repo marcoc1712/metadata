@@ -22,33 +22,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.mc2.audio.metadata.source.cue.file;
 
-package TestSources;
+/**
+ *
+ * @author marco
+ */
+/**
+ * cuefiles formats currently supported by the Library.
+ * Each enum value is associated with a file suffix (extension).
+ */
+public enum SupportedCueFileFormat {
+    CUE("cue"),
+    QBU("qbu");
 
-import java.io.PrintStream;
-import org.junit.Before;
-import org.junit.Test;
-import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.audio.metadata.source.tags.file.Wma;
+    private String filesuffix;
 
-public class WmaTest {
-    @Before
-    public void setUp() throws Exception {
-        
-        System.setOut(new PrintStream(System.out, true, "utf-8"));
-        
+    /** Constructor for internal use by this enum.
+     */
+    SupportedCueFileFormat(String filesuffix)
+    {
+        this.filesuffix = filesuffix;
     }
-    @Test
-    public void TestReader() throws Exception{
 
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "WMA_16_44100_TAG.wma";
-        
-        String path = directory+"/"+filename;
-        
-        Wma audiofile = (Wma) AudioFile.get(path);
-        
-        TestUtils.printAudioFile(audiofile);
-        
+    /**
+     *  Returns the file suffix (lower case without initial .) associated with the format.
+     */
+    public String getFilesuffix()
+    {
+        return filesuffix;
     }
 }

@@ -23,21 +23,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.mc2.audio.metadata.source.tags.file;
+package Test.sources;
 
-import java.io.File;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
+import Test.utils.TestUtils;
+import java.io.PrintStream;
+import org.junit.Before;
+import org.junit.Test;
+import org.mc2.audio.metadata.source.tags.file.Ogg;
 
-/**
- *
- * @author marcoc1712
- */
-public class Aif extends Aiff{
-    
-    public Aif(String path) throws InvalidAudioFileException {
-        super(path);
+public class OggTest {
+    @Before
+    public void setUp() throws Exception {
+        
+        System.setOut(new PrintStream(System.out, true, "utf-8"));
+        
     }
-    public Aif(File file) throws InvalidAudioFileException {
-         super(file);
+    @Test
+    public void TestJaudioTaggerOggReadTag() throws Exception{
+
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String filename = "ogg_16_44100_TAG.ogg";
+        
+        String path = directory+"/"+filename;
+        
+        Ogg audiofile = (Ogg)org.mc2.audio.metadata.source.tags.file.AudioFile.get(path);
+        
+        TestUtils.printAudioFile(audiofile);
     }
 }

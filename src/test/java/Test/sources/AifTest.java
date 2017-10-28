@@ -23,15 +23,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package TestSources;
+package Test.sources;
 
+import Test.utils.TestUtils;
 import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
+import org.mc2.audio.metadata.source.tags.file.Aif;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.audio.metadata.source.tags.file.Ra;
 
-public class RaTest {
+
+public class AifTest {
     @Before
     public void setUp() throws Exception {
         
@@ -42,12 +44,11 @@ public class RaTest {
     public void TestJaudioTaggerOggReadTag() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "alc_16_44100.ra";
-        
+        String filename = "aif_16_44100.aif";
         String path = directory+"/"+filename;
         
-        Ra audiofile = (Ra) AudioFile.get(path);
-        
+        Aif audiofile = (Aif)AudioFile.get(path);
+       
         TestUtils.printAudioFile(audiofile);
-    }
+    }  
 }
