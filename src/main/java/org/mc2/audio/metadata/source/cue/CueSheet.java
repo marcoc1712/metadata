@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 //import jwbroek.cuelib.FileData;
 import jwbroek.cuelib.LineOfInput;
+import org.jaudiotagger.tag.FieldKey;
 import org.mc2.audio.metadata.Metadata;
 import org.mc2.audio.metadata.source.MetadataSource;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
@@ -37,6 +38,7 @@ import org.mc2.util.miscellaneous.CalendarUtils;
  */
 public class CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
     
+     private final static String WARNING_DATA_FILE_HAS_TRACK =  "Data File is per Album but has track defined.";
     /**
     * LineOfInput that compose this CueSheet.
     */
@@ -73,22 +75,36 @@ public class CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
     public ArrayList<Metadata> getMetadata(){
         
         ArrayList<Metadata> out =  getAlbumSection().getMetadata();
-        out.addAll(getAddtionalMetadataFromFile());
+        
+        if (getAddtionalMetadataFromFile() != null){
+            out.addAll(getAddtionalMetadataFromFile());
+        }
         return out;
     }
     
     private ArrayList<Metadata> getAddtionalMetadataFromFile(){
-        
-        if (getFileDataList().size()!= 1){ return new ArrayList<>();}
 
-        return getFileDataList().get(0).getAudiofile().getMetadata();
+        if (getAudiofile() != null){
+            return  getAudiofile().getMetadata();
+        }
+        return null;
     }
     
     public AudioFile getAudiofile(){
         
         if (getFileDataList().size()== 1){
             
-            return getFileDataList().get(0).getAudiofile();
+            AudioFile audioFile = getFileDataList().get(0).getAudiofile();
+            
+            if (audioFile == null) return null;
+            
+            Metadata Tracknumber=audioFile.getMetadata(FieldKey.TRACK);
+            
+            if (Tracknumber == null || Tracknumber.isEmpty()){ return audioFile;}
+            int trackNO = Integer.parseInt(Tracknumber.getValue());
+            
+            if ( trackNO == 0 ){ return audioFile;}
+            
         }
         return null;
         
@@ -96,7 +112,7 @@ public class CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
             
     public Metadata getMedata(String genericKey){
 
-        return this.getAlbumSection().getMedata(genericKey);
+        return this.getAlbumSection().getMedata(Section.ALBUM,genericKey);
     }
    /**
      * @return the source
@@ -164,7 +180,33 @@ public class CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
         return new Long(sectors*1000/75);
     }
 
-    protected void adjustLength() {
+    protected void afterParsing(){
+        
+        adjustLength();
+        checkAudiofiles();
+        
+    }
+    private void checkAudiofiles(){
+    
+        if (getAudiofile() != null){
+            
+            Metadata Tracknumber =  getAudiofile().getMetadata(FieldKey.TRACK);
+            int trackNO=0;
+ 
+            try {
+                trackNO = Integer.parseInt(Tracknumber.getValue());
+            } catch (NumberFormatException ex){
+            
+            }
+
+            if ( trackNO> 0 ){
+             
+                LineOfInput input = new LineOfInput(0,"", this);
+                addWarning(input, WARNING_DATA_FILE_HAS_TRACK);
+            }
+        }
+    }
+    private void adjustLength() {
         
         int offset = 0;
         

@@ -35,9 +35,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.mc2.audio.metadata.Metadata;
 import org.mc2.audio.metadata.impl.CueMetadataOrigin;
 import org.mc2.audio.metadata.source.cue.CommandKeys.COMMAND_KEY;
-import org.mc2.audio.metadata.source.cue.MetadataKeys.METADATA_KEY;
-import static org.mc2.audio.metadata.source.cue.MetadataKeys.getAlbumLevelMetadataAlias;
-import static org.mc2.audio.metadata.source.cue.MetadataKeys.getTrackLevelMetadataALias;
+import org.mc2.audio.metadata.MetadataKeys.METADATA_KEY;
+import static org.mc2.audio.metadata.MetadataKeys.getAlbumLevelMetadataAlias;
+import static org.mc2.audio.metadata.MetadataKeys.getTrackLevelMetadataAlias;
 
 /**
  *
@@ -658,7 +658,7 @@ public class CueSheetMetadaParser {
         if (section instanceof AlbumSection){
             alias =getAlbumLevelMetadataAlias(remSubKey);
         } else {
-            alias =getTrackLevelMetadataALias(remSubKey);
+            alias =getTrackLevelMetadataAlias(remSubKey);
         }
 
         if (alias != null && !alias.isEmpty()){
@@ -1014,6 +1014,8 @@ public class CueSheetMetadaParser {
                                             List<Command> invalidCommands,
                                             List<Message> messages){
         
+        String level = section instanceof AlbumSection ? Section.ALBUM : Section.TRACK;
+       
         CueMetadataOrigin origin = new CueMetadataOrigin(section.getSourceId(),
                                                             commandKey.name(),
                                                             remSubkey,
@@ -1022,15 +1024,15 @@ public class CueSheetMetadaParser {
                                                             invalidCommands,
                                                             messages);
 
-        Metadata metadata = section.getMedata(metadataKey);
+        Metadata metadata = section.getMedata(level, metadataKey);
 
         if (metadata == null ){
            
             String alias;
-            if (section instanceof AlbumSection){
+            if (level.equals(Section.ALBUM)){
                 alias =getAlbumLevelMetadataAlias(metadataKey);
             } else {
-                 alias =getTrackLevelMetadataALias(metadataKey);
+                 alias =getTrackLevelMetadataAlias(metadataKey);
             }
 
             if (alias != null && !alias.isEmpty()){

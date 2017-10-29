@@ -244,7 +244,7 @@ final public class CueSheetCommandParser {
             logger.finest("Closing input reader.");
             reader.close();
 
-            result.adjustLength();
+            result.afterParsing();
         }
 
         logger.exiting(CueSheetCommandParser.class.getCanonicalName(), "parse(LineNumberReader)", result);

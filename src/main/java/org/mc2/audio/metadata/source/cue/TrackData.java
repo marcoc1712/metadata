@@ -130,23 +130,24 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
     }
     public Metadata getMedata(String genericKey){
 
-        return this.getTrackSection().getMedata(genericKey);
+        return this.getTrackSection().getMedata(Section.TRACK, genericKey);
     }
     
     public AudioFile getAudiofile(){
         
-        if (section.getCuesheet().getFileDataList().size()!= 1){
+        if (section.getCuesheet().getAudiofile() == null){
             
             return ((FileData)getParent()).getAudiofile();
         }
+        
         return null;
         
     }
     private ArrayList<Metadata> getAddtionalMetadataFromFile(){
         
-    if (section.getCuesheet().getFileDataList().size()== 1){ return new ArrayList<>();}
+    if (getAudiofile() == null){ return new ArrayList<>();}
 
-    return ((FileData)getParent()).getAudiofile().getMetadata();
+    return getAudiofile().getMetadata();
     
     }
    /**
@@ -184,5 +185,4 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
 
         return CueSheet.getTimeString(getEndInMillis());
     }
-
 }

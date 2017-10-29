@@ -24,12 +24,16 @@ package org.mc2.audio.metadata.source.cue;
 import java.util.ArrayList;
 import org.mc2.audio.metadata.Metadata;
 import org.mc2.audio.metadata.source.MetadataSource;
-import static org.mc2.audio.metadata.source.cue.MetadataKeys.getAlbumLevelMetadataAlias;
+import static org.mc2.audio.metadata.MetadataKeys.getAlbumLevelMetadataAlias;
+import static org.mc2.audio.metadata.MetadataKeys.getTrackLevelMetadataAlias;
 /**
  *
  * @author marcoc1712
  */
 public class Section implements MetadataSource{
+    
+    public static final String ALBUM = "ALBUM";
+    public static final String TRACK = "TRACK";
     
     private String sourceId;
     private final CueSheet cuesheet;
@@ -75,10 +79,11 @@ public class Section implements MetadataSource{
         return sourceId;
     }
 
-    public Metadata getMedata(String genericKey){
+    protected Metadata getMedata(String level, String genericKey){
         
         String alias = genericKey;
-        String key = getAlbumLevelMetadataAlias(genericKey);
+        String key = level.equals(ALBUM) ? getAlbumLevelMetadataAlias(genericKey) :
+                                           getTrackLevelMetadataAlias(genericKey);
         
         if (key != null){alias=key;}
         

@@ -22,13 +22,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.audio.metadata.structures;
+package org.mc2.audio.metadata;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
+import org.mc2.audio.metadata.exceptions.InvalidAudioFileFormatException;
+import org.mc2.audio.metadata.exceptions.InvalidCueSheetException;
 import org.mc2.audio.metadata.source.cue.file.CueFile;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
+import org.mc2.audio.metadata.parser.DirectoryParser;
 
 /**
  *
@@ -43,10 +47,15 @@ public class Album {
     private final ArrayList<File> imageFileList;  
     private final ArrayList<Track> trackList;
     private final ArrayList<Metadata> metadataList;
+    private final ArrayList<StatusMessage> messageList;
     
-    public Album(ArrayList<Metadata> metadataList, ArrayList<Track> trackList, 
-                ArrayList<File> fileList, ArrayList<CueFile> cueFileList, 
-                ArrayList<AudioFile> audioFileList, ArrayList<File> imageFileList) {
+    public Album(ArrayList<Metadata> metadataList, 
+                 ArrayList<Track> trackList, 
+                 ArrayList<File> fileList, 
+                 ArrayList<CueFile> cueFileList, 
+                 ArrayList<AudioFile> audioFileList, 
+                 ArrayList<File> imageFileList,
+                 ArrayList<StatusMessage> messageList) {
         
         this.metadataList = metadataList;
         this.trackList = trackList;
@@ -54,9 +63,15 @@ public class Album {
         this.cueFileList = cueFileList;
         this.audioFileList = audioFileList;
         this.imageFileList = imageFileList;
-       
+        this.messageList = messageList;
     }
 
+     public static Album parse(String directory) throws IOException, InvalidCueSheetException, InvalidAudioFileException, InvalidAudioFileFormatException {
+         return DirectoryParser.parse(new File(directory));
+    }
+    public static Album parse(File directory) throws IOException, InvalidCueSheetException, InvalidAudioFileException, InvalidAudioFileFormatException{
+         return DirectoryParser.parse(directory);
+    }
     /**
      * @return the trackList
      */
@@ -97,6 +112,13 @@ public class Album {
      */
     public ArrayList<AudioFile> getAudioFileList() {
         return audioFileList;
+    }
+
+    /**
+     * @return the messageList
+     */
+    public ArrayList<StatusMessage> getMessageList() {
+        return messageList;
     }
 
 }

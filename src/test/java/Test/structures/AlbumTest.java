@@ -33,15 +33,15 @@ import jwbroek.cuelib.Message;
 import jwbroek.cuelib.Position;
 import org.junit.Before;
 import org.junit.Test;
-import org.mc2.audio.metadata.parser.AlbumParser;
 import org.mc2.audio.metadata.source.cue.Command;
 import org.mc2.audio.metadata.source.cue.CueSheetMetadaParser;
 import org.mc2.audio.metadata.source.cue.CueSheet;
 import org.mc2.audio.metadata.source.cue.FileData;
 import org.mc2.audio.metadata.source.cue.TrackData;
 import org.mc2.audio.metadata.source.cue.TrackIndex;
-import org.mc2.audio.metadata.structures.Album;
-import org.mc2.audio.metadata.structures.Track;
+import org.mc2.audio.metadata.Album;
+import org.mc2.audio.metadata.StatusMessage;
+import org.mc2.audio.metadata.Track;
 
 public class AlbumTest {
     @Before
@@ -53,10 +53,11 @@ public class AlbumTest {
     @Test
     public void TestCUeeAndSingleFile() throws Exception{
          
+        //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\ProvaAlbumScan";
         String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\Albinoni Adagios - Anthony Camden, Julia Girdwood (1993 Naxos)";
         
         
-        Album album = AlbumParser.parse(directory);
+        Album album = Album.parse(directory);
         
         
         System.out.println("========================================================================");
@@ -68,24 +69,13 @@ public class AlbumTest {
         for (File file : album.getFileList()){
             System.out.println("- "+file.getName());
         }
-        
-        
-        
+
         System.out.println("");
         System.out.println("ALBUM:");
        
-        if (album.getCueFileList().size() > 1 && 
-            album.getAudioFileList().size() > 0){
+        for (StatusMessage statusMessage : album.getMessageList()){
             
-            System.out.println("WARNING: cue sheets and audio files defines Album ");
-           
-        } else if (album.getCueFileList().size() > 1) {
-        
-            System.out.println("WARNING: more than one cue sheet defines Album(s) ");
-        
-        } else if (album.getAudioFileList().size() > 1){
-        
-            System.out.println("WARNING: more than one audio file defines Album(s) ");
+            System.out.println(" - "+ statusMessage.getSeverity()+" "+statusMessage.getMessage());
         }
         
         System.out.println(" - METADATA:");

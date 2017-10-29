@@ -137,7 +137,6 @@ public class FileData extends jwbroek.cuelib.FileData {
         return out;
     
     }
-
     /**
      * @return the audiofile
      */
