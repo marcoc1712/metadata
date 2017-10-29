@@ -113,13 +113,17 @@ public abstract class TagSchema {
      */
     public Metadata getNastyMetadata(FieldKey fieldKey) {
         ArrayList<MetadataOrigin> origins = new ArrayList<>();
-        Iterator<TagField> iterator = source.getTag().getFields(fieldKey).iterator();
-        while (iterator.hasNext()) {
-            TagField tagField = iterator.next();
-            List<String> values= new ArrayList<>();
-            values.add(tagField.getId());
-            GenericMetadataOrigin origin = new GenericMetadataOrigin(source.getSourceId(), "", values, new ArrayList<>(),new ArrayList<>());
-            origins.add(origin);
+        
+        if (source != null && source.getTag()!= null && source.getTag().getFields(fieldKey) != null){
+
+            Iterator<TagField> iterator = source.getTag().getFields(fieldKey).iterator();
+            while (iterator.hasNext()) {
+                TagField tagField = iterator.next();
+                List<String> values= new ArrayList<>();
+                values.add(tagField.getId());
+                GenericMetadataOrigin origin = new GenericMetadataOrigin(source.getSourceId(), "", values, new ArrayList<>(),new ArrayList<>());
+                origins.add(origin);
+            }
         }
         Metadata metadata = new Metadata(fieldKey.name(), origins);
         return metadata;

@@ -54,7 +54,6 @@ public class CueFile {
         this.path = file.getCanonicalPath();
         if (!isCueFile())  throw new InvalidCueSheetException("this is not a a cue file!");
         this.cuesheet = CueSheetMetadaParser.parse(file);
-
     }
     public static boolean isCueFile(File file) throws IOException{
         

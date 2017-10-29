@@ -57,10 +57,10 @@ import static org.mc2.audio.metadata.source.cue.Section.ALBUM;
 public class DirectoryParser {
     
 
-    public static Album parse(String directory) throws IOException, InvalidCueSheetException, InvalidAudioFileException, InvalidAudioFileFormatException {
+    public static Album parse(String directory) throws IOException, InvalidAudioFileException, InvalidAudioFileFormatException {
          return parse(new File(directory));
     }
-    public static Album parse(File directory) throws IOException, InvalidCueSheetException, InvalidAudioFileException, InvalidAudioFileFormatException{
+    public static Album parse(File directory) throws IOException,  InvalidAudioFileException, InvalidAudioFileFormatException{
         
        ArrayList<File> directoryfileList = new ArrayList<>(Arrays.asList(directory.listFiles(new GenericFileFilter(false))));
        ArrayList<File> fileList = new ArrayList<>(Arrays.asList(directory.listFiles(new AudioFileFilter(false))));
@@ -130,8 +130,15 @@ public class DirectoryParser {
        for (File file : fileList){
        
             AudioFile audiofile = AudioFile.get(file);
-
-            int trackNo = Integer.parseInt(audiofile.getMetadata(FieldKey.TRACK).getValue());
+            
+            Metadata Tracknumber = audiofile.getMetadata(FieldKey.TRACK);
+            int trackNo=0;
+            
+            try {
+                trackNo = Integer.parseInt(Tracknumber.getValue());
+            } catch (NumberFormatException ex){
+            
+            }
            
             if (trackNo > 0) {
            
@@ -222,15 +229,20 @@ public class DirectoryParser {
         return target;
     }
     
-    private static ArrayList<CueFile> getCueFileList(ArrayList<File> fileList) throws IOException, InvalidCueSheetException{
+    private static ArrayList<CueFile> getCueFileList(ArrayList<File> fileList) throws IOException {
         
         ArrayList<CueFile> out= new ArrayList<>();
         for (File file : fileList){
             if (CueFile.isCueFile(file)){
                 
-                out.add(new CueFile(file));
+                try{
+                    out.add(new CueFile(file));
+                } catch (InvalidCueSheetException ex) {
+                    
+                   System.out.println("==== DirectoryParser.getCueFileList === InvalidCueSheetException: "+ ex);
+                    
+                }
             }
-            
         }
         return out;
     

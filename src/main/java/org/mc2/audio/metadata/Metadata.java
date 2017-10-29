@@ -42,7 +42,7 @@ import java.util.List;
  */
 
 public class Metadata {
-
+    
     public enum STATUS {
     
         VALID,
@@ -55,7 +55,10 @@ public class Metadata {
         EMPTY
         
     };
-    private final String key;
+    private final boolean defaultMergeDiscarded=false;
+    private final boolean defaultMergeInvalid=false;
+    
+    String key;
     private final ArrayList<MetadataOrigin> origins = new ArrayList<>();
 
     public Metadata(String key, MetadataOrigin origin){
@@ -78,13 +81,48 @@ public class Metadata {
         return key;
     }
     /**
+     * @return the value 
+     */
+    public String getValue(){
+        return getValue(defaultMergeDiscarded,defaultMergeInvalid);
+    }
+    /** Return the value, merging values accordingly with the input flags.
+     * @param mergeDiscarded
+     * @param mergeInvalid
+     * @return the value.
+     */
+    public String getValue(boolean mergeDiscarded, boolean mergeInvalid){
+    
+        String out=getValidValue();
+                       
+        if (out.isEmpty()){
+            
+            out=getDiscardedValue();
+            
+        } else if (mergeDiscarded && !getDiscardedValue().isEmpty()){
+            
+            out=out+";"+getDiscardedValue();
+            
+        }
+        if (out.isEmpty()){
+            
+            out=getInvalidValue();
+        
+        }else if (mergeInvalid && !getInvalidValue().isEmpty()){
+            
+            out=out+";"+getInvalidValue();
+            
+        }
+        return out;
+    }
+    /**
      * @return the valid value.
      */
     public String getValidValue(){
         
         String out="";
         
-        for (String value : this.getValues()){
+        for (String value : this.getValidValues()){
             if (!out.isEmpty()){
                 out=out+"; "+value;
             } else{
@@ -109,7 +147,7 @@ public class Metadata {
         }
         return out;
     }
-     /**
+    /**
      * @return the invalid value.
      */
     public String getInvalidValue(){
@@ -125,20 +163,8 @@ public class Metadata {
         }
         return out;
     }
-    public String getValue(){
-        
-        String out=getValidValue();
-               
-        if (out.isEmpty()){
-            
-            out=getDiscardedValue();
-        }
-        if (out.isEmpty()){
-            
-            out=getInvalidValue();
-        }
-        return out;
-    }
+
+   
      /**
      * @return the status.
      */
@@ -158,14 +184,14 @@ public class Metadata {
      * @return isEmpty.
      */
     public boolean isEmpty() {
-        return this.getValues().isEmpty() &&  
+        return this.getValidValues().isEmpty() &&  
                this.getDiscardedValues().isEmpty() &&
                this.getInvalidValues().isEmpty();
     }   
     /**
      * @return the valid values
      */
-    public ArrayList<String> getValues() {
+    public ArrayList<String> getValidValues() {
       
         ArrayList<String> out= new ArrayList<>();
 
@@ -181,7 +207,7 @@ public class Metadata {
         return out;
     }
     /**
-     * @return the discarded
+     * @return the discarded values
     */
     public ArrayList<String> getDiscardedValues() {
       
@@ -199,7 +225,7 @@ public class Metadata {
         return out;
     }
     /**
-     * @return the discarded
+     * @return the invalid values
     */
     public ArrayList<String> getInvalidValues() {
       

@@ -128,7 +128,7 @@ public class TestUtils {
             default: break;
         }
         
-        System.out.println(status+metadata.getKey()+": "+metadata.getValue());
+        System.out.println(status+metadata.getKey()+": "+metadata.getValue(true, true));
         
     }
 }

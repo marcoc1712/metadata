@@ -25,7 +25,6 @@
 package org.mc2.audio.metadata;
 
 import java.util.ArrayList;
-import org.mc2.audio.metadata.Metadata;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
 
 /**
