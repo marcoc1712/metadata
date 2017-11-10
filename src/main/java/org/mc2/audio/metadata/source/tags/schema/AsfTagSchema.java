@@ -31,8 +31,9 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.asf.AsfTag;
-import org.mc2.audio.metadata.Metadata;
-import org.mc2.audio.metadata.MetadataOrigin;
+import org.mc2.audio.metadata.API.Metadata;
+import org.mc2.audio.metadata.API.MetadataOrigin;
+import org.mc2.audio.metadata.impl.MetadataDefaultImpl;
 import org.mc2.audio.metadata.impl.TagMetadataOrigin;
 import org.mc2.audio.metadata.source.tags.TagsSource;
 
@@ -84,7 +85,7 @@ public class AsfTagSchema extends TagSchema  {
                 ArrayList<TagField> discarded = new ArrayList<>();
                 discarded.add(tagField);
                 TagMetadataOrigin origin= new TagMetadataOrigin(source.getSourceId() , tagField.getId(), new ArrayList<>(), discarded, new ArrayList<>());
-                Metadata metadata= new Metadata(tagField.getId(),origin);
+                Metadata metadata= new MetadataDefaultImpl(tagField.getId(),origin);
                 
                 out.add(metadata);
 

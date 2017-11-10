@@ -26,7 +26,7 @@
 package org.mc2.audio.metadata.source.tags.file;
 
 import java.io.File;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
 
 /**
  *

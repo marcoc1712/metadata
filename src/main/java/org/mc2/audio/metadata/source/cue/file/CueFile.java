@@ -29,7 +29,7 @@ import org.mc2.audio.metadata.source.cue.CueSheetMetadaParser;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FilenameUtils;
-import org.mc2.audio.metadata.exceptions.InvalidCueSheetException;
+import org.mc2.audio.metadata.API.exceptions.InvalidCueSheetException;
 import org.mc2.audio.metadata.source.cue.CueSheet;
 /**
  *

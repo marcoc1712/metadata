@@ -27,6 +27,10 @@ package Test.sources;
 
 import Test.utils.TestUtils;
 import java.io.PrintStream;
+import java.util.List;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.images.Artwork;
+import org.jaudiotagger.tag.images.StandardArtwork;
 import org.junit.Before;
 import org.junit.Test;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
@@ -40,7 +44,7 @@ public class FlacTest {
         
     }
     //@Test
-    public void TestTags() throws Exception{
+    public void TestRead() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         String filename = "flac_16_44100_TAG.flac";
@@ -52,7 +56,7 @@ public class FlacTest {
         TestUtils.printAudioFile(audiofile);
     } 
     //@Test
-    public void TestEmbeddedCueSheet() throws Exception{
+    public void TestReadEmbeddedCueSheet() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         String filename = "flac_16_44100_EMBEDDED_CUE.flac";
@@ -63,8 +67,8 @@ public class FlacTest {
         
         TestUtils.printAudioFile(audiofile);
     }
-    @Test 
-    public void TestEmbeddedCover() throws Exception{
+    //@Test 
+    public void TestReadEmbeddedCover() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         String filename = "flac_16_44100_EMBEDDED_COVER.flac";
@@ -76,4 +80,30 @@ public class FlacTest {
         TestUtils.printAudioFile(audiofile);
 
     }  
+    @Test
+    public void TestWriteEmbeddedCoverFromUrl() throws Exception{
+
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String filename = "flac_16_44100_EMBEDDED_COVER_URL.flac";
+       
+        String path = directory+"/"+filename;
+        
+        Flac flac = (Flac)AudioFile.get(path);
+        flac.getAudiofile().getTagOrCreateAndSetDefault();
+        Tag tag=  flac.getAudiofile().getTag();
+        
+        List<Artwork> artList = flac.getAudiofile().getTag().getArtworkList();
+        if (artList.isEmpty()){
+            StandardArtwork artwork =  StandardArtwork.createLinkedArtworkFromURL("https://ia601508.us.archive.org/22/items/mbid-c1850312-f20a-420b-b6a2-2c61105c2916/mbid-c1850312-f20a-420b-b6a2-2c61105c2916-18262008174.jpg");
+            tag.setField(artwork);
+            flac.getAudiofile().setTag(tag);
+            flac.getAudiofile().commit();
+        }
+        
+        artList = flac.getAudiofile().getTag().getArtworkList();
+        
+        TestUtils.printAudioFile(flac);
+
+    }  
+    
 }

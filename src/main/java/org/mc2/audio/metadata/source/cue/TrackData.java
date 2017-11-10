@@ -24,9 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 //import jwbroek.cuelib.TrackData;
 //import jwbroek.cuelib.Index;
-import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.API.Metadata;
 import org.mc2.audio.metadata.source.MetadataSource;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
+import org.mc2.util.miscellaneous.CalendarUtils;
 
 /**
  *
@@ -160,29 +161,29 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
     
     /** @return track offset in msec */
     public Long getOffsetInMillis(){
-        return CueSheet.getMilliseconds(getOffset());
+        return CalendarUtils.getMilliseconds(getOffset());
     }
     /** @return track length in msec */
     public Long getLengthInMillis(){
-        return CueSheet.getMilliseconds(getLength());
+        return CalendarUtils.getMilliseconds(getLength());
     }
      /** @return track end in msec */
     public Long getEndInMillis(){
-        return CueSheet.getMilliseconds(getEnd());
+        return CalendarUtils.getMilliseconds(getEnd());
     }
     /** @return track offset string */
     public String getOffsetString(){
 
-        return CueSheet.getTimeString(getOffsetInMillis());
+        return CalendarUtils.getTimeString(getOffsetInMillis());
     }
     /** @return track length string */
     public String getLengthString(){
 
-        return CueSheet.getTimeString(getLengthInMillis());
+        return CalendarUtils.getTimeString(getLengthInMillis());
     }
     /** @return track end string */
     public String getEndString(){
 
-        return CueSheet.getTimeString(getEndInMillis());
+        return CalendarUtils.getTimeString(getEndInMillis());
     }
 }

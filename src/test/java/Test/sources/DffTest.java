@@ -28,6 +28,8 @@ import Test.utils.TestUtils;
 import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileFormatException;
 import org.mc2.audio.metadata.source.tags.file.Dff;
 
 public class DffTest {
@@ -38,15 +40,22 @@ public class DffTest {
         
     }
     @Test
-    public void TestJaudioTaggerOggReadTag() throws Exception{
+    public void TestRead() throws Exception{
 
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione/provaDff";
         String filename = "dff_02-822-400 (dsd64)_TAG.dff";
         String path = directory+"/"+filename;
         
-        Dff audiofile = (Dff)org.mc2.audio.metadata.source.tags.file.AudioFile.get(path);
+        try{
+            Dff audiofile = (Dff)org.mc2.audio.metadata.source.tags.file.AudioFile.get(path);
+            TestUtils.printAudioFile(audiofile);
+ 
+        } catch (InvalidAudioFileException | InvalidAudioFileFormatException ex){
 
-        TestUtils.printAudioFile(audiofile);
+            System.out.println("Invalid Audiofile:"+ex.getMessage());
         
+        }
+       
+         
     }
 }

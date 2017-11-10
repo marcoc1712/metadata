@@ -28,7 +28,7 @@ package org.mc2.audio.metadata.impl;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import org.jaudiotagger.tag.TagField;
-import org.mc2.audio.metadata.MetadataOrigin;
+import org.mc2.audio.metadata.API.MetadataOrigin;
 import org.mc2.audio.metadata.source.tags.schema.ID3v2.ID3v2TagsSchema;
 import org.mc2.audio.metadata.source.tags.schema.ID3v2.ID3FrameAndSubId;
 
@@ -93,7 +93,8 @@ public class ID3V2MetadataOrigin  implements MetadataOrigin {
             if (!valuePair.getValue().isEmpty() ) {
                 value = valuePair.getValue();
             } else {
-                value = "["+this.getOriginKey()+"] "+discarded.toString();
+                //value = "["+this.getOriginKey()+"] "+discarded.toString();
+                value =discarded.toString();
             }
             
             if (!out.contains(value)){
@@ -108,7 +109,8 @@ public class ID3V2MetadataOrigin  implements MetadataOrigin {
       
         for (TagField invalid : tagMetadataOrigin.getInvalidTagField()){
             
-            String value = "["+this.getOriginKey()+"] "+invalid.toString();
+            //String value = "["+this.getOriginKey()+"] "+invalid.toString();
+            String value = invalid.toString();
             
             if (!out.contains(value)){
                 out.add(value);

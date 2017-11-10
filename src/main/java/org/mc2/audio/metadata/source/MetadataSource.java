@@ -26,7 +26,7 @@
 package org.mc2.audio.metadata.source;
 
 import java.util.ArrayList;
-import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.API.Metadata;
 
 
 /**

@@ -21,6 +21,7 @@ package org.mc2.audio.metadata.source.cue;
 
 import jwbroek.cuelib.Index;
 import jwbroek.cuelib.Position;
+import org.mc2.util.miscellaneous.CalendarUtils;
 
 
 /**
@@ -61,22 +62,22 @@ public class TrackIndex extends Index{
     }
     /** @return track offset in msec */
    public Long getOffsetInMillis(){
-       return CueSheet.getMilliseconds(getOffset());
+       return CalendarUtils.getMilliseconds(getOffset());
    }
    /** @return track length in msec */
    public Long getLengthInMillis(){
-       return CueSheet.getMilliseconds(getLength());
+       return CalendarUtils.getMilliseconds(getLength());
    }
 
    /** @return track offset string */
    public String getOffsetString(){
 
-       return CueSheet.getTimeString(getOffsetInMillis());
+       return CalendarUtils.getTimeString(getOffsetInMillis());
    }
    /** @return track length string */
    public String getLengthString(){
 
-       return CueSheet.getTimeString(getLengthInMillis());
+       return CalendarUtils.getTimeString(getLengthInMillis());
    }
    /**
      * @param length the length to set

@@ -25,7 +25,9 @@
 
 package prove;
 
+import java.io.File;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.HashMap;
 //import jwbroek.cuelib.CueSheet.MetaDataField;
 import org.jaudiotagger.tag.FieldKey;
@@ -42,78 +44,20 @@ public class Prove {
         
     }
     @Test
-    public void mergeMetadata() throws Exception{
+    public void prova() throws Exception{
         
-        // jwbroek.cuelib.CueSheet.MetaDataField;
-        // org.jaudiotagger.tag.FieldKey;
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        String filename = "flac_16_44100_EMBEDDED_COVER_URL.flac";
         
-        HashMap<String, String> tagToCue = new HashMap<>();
-        HashMap<String, String> cueTotag = new HashMap<>();
+        String path = directory+"/"+filename;
+        File file = new File(path);
+        int index = 0;
+        //return (new URL("http://localhost:8080""+this.file.toURI().getPath()+"&index="+this.index)).toString();
+        
+        String base = "http://localhost:8080";
+        
+        String query= base+"/embeddedart?file="+file.toURI().getPath()+"&index="+index;
+        URL url = new URL(query);
 
-        for (jwbroek.cuelib.CueSheet.MetaDataField cueKey : jwbroek.cuelib.CueSheet.MetaDataField.values()){
-            
-            for (FieldKey tagkey : FieldKey.values()){
-                
-                if (tagkey.toString().equals(cueKey.toString())){
-                    
-                    cueTotag.put(cueKey.toString(), tagkey.toString());
-                    break;
-                }
-            }
-            if (!cueTotag.containsKey(cueKey.toString())){
-                cueTotag.put(cueKey.toString(), "");
-            }
-            
-        }
-        for (String key : cueTotag.keySet()){
-            
-            System.out.println("cue: "+key+" > tag: "+cueTotag.get(key));
-        }
-        
-        /*
-        for (FieldKey tagkey : FieldKey.values()){
-            
-            if (tagkey.toString().equals("GENRE")) {
-            
-            }
-            for (MetaDataField cueKey : MetaDataField.values()){
-            
-               
-                if (tagkey.toString().equals(cueKey.toString())){
-                    
-                    tagToCue.put(tagkey.toString(), cueKey.toString());
-                    break;
-                }
-            }
-            if (tagToCue.get(tagkey.toString()) == null || tagToCue.get(tagkey.toString()).isEmpty()){
-                    tagToCue.put(tagkey.toString(), "");
-            }
-        }
-        
-        for (MetaDataField cueKey : MetaDataField.values()){
-           
-            for (FieldKey tagkey : FieldKey.values()){
-                
-                if (tagkey.toString().equals(cueKey.toString())){
-                    
-                    cueTotag.put(cueKey.toString(), tagkey.toString());
-                    break;
-                }
-            }
-            if (cueTotag.get(cueKey.toString())==null || cueTotag.get(cueKey.toString()).isEmpty()){
-                    tagToCue.put(cueKey.toString(), "");
-            }
-            
-        }
-        for (String key : tagToCue.keySet()){
-            
-            System.out.println("tag: "+key+" > "+"cue: "+tagToCue.get(key));
-        }
-        for (String key : cueTotag.keySet()){
-            
-            System.out.println("tag: "+cueTotag.get(key)+" > "+"cue: "+key);
-        }
-        */
     }
-    
 }

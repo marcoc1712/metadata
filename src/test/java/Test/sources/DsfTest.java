@@ -41,7 +41,7 @@ public class DsfTest {
         
     }
     @Test
-    public void TestJaudioTaggerOggReadTag() throws Exception{
+    public void TestRead() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         String filename = "dsf_02-822-400 (dsd64)_TAG.dsf";
@@ -53,7 +53,7 @@ public class DsfTest {
         
     }  
     //@Test
-    public void TestJaudioTaggerFlacWriteTag() throws Exception{
+    public void TestWriteTag() throws Exception{
        
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         String filename = "dsf_02-822-400 (dsd64)_TAG.dsf";

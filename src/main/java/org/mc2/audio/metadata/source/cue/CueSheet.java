@@ -28,10 +28,9 @@ import java.util.List;
 //import jwbroek.cuelib.FileData;
 import jwbroek.cuelib.LineOfInput;
 import org.jaudiotagger.tag.FieldKey;
-import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.API.Metadata;
 import org.mc2.audio.metadata.source.MetadataSource;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.util.miscellaneous.CalendarUtils;
 /**
  *
  * @author marcoc1712
@@ -158,28 +157,6 @@ public class CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
             this.lines.add(line);    
     }
     
-    /** Convert milliseconds into string (MM:SS:CC)
-     * @param millis 
-     * @return string 
-    */
-    public static String getTimeString(Long millis){
-
-        return CalendarUtils.calcDurationString(millis);
-    }
-    public static String getTimeString(int sectors){
-
-        return CalendarUtils.calcDurationString(new Long(sectors*1000/75));
-    }
-    
-    /** Convert sectors into msec.
-     * @param sectors 
-     * @return Long 
-    */
-    public static Long getMilliseconds(int sectors){
-        
-        return new Long(sectors*1000/75);
-    }
-
     protected void afterParsing(){
         
         adjustLength();

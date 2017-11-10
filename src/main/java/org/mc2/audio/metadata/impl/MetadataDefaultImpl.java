@@ -23,13 +23,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.mc2.audio.metadata;
+package org.mc2.audio.metadata.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.mc2.audio.metadata.API.Metadata;
+import org.mc2.audio.metadata.API.MetadataOrigin;
 
 /**
- * An unique Metadata.
+ * An unique MetadataDefaultImpl.
  * It normally correspond to a single TAG field in an audio file or COMMAND 
  * in a cue sheet, but if more than one instance is found either in different 
  * sources (i.e. wav id3v2 tags and cue sheet) or different command/tags in same 
@@ -41,33 +43,21 @@ import java.util.List;
  * @author marco
  */
 
-public class Metadata {
+public class MetadataDefaultImpl implements Metadata {
     
-    public enum STATUS {
-    
-        VALID,
-        DISCARDED,
-        INVALID,
-        DISCARDED_AND_INVALID,
-        HAS_DISCARDED_ORIGINS,
-        HAS_INVALID_ORIGINS,
-        HAS_DISCARDED_AND_INVALID_ORIGINS,
-        EMPTY
-        
-    };
     private final boolean defaultMergeDiscarded=false;
     private final boolean defaultMergeInvalid=false;
     
     String key;
     private final ArrayList<MetadataOrigin> origins = new ArrayList<>();
 
-    public Metadata(String key, MetadataOrigin origin){
+    public MetadataDefaultImpl(String key, MetadataOrigin origin){
         
         this.key=key;
         this.origins.add(origin);
    
     }
-    public Metadata(String key, List<MetadataOrigin> origins){
+    public MetadataDefaultImpl(String key, List<MetadataOrigin> origins){
         
         this.key=key;
         this.origins.addAll(origins);
@@ -77,12 +67,14 @@ public class Metadata {
     /**
      * @return the key
      */
+    @Override
     public String getKey() {
         return key;
     }
     /**
      * @return the value 
      */
+    @Override
     public String getValue(){
         return getValue(defaultMergeDiscarded,defaultMergeInvalid);
     }
@@ -91,6 +83,7 @@ public class Metadata {
      * @param mergeInvalid
      * @return the value.
      */
+    @Override
     public String getValue(boolean mergeDiscarded, boolean mergeInvalid){
     
         String out=getValidValue();
@@ -118,6 +111,7 @@ public class Metadata {
     /**
      * @return the valid value.
      */
+    @Override
     public String getValidValue(){
         
         String out="";
@@ -134,6 +128,7 @@ public class Metadata {
     /**
      * @return the discarded value.
      */
+    @Override
     public String getDiscardedValue(){
         
         String out="";
@@ -150,6 +145,7 @@ public class Metadata {
     /**
      * @return the invalid value.
      */
+    @Override
     public String getInvalidValue(){
         
         String out="";
@@ -164,10 +160,10 @@ public class Metadata {
         return out;
     }
 
-   
-     /**
+    /**
      * @return the status.
      */
+    @Override
     public STATUS getStatus(){
         
         if (getValidValue().isEmpty() && getDiscardedValue().isEmpty() && getInvalidValue().isEmpty()) {return STATUS.EMPTY;}
@@ -183,6 +179,7 @@ public class Metadata {
      * True if the metadata carry no values (valid or discarded).
      * @return isEmpty.
      */
+    @Override
     public boolean isEmpty() {
         return this.getValidValues().isEmpty() &&  
                this.getDiscardedValues().isEmpty() &&
@@ -191,6 +188,7 @@ public class Metadata {
     /**
      * @return the valid values
      */
+    @Override
     public ArrayList<String> getValidValues() {
       
         ArrayList<String> out= new ArrayList<>();
@@ -209,6 +207,7 @@ public class Metadata {
     /**
      * @return the discarded values
     */
+    @Override
     public ArrayList<String> getDiscardedValues() {
       
         ArrayList<String> out= new ArrayList<>();
@@ -227,6 +226,7 @@ public class Metadata {
     /**
      * @return the invalid values
     */
+    @Override
     public ArrayList<String> getInvalidValues() {
       
         ArrayList<String> out= new ArrayList<>();
@@ -263,6 +263,7 @@ public class Metadata {
     /**
      * @return the origins
      */
+    @Override
     public ArrayList<MetadataOrigin> getOrigins() {
         return origins;
     }

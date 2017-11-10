@@ -22,48 +22,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.audio.metadata;
+package org.mc2.audio.metadata.API.exceptions;
 
-import java.util.logging.Level;
+
 /**
- *
- * @author marco
+ * The data FILE does not exists, is not readable or is invalid.
  */
-public class StatusMessage {
-    
-    public enum Severity{
-        ERROR,
-        WARNING,
-        INFO;
-    }
-    
-    private final Severity severity;
-    private final String message;
-    
-    public StatusMessage( Severity severity, String message){
-        this.severity = severity;
-        this.message = message;
-    }
 
-    /**
-     * @return the severity
-     */
-    public String getSeverity() {
-        return severity.name();
-    }
-
-    /**
-     * @return the message
-     */
-    public String getMessage() {
-        return message;
-    }
+public class InvalidTrackList extends InvalidCueSheetException {
     
-    @Override
-    public String toString(){
-        
-        return getSeverity()+" "+getMessage();
-    }
+    public InvalidTrackList() {
+		super();
+	}
 
+	public InvalidTrackList(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public InvalidTrackList(String message) {
+		super(message);
+	}
+
+	public InvalidTrackList(Throwable cause) {
+		super(cause);
+	}   
 }
-

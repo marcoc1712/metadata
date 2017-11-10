@@ -28,7 +28,7 @@ package org.mc2.audio.metadata.impl;
 import java.util.ArrayList;
 import java.util.List;
 import jwbroek.cuelib.Message;
-import org.mc2.audio.metadata.MetadataOrigin;
+import org.mc2.audio.metadata.API.MetadataOrigin;
 import org.mc2.audio.metadata.source.cue.Command;
 
 /**
@@ -91,7 +91,7 @@ public class CueMetadataOrigin implements MetadataOrigin {
     public ArrayList<String> getDiscardedValues() {
         ArrayList<String> out = new ArrayList<>();
         for (Command command : this.getDiscardedCommands()) {
-            out.add(command.toString());
+            out.add(command.getValueString());
         }
         return out;
     }
@@ -99,7 +99,7 @@ public class CueMetadataOrigin implements MetadataOrigin {
     public ArrayList<String> getInvalidValues() {
         ArrayList<String> out = new ArrayList<>();
         for (Command command : this.getInvalidCommands()) {
-            out.add(command.toString());
+            out.add(command.getValueString());
         }
         return out;
     }

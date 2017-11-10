@@ -26,12 +26,13 @@
 package Test.utils;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.TagField;
-import org.jaudiotagger.tag.images.Artwork;
-import org.jaudiotagger.tag.reference.PictureTypes;
-import org.mc2.audio.metadata.Metadata;
+import org.junit.Test;
+import org.mc2.audio.metadata.API.CoverArt;
+import org.mc2.audio.metadata.API.Metadata;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
 
 /**
@@ -40,7 +41,12 @@ import org.mc2.audio.metadata.source.tags.file.AudioFile;
  */
 public class TestUtils {
     
-    public static void printAudioFile(AudioFile audiofile) throws IOException{
+    @Test
+    public void dummy(){}
+    
+    
+    
+    public static void printAudioFile(AudioFile audiofile) throws IOException, URISyntaxException{
     
         
         System.out.println("FILE: "+audiofile.getFile().getCanonicalPath());
@@ -59,19 +65,23 @@ public class TestUtils {
         printArtworks(audiofile.getEmbeddedArtworks());
     
     }
-    public static void printArtworks(ArrayList<Artwork> artworks){
+    public static void printArtworks(ArrayList<CoverArt> artworks) throws IOException, URISyntaxException{
         
-        for (Artwork artwork : artworks){
+        for (CoverArt artwork : artworks){
             
-            String description =  PictureTypes.getInstanceOf().getValueForId(artwork.getPictureType());
-            if (description.isEmpty()){description = artwork.getDescription(); }
             
-            description = description+  ": "+artwork.getMimeType() + 
-                                        " [ h: "+artwork.getHeight()+
-                                        ", w: "+ artwork.getWidth()+"]";
+            String description =  artwork.getSource()+" "+artwork.getType();
+            if (description == null || description.isEmpty()){
+                
+                description = artwork.getComment()== null ? 
+                              "" : 
+                              artwork.getComment();
+            }
+            
+            description = description+  " - "+artwork.getImageUrl();
                                 
 
-            System.out.println("- embedded artwork: "+ description);
+            System.out.println("  - "+ description);
         }
     
     }

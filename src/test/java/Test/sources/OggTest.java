@@ -39,7 +39,7 @@ public class OggTest {
         
     }
     @Test
-    public void TestJaudioTaggerOggReadTag() throws Exception{
+    public void TestRead() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         String filename = "ogg_16_44100_TAG.ogg";

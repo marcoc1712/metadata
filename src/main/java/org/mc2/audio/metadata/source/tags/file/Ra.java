@@ -28,8 +28,8 @@ package org.mc2.audio.metadata.source.tags.file;
 import java.io.File;
 import java.util.ArrayList;
 import org.jaudiotagger.audio.real.RealTag;
-import org.mc2.audio.metadata.Metadata;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
+import org.mc2.audio.metadata.API.Metadata;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
 import org.mc2.audio.metadata.source.tags.schema.RealTagSchema;
 
 /**

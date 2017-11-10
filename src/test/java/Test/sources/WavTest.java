@@ -45,7 +45,7 @@ public class WavTest {
     } 
 
     @Test
-    public void TestJaudioTaggerWavReadTag() throws Exception{
+    public void TestRead() throws Exception{
         
         
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione/02_Sec";
@@ -61,7 +61,7 @@ public class WavTest {
 
     }
     //@Test
-    public void TestJaudioTaggerWavWriteTag() throws Exception{
+    public void TestWrite() throws Exception{
         
         
         String path= "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione/02_Sec/wav_16_044100_TAGS.wav";

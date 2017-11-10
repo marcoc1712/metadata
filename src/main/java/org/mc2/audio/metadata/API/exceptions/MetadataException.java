@@ -22,16 +22,30 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.audio.metadata.source.tags.file;
+package org.mc2.audio.metadata.API.exceptions;
 
-import java.io.File;
+import org.mc2.util.exceptions.MC2Exception;
 
 /**
- *
- * @author marco
+ * All Metadata specific exceptions extend this class.
  */
-public class AudiofileCreator {
+
+public class MetadataException extends MC2Exception {
     
-    
-    
+    public MetadataException() {
+		super();
+	}
+
+	public MetadataException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public MetadataException(String message) {
+		super(message);
+	}
+
+	public MetadataException(Throwable cause) {
+		super(cause);
+	}
+
 }

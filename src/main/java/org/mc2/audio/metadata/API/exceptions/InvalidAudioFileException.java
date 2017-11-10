@@ -22,28 +22,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.audio.metadata.exceptions;
+package org.mc2.audio.metadata.API.exceptions;
 
 
 /**
  * The file is not a CUE Sheet or is invalid.
  */
 
-public class InvalidAudioFileFormatException extends MetadataException {
+public class InvalidAudioFileException extends MetadataException {
     
-    public InvalidAudioFileFormatException() {
+    public InvalidAudioFileException() {
 		super();
 	}
 
-	public InvalidAudioFileFormatException(String message, Throwable cause) {
+	public InvalidAudioFileException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public InvalidAudioFileFormatException(String message) {
+	public InvalidAudioFileException(String message) {
 		super(message);
 	}
 
-	public InvalidAudioFileFormatException(Throwable cause) {
+	public InvalidAudioFileException(Throwable cause) {
 		super(cause);
 	}   
 }

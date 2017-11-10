@@ -28,8 +28,8 @@ package org.mc2.audio.metadata.source.tags.file;
 import java.io.File;
 import java.util.ArrayList;
 import org.jaudiotagger.tag.mp4.Mp4Tag;
-import org.mc2.audio.metadata.Metadata;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
+import org.mc2.audio.metadata.API.Metadata;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
 import org.mc2.audio.metadata.source.tags.schema.Mp4TagSchema;
 
 /**

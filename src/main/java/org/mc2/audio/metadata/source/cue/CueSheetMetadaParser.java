@@ -32,12 +32,14 @@ import java.util.regex.Pattern;
 import jwbroek.cuelib.Message;
 import jwbroek.cuelib.Warning;
 import org.apache.commons.lang3.StringUtils;
-import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.API.Metadata;
+
 import org.mc2.audio.metadata.impl.CueMetadataOrigin;
 import org.mc2.audio.metadata.source.cue.CommandKeys.COMMAND_KEY;
-import org.mc2.audio.metadata.MetadataKeys.METADATA_KEY;
-import static org.mc2.audio.metadata.MetadataKeys.getAlbumLevelMetadataAlias;
-import static org.mc2.audio.metadata.MetadataKeys.getTrackLevelMetadataAlias;
+import org.mc2.audio.metadata.API.MetadataKeys.METADATA_KEY;
+import static org.mc2.audio.metadata.API.MetadataKeys.getAlbumLevelMetadataAlias;
+import static org.mc2.audio.metadata.API.MetadataKeys.getTrackLevelMetadataAlias;
+import org.mc2.audio.metadata.impl.MetadataDefaultImpl;
 
 /**
  *
@@ -114,7 +116,7 @@ public class CueSheetMetadaParser {
     /**
     * Parse cuesheet validCommands and valorize metadata.
     * @param cuesheet The {@link org.mc2.audio.metadata.source.cue.CueSheet} to be analized to produce metadata.
-    * @return A Metadata representation of the cue sheet.
+    * @return A MetadataDefaultImpl representation of the cue sheet.
     */
     public static CueSheet parse(CueSheet cuesheet){
         
@@ -1040,10 +1042,10 @@ public class CueSheetMetadaParser {
                 metadataKey= alias;
             }
             
-            metadata = new Metadata(metadataKey, origin);
+            metadata = new MetadataDefaultImpl (metadataKey, origin);
             section.getMetadata().add(metadata);
         } else  {
-            metadata.addOrigin(origin);
+            ((MetadataDefaultImpl)metadata).addOrigin(origin);
         }
         
         return metadata;

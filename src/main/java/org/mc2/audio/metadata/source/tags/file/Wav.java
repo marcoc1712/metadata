@@ -32,8 +32,8 @@ import org.jaudiotagger.audio.wav.WavOptions;
 import org.jaudiotagger.tag.TagOptionSingleton;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.wav.WavTag;
-import org.mc2.audio.metadata.Metadata;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
+import org.mc2.audio.metadata.API.Metadata;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
 /**
  *
  * @author marco

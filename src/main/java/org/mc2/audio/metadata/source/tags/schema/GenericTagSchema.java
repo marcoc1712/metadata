@@ -27,7 +27,7 @@ package org.mc2.audio.metadata.source.tags.schema;
 
 import java.util.ArrayList;
 import org.jaudiotagger.tag.Tag;
-import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.API.Metadata;
 import org.mc2.audio.metadata.source.tags.TagsSource;
 
 /**

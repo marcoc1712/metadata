@@ -27,21 +27,13 @@
 import Test.utils.TestUtils;
 import java.io.File;
 import java.io.PrintStream;
-import java.util.List;
-import jwbroek.cuelib.LineOfInput;
-import jwbroek.cuelib.Message;
-import jwbroek.cuelib.Position;
 import org.junit.Before;
 import org.junit.Test;
-import org.mc2.audio.metadata.source.cue.Command;
-import org.mc2.audio.metadata.source.cue.CueSheetMetadaParser;
-import org.mc2.audio.metadata.source.cue.CueSheet;
-import org.mc2.audio.metadata.source.cue.FileData;
-import org.mc2.audio.metadata.source.cue.TrackData;
-import org.mc2.audio.metadata.source.cue.TrackIndex;
-import org.mc2.audio.metadata.Album;
-import org.mc2.audio.metadata.StatusMessage;
-import org.mc2.audio.metadata.Track;
+
+import org.mc2.audio.metadata.API.AlbumBuilder;
+import org.mc2.audio.metadata.API.Album;
+import org.mc2.audio.metadata.API.StatusMessage;
+import org.mc2.audio.metadata.API.Track;
 
 public class AlbumTest {
     @Before
@@ -51,13 +43,13 @@ public class AlbumTest {
         
     }
     @Test
-    public void TestCUeeAndSingleFile() throws Exception{
+    public void TestCueeAndSingleFile() throws Exception{
          
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\ProvaAlbumScan";
-        String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\Albinoni Adagios - Anthony Camden, Julia Girdwood (1993 Naxos)";
+        //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\Albinoni Adagios - Anthony Camden, Julia Girdwood (1993 Naxos)";
+        String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\cue con embedde cover";
         
-        
-        Album album = Album.parse(directory);
+        Album album = AlbumBuilder.parse(directory);
         
         
         System.out.println("========================================================================");
@@ -85,7 +77,7 @@ public class AlbumTest {
         for (Track track : album.getTrackList()){
                 
             System.out.println("");
-            System.out.println(" - TRACK: "+track.getTrackNo() +" ["+CueSheet.getTimeString(track.getLength())+"]");
+            System.out.println(" - TRACK: "+track.getTrackNo() +" ["+track.getLengthString()+"]");
 
             System.out.println("");
             System.out.println("  - METADATA:");
@@ -94,132 +86,10 @@ public class AlbumTest {
 
         }
         System.out.println("");
-    }
-    //@Test
-    public void TestMultiFIlesAndMuiltitrackPerFiile() throws Exception{
-         
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "flac_Due_files.cue";
-        
-        String path = directory+"/"+filename;
-        
-        File cuefile = new File(path);
-        
-        
-        CueSheet cuesheet = (CueSheet) CueSheetMetadaParser.parse(cuefile);
-        
-        System.out.println("========================================================================");
-        System.out.println("\n");
-        System.out.println("Directory:"+ directory);
-        System.out.println("File     :"+ filename);
-        System.out.println("");
-        
-        System.out.println("ALBUM COMMANDS:");
-        
-        for (Command command : cuesheet.getCommands()){
-            
-             System.out.println("- "+command.toString());
-        }
-        System.out.println("");
-        System.out.println("ALBUM METADATA:");
-        
-        TestUtils.printMetadata(cuesheet.getMetadata());
-
-        for (FileData file : cuesheet.getFileDataList()){
-            System.out.println("");
-            System.out.println("- FILE: "+file.getFile()+ " ");
-            System.out.println(" - type: "+file.getFileType());
-            System.out.println(" - offset: "+file.getOffsetString()+", "
-                                            +file.getOffsetInMillis()+ " ms, "
-                                            +file.getOffset()+" sectors"); 
-            System.out.println(" - length: "+file.getLengthString()+", "
-                                            +file.getLengthInMillis()+ " ms, "
-                                            +file.getLength()+" sectors");
-
-            TestUtils.printAudioFile(file.getAudiofile());
-            
-            for (TrackData track : file.getTrackDataList()){
-                
-                System.out.println("");
-                System.out.println(" - TRACK: "+track.getNumber());
-                System.out.println("  - content type: "+track.getDataType());
-
-                if (track.getPregap()!=null) {
-                    System.out.println("  - PREGAP: " +getPositionString(track.getPregap()));
-                }
-                System.out.println("  - offeset: "+track.getOffsetString()+", "
-                                                  +track.getOffsetInMillis()+ " ms, "
-                                                  +track.getOffset()+" sectors");
-                
-                System.out.println("  - length:  "+track.getLengthString()+", "
-                                                  +track.getLengthInMillis()+ " ms, "
-                                                  +track.getLength()+" sectors");
-                
-                System.out.println("  - end:     "+track.getEndString()+", "
-                                                  +track.getEndInMillis()+ " ms, "
-                                                  +track.getEnd()+" sectors");
-                
-                printIndices("  ", track.getTrackIndexList());
-                
-                if (track.getPostgap()!=null) {
-                    System.out.println("  - POSTGAP: " +getPositionString(track.getPostgap()));
-                }
-                
-                System.out.println("");
-                System.out.println("  - COMMANDS:");
-                for (Command command : track.getCommandList()){
-            
-                    System.out.println("   - "+command.toString());
-                
-                }
-                System.out.println("");
-                System.out.println("  - METADATA:");
-
-                TestUtils.printMetadata(track.getMetadata());
-
-            }
-        }
-        System.out.println("");
-        System.out.println("ERRORS AND WARNINGS:");
-        System.out.println("");
-        
-        for (Message message : cuesheet.getMessages()){
-            
-            System.out.println("- "+message.toString());
-        }
+        System.out.println("  - TOC: "+album.getToc());
         
         System.out.println("");
-        System.out.println("SOURCE:");
-        System.out.println("");
-        
-        for (LineOfInput line : cuesheet.getLines()){
-            
-            System.out.println("    "+line.getLineNumber()+" "+line.getInput());
-        }
-        System.out.println("");
-    }
-
-    private void printIndices(String inline,  List<TrackIndex> indexes){
-        
-        for (TrackIndex trackIndex : indexes) {
-            System.out.println(inline+"- INDEX: " +trackIndex.getNumber()+" "+getPositionString(trackIndex.getPosition()));
-        
-            System.out.println(inline+" - offeset: "+trackIndex.getOffsetString()+", "
-                                                        +trackIndex.getOffsetInMillis()+ " ms, "
-                                                        +trackIndex.getOffset()+" sectors");
-                
-            System.out.println(inline+" - length:  "+trackIndex.getLengthString()+", "
-                                                        +trackIndex.getLengthInMillis()+ " ms, "
-                                                        +trackIndex.getLength()+" sectors");
-                
-        }
-    }
-    private String getPositionString (Position position){
-        
-        if (position == null) return null;
-        return position.getMinutes()+":"+
-                position.getSeconds()+":"+
-                position.getFrames()+" (frames: "+
-                position.getTotalFrames()+")";
+        System.out.println(" - ARTWORKS:");
+        TestUtils.printArtworks(album.getcoverArtList());
     }
 }

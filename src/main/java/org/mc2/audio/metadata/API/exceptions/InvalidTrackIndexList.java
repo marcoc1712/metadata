@@ -22,30 +22,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.audio.metadata.exceptions;
+package org.mc2.audio.metadata.API.exceptions;
 
-import org.mc2.util.exceptions.MC2Exception;
 
 /**
- * All Metadata specific exceptions extend this class.
+ * The data FILE does not exists, is not readable or is invalid.
  */
 
-public class MetadataException extends MC2Exception {
+public class InvalidTrackIndexList extends InvalidCueSheetException {
     
-    public MetadataException() {
+    public InvalidTrackIndexList() {
 		super();
 	}
 
-	public MetadataException(String message, Throwable cause) {
+	public InvalidTrackIndexList(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public MetadataException(String message) {
+	public InvalidTrackIndexList(String message) {
 		super(message);
 	}
 
-	public MetadataException(Throwable cause) {
+	public InvalidTrackIndexList(Throwable cause) {
 		super(cause);
-	}
-
+	}   
 }

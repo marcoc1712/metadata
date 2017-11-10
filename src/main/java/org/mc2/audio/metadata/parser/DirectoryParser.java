@@ -33,20 +33,25 @@ import jwbroek.cuelib.Message;
 
 import org.apache.commons.io.FilenameUtils;
 import org.jaudiotagger.tag.FieldKey;
-import org.mc2.audio.metadata.Metadata;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileFormatException;
-import org.mc2.audio.metadata.exceptions.InvalidCueSheetException;
+import org.mc2.audio.metadata.impl.MetadataDefaultImpl;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileFormatException;
+import org.mc2.audio.metadata.API.exceptions.InvalidCueSheetException;
 import org.mc2.audio.metadata.source.cue.FileData;
 import org.mc2.audio.metadata.source.cue.TrackData;
 import org.mc2.audio.metadata.source.cue.file.CueFile;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.audio.metadata.Album;
-import static org.mc2.audio.metadata.MetadataKeys.getAlbumLevelMetadataAlias;
-import static org.mc2.audio.metadata.MetadataKeys.getTrackLevelMetadataAlias;
-import org.mc2.audio.metadata.StatusMessage;
-import org.mc2.audio.metadata.StatusMessage.Severity;
-import org.mc2.audio.metadata.Track;
+import org.mc2.audio.metadata.impl.AlbumDefaultImpl;
+import org.mc2.audio.metadata.API.CoverArt;
+import org.mc2.audio.metadata.API.Metadata;
+import static org.mc2.audio.metadata.API.MetadataKeys.getAlbumLevelMetadataAlias;
+import static org.mc2.audio.metadata.API.MetadataKeys.getTrackLevelMetadataAlias;
+import org.mc2.audio.metadata.API.StatusMessage;
+import org.mc2.audio.metadata.API.Track;
+import org.mc2.audio.metadata.impl.GenericStatusMessage;
+import org.mc2.audio.metadata.impl.GenericStatusMessage.Severity;
+import org.mc2.audio.metadata.impl.TrackDefaultImpl;
+import org.mc2.audio.metadata.source.coverart.FileCoverArt;
 import org.mc2.audio.metadata.source.cue.Section;
 import static org.mc2.audio.metadata.source.cue.Section.ALBUM;
 
@@ -57,10 +62,10 @@ import static org.mc2.audio.metadata.source.cue.Section.ALBUM;
 public class DirectoryParser {
     
 
-    public static Album parse(String directory) throws IOException, InvalidAudioFileException, InvalidAudioFileFormatException {
+    public static AlbumDefaultImpl parse(String directory) throws IOException, InvalidAudioFileException, InvalidAudioFileFormatException {
          return parse(new File(directory));
     }
-    public static Album parse(File directory) throws IOException,  InvalidAudioFileException, InvalidAudioFileFormatException{
+    public static AlbumDefaultImpl parse(File directory) throws IOException,  InvalidAudioFileException, InvalidAudioFileFormatException{
         
        ArrayList<File> directoryfileList = new ArrayList<>(Arrays.asList(directory.listFiles(new GenericFileFilter(false))));
        ArrayList<File> fileList = new ArrayList<>(Arrays.asList(directory.listFiles(new AudioFileFilter(false))));
@@ -71,7 +76,8 @@ public class DirectoryParser {
        ArrayList<StatusMessage> statusMessageList= new ArrayList<>();
        
        ArrayList<Metadata> atAlbumLevel= new ArrayList<>();
-       HashMap<Integer,Track> trackMap = new HashMap<>();
+       ArrayList<CoverArt> coverArtList= new ArrayList<>();
+       HashMap<Integer,TrackDefaultImpl> trackMap = new HashMap<>();
               
        if (containsCueFile(fileList)){
 
@@ -84,7 +90,7 @@ public class DirectoryParser {
 
                 for (Message message : cueFile.getCuesheet().getMessages()){
 
-                    statusMessageList.add (new StatusMessage(
+                    statusMessageList.add (new GenericStatusMessage(
                             Severity.WARNING, message.getMessage()+" - "+message.getInput()));
                 }
                      
@@ -92,23 +98,24 @@ public class DirectoryParser {
                     
                     if (fileData.getAudiofile()!=null){
                           fileList.remove(fileData.getAudiofile().getFile());
+                          coverArtList.addAll(fileData.getAudiofile().getEmbeddedArtworks());
                     }
 
                     for (TrackData trackData : fileData.getTrackDataList() ){
                         
-                        Track track = trackMap.get(trackData.getNumber());
+                        TrackDefaultImpl track = trackMap.get(trackData.getNumber());
                        
                         if ( track != null){
                             
                             merge(Section.TRACK, track.getMetadataList(), trackData.getMetadata());
                             //track.getMetadataList().addAll(trackData.getMetadata());
                             
-                            StatusMessage statusMessage = new StatusMessage(Severity.WARNING, "Track "+trackData.getNumber()+" is defined  in more than one cuesheet");
+                            GenericStatusMessage statusMessage = new GenericStatusMessage(Severity.WARNING, "Track "+trackData.getNumber()+" is defined  in more than one cuesheet");
                             statusMessageList.add(statusMessage);
                             
                         } else {
                             
-                           track = new Track(trackData.getNumber(), merge(Section.TRACK,new ArrayList<>(),trackData.getMetadata()));
+                           track = new TrackDefaultImpl(trackData.getNumber(), merge(Section.TRACK,new ArrayList<>(),trackData.getMetadata()));
                            trackMap.put(trackData.getNumber(), track);
                         }
                         
@@ -126,10 +133,12 @@ public class DirectoryParser {
                 fileList.remove(cueFile.getFile());
             }
            
-       } 
-       for (File file : fileList){
+        } 
+        for (File file : fileList){
        
             AudioFile audiofile = AudioFile.get(file);
+
+            coverArtList.addAll(audiofile.getEmbeddedArtworks());
             
             Metadata Tracknumber = audiofile.getMetadata(FieldKey.TRACK);
             int trackNo=0;
@@ -142,11 +151,11 @@ public class DirectoryParser {
            
             if (trackNo > 0) {
            
-                Track track = trackMap.get(trackNo);
+                TrackDefaultImpl track = trackMap.get(trackNo);
      
                 if ( track == null){
                     
-                    track = new Track(trackNo, merge(Section.TRACK,new ArrayList<>(),audiofile.getMetadata()));
+                    track = new TrackDefaultImpl(trackNo, merge(Section.TRACK,new ArrayList<>(),audiofile.getMetadata()));
                     trackMap.put(trackNo, track);
                     track.setLength( audiofile.getAudioHeader().getTrackLength());
                     
@@ -154,7 +163,7 @@ public class DirectoryParser {
 
                     merge(Section.TRACK, track.getMetadataList(), audiofile.getMetadata());
                     //track.getMetadataList().addAll();
-                    StatusMessage statusMessage = new StatusMessage(Severity.WARNING, "Track "+trackNo+" is defined in more than one audio file or cue sheet");
+                    GenericStatusMessage statusMessage = new GenericStatusMessage(Severity.WARNING, "Track "+trackNo+" is defined in more than one audio file or cue sheet");
                     statusMessageList.add(statusMessage);
                     
                     if (track.getLength() !=0 && audiofile.getAudioHeader().getTrackLength()!= track.getLength()){
@@ -175,32 +184,38 @@ public class DirectoryParser {
                atAlbumLevel.addAll(audiofile.getMetadata());
                audioFileList.add(audiofile);
             }
-       }
+        }
+        for (File file : imagefileList){
+            
+            CoverArt fileCoverArt = new FileCoverArt(file);
+            coverArtList.add(fileCoverArt);
+            
+        }
         /*
        * Validate the directory content
        */
-       if (cueFileList.size() > 1 &&  audioFileList.size() > 0){
+        if (cueFileList.size() > 1 &&  audioFileList.size() > 0){
             
-            StatusMessage statusMessage = new StatusMessage(Severity.WARNING, "Cue sheets and audio files defines Album ");
+            GenericStatusMessage statusMessage = new GenericStatusMessage(Severity.WARNING, "Cue sheets and audio files defines Album ");
             statusMessageList.add(statusMessage);
            
         } else if (cueFileList.size() > 1) {
         
-            StatusMessage statusMessage = new StatusMessage(Severity.WARNING, "More than one cue sheet defines Album ");
+            GenericStatusMessage statusMessage = new GenericStatusMessage(Severity.WARNING, "More than one cue sheet defines Album ");
              statusMessageList.add(statusMessage);
         
         } else if (audioFileList.size() > 1){
         
-            StatusMessage statusMessage = new StatusMessage(Severity.WARNING, "More than one audio file defines Album ");
+            GenericStatusMessage statusMessage = new GenericStatusMessage(Severity.WARNING, "More than one audio file defines Album ");
             statusMessageList.add(statusMessage);
         } 
 
-       ArrayList<Track> tracklist= new ArrayList<>(trackMap.values());
-       Album out = new Album(atAlbumLevel, tracklist, directoryfileList, cueFileList, audioFileList, imagefileList, statusMessageList);
+        ArrayList<Track> tracklist= new ArrayList<>(trackMap.values());
+        AlbumDefaultImpl out = new AlbumDefaultImpl(coverArtList, atAlbumLevel, tracklist, directoryfileList, cueFileList, audioFileList, imagefileList, statusMessageList);
        
-       return out;
+        return out;
     }
-    
+
     private static ArrayList<Metadata> merge(String level, ArrayList<Metadata> target, ArrayList<Metadata> source){
         
         for (Metadata toAdd : source){
@@ -222,7 +237,7 @@ public class DirectoryParser {
                 }
             }
             if (!found){
-                target.add(new Metadata(key, toAdd.getOrigins()));
+                target.add(new MetadataDefaultImpl(key, toAdd.getOrigins()));
             }
         }
          

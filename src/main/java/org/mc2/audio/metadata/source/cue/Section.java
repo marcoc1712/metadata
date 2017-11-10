@@ -22,10 +22,10 @@
 package org.mc2.audio.metadata.source.cue;
 
 import java.util.ArrayList;
-import org.mc2.audio.metadata.Metadata;
+import org.mc2.audio.metadata.API.Metadata;
 import org.mc2.audio.metadata.source.MetadataSource;
-import static org.mc2.audio.metadata.MetadataKeys.getAlbumLevelMetadataAlias;
-import static org.mc2.audio.metadata.MetadataKeys.getTrackLevelMetadataAlias;
+import static org.mc2.audio.metadata.API.MetadataKeys.getAlbumLevelMetadataAlias;
+import static org.mc2.audio.metadata.API.MetadataKeys.getTrackLevelMetadataAlias;
 /**
  *
  * @author marcoc1712

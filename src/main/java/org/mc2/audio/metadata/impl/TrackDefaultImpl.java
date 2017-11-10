@@ -22,25 +22,27 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.audio.metadata;
+package org.mc2.audio.metadata.impl;
 
 import java.util.ArrayList;
+import org.mc2.audio.metadata.API.Metadata;
+import org.mc2.audio.metadata.API.Track;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
+import org.mc2.util.miscellaneous.CalendarUtils;
 
 /**
  *
  * @author marco
  */
-public class Track {
+public class TrackDefaultImpl implements Track {
 
-    
     private Integer trackNo; 
     private int offset;
     private int length;
     private final ArrayList<Metadata> metadataList;
     private final ArrayList<AudioFile> audioFileList; 
     
-    public Track(Integer trackNo, ArrayList<Metadata> metadataList) {
+    public TrackDefaultImpl(Integer trackNo, ArrayList<Metadata> metadataList) {
         this.trackNo = trackNo;
         this.metadataList = metadataList;
         this.audioFileList =new ArrayList<>();
@@ -48,12 +50,14 @@ public class Track {
     /**
      * @return the trackNo
      */
+    @Override
     public Integer getTrackNo() {
         return trackNo;
     }
  /**
      * @return the offset
      */
+    @Override
     public int getOffset() {
         return offset;
     }
@@ -68,10 +72,21 @@ public class Track {
     /**
      * @return the length
      */
+    @Override
     public int getLength() {
         return length;
     }
-    
+    /** @return file length in msec */
+    @Override
+    public Long getLengthInMillis(){
+        return CalendarUtils.getMilliseconds(getLength());
+    }
+    /** @return file length string */
+    @Override
+    public String getLengthString(){
+
+        return CalendarUtils.getTimeString(getLengthInMillis());
+    }
     /**
      * @param length the length to set
      */
@@ -81,12 +96,14 @@ public class Track {
     /**
      * @return the track End position refferred to the Album (not the file).
      */
+    @Override
     public int getEnd() {
         return offset+length;
     }
     /**
      * @return the metadataList
      */
+    @Override
     public ArrayList<Metadata> getMetadataList() {
         return metadataList;
     }

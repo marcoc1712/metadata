@@ -25,6 +25,7 @@
 
 package org.mc2.audio.metadata.source.tags.file;
 
+import org.mc2.audio.metadata.source.coverart.EmbeddedArtwork;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,9 +39,10 @@ import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.images.Artwork;
-import org.mc2.audio.metadata.Metadata;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileFormatException;
+import org.mc2.audio.metadata.API.CoverArt;
+import org.mc2.audio.metadata.API.Metadata;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileFormatException;
 import org.mc2.audio.metadata.source.MetadataSource;
 import org.mc2.audio.metadata.source.tags.TagsSource;
 import org.mc2.audio.metadata.source.tags.schema.TagSchema;
@@ -57,7 +59,7 @@ public abstract class AudioFile implements TagsSource, MetadataSource{
     private Tag tag;
     private TagSchema tagSchema;
     
-    public static AudioFile get(String path) throws Exception{
+    public static AudioFile get(String path) throws InvalidAudioFileException, InvalidAudioFileFormatException{
         
         return get(new File(path));
     }
@@ -123,11 +125,12 @@ public abstract class AudioFile implements TagsSource, MetadataSource{
     
     protected final void init(File file) throws  InvalidAudioFileException {
         initOptions();
-        try {    
+        try {
             audiofile=  AudioFileIO.read(file);
             tag = this.audiofile.getTag();
             path = this.file.getCanonicalPath();
             initSchema();
+            
         } catch (IOException | CannotReadException | ReadOnlyFileException | TagException | InvalidAudioFrameException ex) {
             throw new InvalidAudioFileException(ex);
         }
@@ -235,7 +238,20 @@ public abstract class AudioFile implements TagsSource, MetadataSource{
         return getTagSchema().getMetadata(fieldKey);
     }
     
-    public ArrayList<Artwork> getEmbeddedArtworks(){
-        return (ArrayList)getTag().getArtworkList();
+    public ArrayList<CoverArt> getEmbeddedArtworks(){
+        
+        ArrayList<CoverArt> out=new ArrayList<>();
+        
+        if (getTag() != null && getTag().getArtworkList()!= null){
+            int i = 0;
+            for (Artwork artwork: getTag().getArtworkList()){
+                
+                out.add(new EmbeddedArtwork(this.file, artwork, i));
+                i++;
+            }
+           
+        }
+        return out;
     }
+    
 }

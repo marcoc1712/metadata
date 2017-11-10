@@ -28,7 +28,6 @@ package org.mc2.audio.metadata.parser;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import org.apache.commons.io.FilenameUtils;
 import static org.mc2.util.miscellaneous.ImageHandler.isFileAnImage;
 
 /**

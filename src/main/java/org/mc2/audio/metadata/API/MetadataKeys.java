@@ -1,4 +1,4 @@
-package org.mc2.audio.metadata;
+package org.mc2.audio.metadata.API;
 
 import java.util.HashMap;
 

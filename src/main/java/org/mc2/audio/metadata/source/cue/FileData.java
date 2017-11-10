@@ -30,6 +30,7 @@ import jwbroek.cuelib.LineOfInput;
 
 import static org.mc2.audio.metadata.source.cue.CueSheetCommandParser.addWarning;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
+import org.mc2.util.miscellaneous.CalendarUtils;
 
 /**
  *
@@ -111,21 +112,21 @@ public class FileData extends jwbroek.cuelib.FileData {
     
     /** @return file length in msec */
     public Long getLengthInMillis(){
-        return CueSheet.getMilliseconds(getLength());
+        return CalendarUtils.getMilliseconds(getLength());
     }
     /** @return file length string */
     public String getLengthString(){
 
-        return CueSheet.getTimeString(getLengthInMillis());
+        return CalendarUtils.getTimeString(getLengthInMillis());
     }
     /** @return file offset in msec */
     public Long getOffsetInMillis(){
-        return CueSheet.getMilliseconds(getOffset());
+        return CalendarUtils.getMilliseconds(getOffset());
     }
     /** @return file offset string */
     public String getOffsetString(){
 
-        return CueSheet.getTimeString(getOffsetInMillis());
+        return CalendarUtils.getTimeString(getOffsetInMillis());
     }
     public List<TrackData> getTrackDataList(){
     

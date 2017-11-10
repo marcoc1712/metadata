@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import org.jaudiotagger.tag.aiff.AiffTag;
 import org.mc2.audio.metadata.source.tags.schema.ID3v2.ID3v2TagsSchema;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
-import org.mc2.audio.metadata.Metadata;
-import org.mc2.audio.metadata.exceptions.InvalidAudioFileException;
+import org.mc2.audio.metadata.API.Metadata;
+import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
 /**
  *
  * @author marco

@@ -27,7 +27,7 @@ package org.mc2.audio.metadata.impl;
 
 import java.util.ArrayList;
 import org.jaudiotagger.tag.TagField;
-import org.mc2.audio.metadata.MetadataOrigin;
+import org.mc2.audio.metadata.API.MetadataOrigin;
 /**
  *
  * @author marco

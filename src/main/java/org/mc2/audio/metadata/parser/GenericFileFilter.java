@@ -27,8 +27,6 @@ package org.mc2.audio.metadata.parser;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
-import org.apache.commons.io.FilenameUtils;
 
 /**
  * <p>This is a simple FileFilter that will only allow the audio file supported 

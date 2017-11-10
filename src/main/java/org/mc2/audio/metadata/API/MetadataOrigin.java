@@ -22,28 +22,42 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.audio.metadata.exceptions;
 
+package org.mc2.audio.metadata.API;
+
+import java.util.ArrayList;
 
 /**
- * The data FILE does not exists, is not readable or is invalid.
+ * An  unique Metadata in a source.
+ * It normally correspond to a single TAG field in an audio file or command 
+ * in a cue sheet (the originKey), but if more than one with exactly the same 
+ * meaning are found, then we could store more values.
+ * 
+ * @author marco
  */
+public interface MetadataOrigin{
+   
+    /**
+     * @return the source (normally a file pathname) of the metadata.
+     */
+    public String getSource();
 
-public class InvalidDataFileException extends InvalidCueSheetException {
+    /**
+     * @return the origin tag field or command key.
+     */
+    public String getOriginKey();
     
-    public InvalidDataFileException() {
-		super();
-	}
-
-	public InvalidDataFileException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public InvalidDataFileException(String message) {
-		super(message);
-	}
-
-	public InvalidDataFileException(Throwable cause) {
-		super(cause);
-	}   
+    /**
+     * @return the origin validated values.
+    */
+    public ArrayList<String> getValidatedValues();
+    
+     /**
+     * @return the origin discarded values.
+    */
+    public ArrayList<String> getDiscardedValues();
+    /**
+     * @return the origin discarded values.
+    */
+    public ArrayList<String> getInvalidValues();
 }

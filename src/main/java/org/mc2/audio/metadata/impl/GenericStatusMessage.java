@@ -22,28 +22,51 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.audio.metadata.exceptions;
+package org.mc2.audio.metadata.impl;
 
+import org.mc2.audio.metadata.API.StatusMessage;
 
 /**
- * The file is not a CUE Sheet or is invalid.
+ *
+ * @author marco
  */
-
-public class InvalidTagException extends MetadataException {
+public class GenericStatusMessage implements StatusMessage {
     
-    public InvalidTagException() {
-		super();
-	}
+    public enum Severity{
+        ERROR,
+        WARNING,
+        INFO;
+    }
+    
+    private final Severity severity;
+    private final String message;
+    
+    public GenericStatusMessage( Severity severity, String message){
+        this.severity = severity;
+        this.message = message;
+    }
 
-	public InvalidTagException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * @return the severity
+     */
+    @Override
+    public String getSeverity() {
+        return severity.name();
+    }
 
-	public InvalidTagException(String message) {
-		super(message);
-	}
+    /**
+     * @return the message
+     */
+    @Override
+    public String getMessage() {
+        return message;
+    }
+    
+    @Override
+    public String toString(){
+        
+        return getSeverity()+" "+getMessage();
+    }
 
-	public InvalidTagException(Throwable cause) {
-		super(cause);
-	}   
 }
+
