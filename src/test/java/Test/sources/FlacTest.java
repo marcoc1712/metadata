@@ -43,11 +43,13 @@ public class FlacTest {
         System.setOut(new PrintStream(System.out, true, "utf-8"));
         
     }
-    //@Test
+    @Test
     public void TestRead() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         String filename = "flac_16_44100_TAG.flac";
+        //String directory ="Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española";
+        //String filename = "0001-Iberia - Piano (Pub.1906) - Book 1 _ 1. Evocación.flac";
         
         String path = directory+"/"+filename;
         
@@ -80,7 +82,7 @@ public class FlacTest {
         TestUtils.printAudioFile(audiofile);
 
     }  
-    @Test
+    //@Test
     public void TestWriteEmbeddedCoverFromUrl() throws Exception{
 
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";

@@ -79,7 +79,7 @@ public class TrackDefaultImpl implements Track {
     /** @return file length in msec */
     @Override
     public Long getLengthInMillis(){
-        return CalendarUtils.getMilliseconds(getLength());
+        return getLength()*1000L;
     }
     /** @return file length string */
     @Override

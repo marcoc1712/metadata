@@ -54,7 +54,7 @@ public class CueTest {
         //String filename = "Albinoni - Adagio.cue";
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\provaDff";
         //String filename = "dff_02-822-400 (dsd64).cue";
-        String directory = "X:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
+        String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
         String filename = "12 Concertos Op. 10 (CD 1) CD1.cue";
         
         String path = directory+"/"+filename;
