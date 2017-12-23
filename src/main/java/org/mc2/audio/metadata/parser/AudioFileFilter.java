@@ -25,13 +25,11 @@
 
 package org.mc2.audio.metadata.parser;
 
+import org.mc2.audio.metadata.API.SupportedFileFormat;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.io.FilenameUtils;
-import static org.mc2.util.miscellaneous.ImageHandler.isFileAnImage;
 
 /**
  * <p>This is a simple FileFilter that will only allow the audio file supported 

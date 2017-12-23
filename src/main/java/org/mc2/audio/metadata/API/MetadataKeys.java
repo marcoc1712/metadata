@@ -1,6 +1,8 @@
 package org.mc2.audio.metadata.API;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Enumeration of 'common' metadata derived from Command keys.
@@ -47,6 +49,7 @@ public class MetadataKeys {
         CUSTOM3,
         CUSTOM4,
         CUSTOM5,
+        DATE,
         DISC_NO,
         DISC_SUBTITLE,
         DISC_TOTAL,
@@ -69,6 +72,7 @@ public class MetadataKeys {
         IS_COMPILATION,
         ITUNES_GROUPING,
         KEY,
+        LABEL,
         LANGUAGE,
         LYRICIST,
         LYRICIST_SORT,
@@ -158,6 +162,7 @@ public class MetadataKeys {
         TONALITY,
         TRACK,
         TRACK_TOTAL,
+        UPC,
         URL_DISCOGS_ARTIST_SITE,
         URL_DISCOGS_RELEASE_SITE,
         URL_LYRICS_SITE,
@@ -170,9 +175,20 @@ public class MetadataKeys {
         YEAR
     };
 
+ /* 
+Aliases used to consolidate metadata at album level.
+*/
  public static final HashMap<String,String> ALBUM_LEVEL_ALIAS;
     static {
         ALBUM_LEVEL_ALIAS = new HashMap<>();
+        
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.UPC.name(), METADATA_KEY.UPC.name());
+        ALBUM_LEVEL_ALIAS.put("UPCCODE", METADATA_KEY.UPC.name());
+        ALBUM_LEVEL_ALIAS.put("UPC_CODE", METADATA_KEY.UPC.name());
+        
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.BARCODE.name(), METADATA_KEY.BARCODE.name());
+        ALBUM_LEVEL_ALIAS.put("BARCODE", METADATA_KEY.BARCODE.name());
+        ALBUM_LEVEL_ALIAS.put("BAR_CODE", METADATA_KEY.BARCODE.name());
         
         ALBUM_LEVEL_ALIAS.put(METADATA_KEY.CATALOG_NO.name(), METADATA_KEY.CATALOG_NO.name());
         ALBUM_LEVEL_ALIAS.put("CATALOG", METADATA_KEY.CATALOG_NO.name());
@@ -185,7 +201,6 @@ public class MetadataKeys {
         ALBUM_LEVEL_ALIAS.put("PERFORMER", METADATA_KEY.ALBUM_ARTIST.name());
         ALBUM_LEVEL_ALIAS.put("ALBUMPERFORMER", METADATA_KEY.ALBUM_ARTIST.name());
         ALBUM_LEVEL_ALIAS.put("ALBUM_PERFORMER", METADATA_KEY.ALBUM_ARTIST.name());
-
 
         ALBUM_LEVEL_ALIAS.put(METADATA_KEY.COMPOSER.name(), METADATA_KEY.COMPOSER.name());
         ALBUM_LEVEL_ALIAS.put("ALBUMCOMPOSER", METADATA_KEY.COMPOSER.name());
@@ -207,33 +222,44 @@ public class MetadataKeys {
 
         ALBUM_LEVEL_ALIAS.put(METADATA_KEY.CDTEXTFILE.name(), METADATA_KEY.CDTEXTFILE.name());
         
-        ALBUM_LEVEL_ALIAS.put("YEAR", "DATE");
-        ALBUM_LEVEL_ALIAS.put("ALBUMYEAR", "DATE");
-        ALBUM_LEVEL_ALIAS.put("ALBUM_YEAR", "DATE");
-        ALBUM_LEVEL_ALIAS.put("DATE", "DATE");
-        ALBUM_LEVEL_ALIAS.put("ALBUMDATE", "DATE");
-        ALBUM_LEVEL_ALIAS.put("ALBUM_DATE", "DATE");
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.DATE.name(), METADATA_KEY.DATE.name());
+        ALBUM_LEVEL_ALIAS.put("ALBUMDATE",  METADATA_KEY.DATE.name());
+        ALBUM_LEVEL_ALIAS.put("ALBUM_DATE",  METADATA_KEY.DATE.name());
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.YEAR.name(), METADATA_KEY.DATE.name());
+        ALBUM_LEVEL_ALIAS.put("ALBUMYEAR",  METADATA_KEY.DATE.name());
+        ALBUM_LEVEL_ALIAS.put("ALBUM_YEAR",  METADATA_KEY.DATE.name());
+       
         
-        ALBUM_LEVEL_ALIAS.put("GENRE", "GENRE");
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.GENRE.name(), METADATA_KEY.GENRE.name());
         ALBUM_LEVEL_ALIAS.put("ALBUMGENRE", "GENRE");
         ALBUM_LEVEL_ALIAS.put("ALBUM_GENRE", "GENRE");
         
-        ALBUM_LEVEL_ALIAS.put("LYRICS", "LYRICS");
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.LABEL.name(), METADATA_KEY.LABEL.name());
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.RECORD_LABEL.name(), METADATA_KEY.LABEL.name());
+        
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.COUNTRY.name(), METADATA_KEY.COUNTRY.name());
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.MUSICBRAINZ_RELEASE_COUNTRY.name(), METADATA_KEY.COUNTRY.name());
+
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.LYRICS.name(), METADATA_KEY.LYRICS.name());
         ALBUM_LEVEL_ALIAS.put("ALBUMLYRICS", "LYRICS");
         ALBUM_LEVEL_ALIAS.put("ALBUM_LYRICS", "LYRICS");
         
-        ALBUM_LEVEL_ALIAS.put("COMMENT", "COMMENT");
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.COMMENT.name(), METADATA_KEY.COMMENT.name());
         ALBUM_LEVEL_ALIAS.put("ALBUMCOMMENT", "COMMENT");
         ALBUM_LEVEL_ALIAS.put("ALBUM_COMMENT", "COMMENT");
         
-        ALBUM_LEVEL_ALIAS.put("DISC_NO", "DISC_NO");
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.MEDIA.name(), METADATA_KEY.MEDIA.name());
+        ALBUM_LEVEL_ALIAS.put("MEDIA_TYPE", METADATA_KEY.MEDIA.name());
+        ALBUM_LEVEL_ALIAS.put("MEDIATYPE", METADATA_KEY.MEDIA.name());
+
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.DISC_NO.name(), METADATA_KEY.DISC_NO.name());
         ALBUM_LEVEL_ALIAS.put("DISC", "DISC_NO");
         ALBUM_LEVEL_ALIAS.put("DISC#", "DISC_NO");
         ALBUM_LEVEL_ALIAS.put("DISCNO", "DISC_NO");
         ALBUM_LEVEL_ALIAS.put("DISCNUMBER", "DISC_NO");
         ALBUM_LEVEL_ALIAS.put("DISC_NUMBER", "DISC_NO");
         
-        ALBUM_LEVEL_ALIAS.put("DISC_TOTAL", "DISC_TOTAL");
+        ALBUM_LEVEL_ALIAS.put(METADATA_KEY.DISC_TOTAL.name(), METADATA_KEY.DISC_TOTAL.name());
         ALBUM_LEVEL_ALIAS.put("DISCTOTAL", "DISC_TOTAL");
         ALBUM_LEVEL_ALIAS.put("TOTALDISC", "DISC_TOTAL");
         ALBUM_LEVEL_ALIAS.put("TOTAL_DISC", "DISC_TOTAL");
@@ -336,6 +362,30 @@ public class MetadataKeys {
     }
     public static final String getTrackLevelMetadataAlias(String generic){
         return TRACK_LEVEL_ALIAS.get(generic);
+    }
+    
+    public static final ArrayList<String>  getAlbumLevelMetadataAliases(String metadataKey){
+        ArrayList<String> out= new ArrayList<>();
+        
+        for (Map.Entry<String, String> entry : ALBUM_LEVEL_ALIAS.entrySet()) {
+            if (entry.getValue().equals(metadataKey) && 
+                !entry.getKey().equals(metadataKey)) {
+              out.add(entry.getKey());
+            }
+        }
+        return out;
+    }
+    public static final ArrayList<String>  getTrackLevelMetadataAliases(String metadataKey){
+        ArrayList<String> out= new ArrayList<>();
+        
+        for (Map.Entry<String, String> entry : TRACK_LEVEL_ALIAS.entrySet()) {
+            if (entry.getValue().equals(metadataKey) && 
+                !entry.getKey().equals(metadataKey)) {
+                
+              out.add(entry.getKey());
+            }
+        }
+        return out;
     }
 }
 

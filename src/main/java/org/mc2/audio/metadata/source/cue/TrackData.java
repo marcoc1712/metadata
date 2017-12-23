@@ -25,7 +25,7 @@ import java.util.List;
 //import jwbroek.cuelib.TrackData;
 //import jwbroek.cuelib.Index;
 import org.mc2.audio.metadata.API.Metadata;
-import org.mc2.audio.metadata.source.MetadataSource;
+import org.mc2.audio.metadata.API.MetadataSource;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
 import org.mc2.util.miscellaneous.CalendarUtils;
 
@@ -158,6 +158,7 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
     public String getSourceId() {
         return getTrackSection().getSourceId();
     }
+
     
     /** @return track offset in msec */
     public Long getOffsetInMillis(){
@@ -183,7 +184,37 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
     }
     /** @return track end string */
     public String getEndString(){
-
+        
         return CalendarUtils.getTimeString(getEndInMillis());
     }
+    /** @return track start inside the single file */
+    public int getStartInFile(){
+        
+        return getOffset() - ((FileData)getParent()).getOffset();
+
+    }
+    /** @return track start in msec */
+    public Long getStartInFileInMillis(){
+        return CalendarUtils.getMilliseconds(getStartInFile());
+    }
+     /** @return track start in string */
+    public String getStartInFileString(){
+        
+        return CalendarUtils.getTimeString(getStartInFile());
+    }
+     /** @return track end inside the single file */
+    public int getEndInFile(){
+        
+        return getEnd() - ((FileData)getParent()).getOffset();
+    }
+    /** @return track start in msec */
+    public Long getEndInFileInMillis(){
+        return CalendarUtils.getMilliseconds(getEndInFile());
+    }
+     /** @return track start in string */
+    public String getEndInFileString(){
+        
+        return CalendarUtils.getTimeString(getEndInFile());
+    }
+    
 }

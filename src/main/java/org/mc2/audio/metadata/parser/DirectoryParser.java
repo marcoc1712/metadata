@@ -47,9 +47,9 @@ import org.mc2.audio.metadata.API.Metadata;
 import static org.mc2.audio.metadata.API.MetadataKeys.getAlbumLevelMetadataAlias;
 import static org.mc2.audio.metadata.API.MetadataKeys.getTrackLevelMetadataAlias;
 import org.mc2.audio.metadata.API.StatusMessage;
+import org.mc2.audio.metadata.API.StatusMessage.Severity;
 import org.mc2.audio.metadata.API.Track;
 import org.mc2.audio.metadata.impl.GenericStatusMessage;
-import org.mc2.audio.metadata.impl.GenericStatusMessage.Severity;
 import org.mc2.audio.metadata.impl.TrackDefaultImpl;
 import org.mc2.audio.metadata.source.coverart.FileCoverArt;
 import org.mc2.audio.metadata.source.cue.Section;
@@ -60,7 +60,6 @@ import static org.mc2.audio.metadata.source.cue.Section.ALBUM;
  * @author marco
  */
 public class DirectoryParser {
-    
 
     public static AlbumDefaultImpl parse(String directory) throws IOException, InvalidAudioFileException, InvalidAudioFileFormatException {
          return parse(new File(directory));
@@ -73,45 +72,67 @@ public class DirectoryParser {
        
        ArrayList<CueFile> cueFileList= new ArrayList<>();
        ArrayList<AudioFile> audioFileList= new ArrayList<>();
-       ArrayList<StatusMessage> statusMessageList= new ArrayList<>();
        
+       ArrayList<StatusMessage> statusMessageList= new ArrayList<>();
        ArrayList<Metadata> atAlbumLevel= new ArrayList<>();
        ArrayList<CoverArt> coverArtList= new ArrayList<>();
+       
        HashMap<Integer,TrackDefaultImpl> trackMap = new HashMap<>();
               
        if (containsCueFile(fileList)){
-
+       
             cueFileList = getCueFileList(fileList);
             
             for (CueFile cueFile :cueFileList){
                 
                 //atAlbumLevel.addAll(cueFile.getCuesheet().getMetadata());
                 merge(Section.ALBUM, atAlbumLevel, cueFile.getCuesheet().getMetadata());
-
+                
                 for (Message message : cueFile.getCuesheet().getMessages()){
-
+                    
                     statusMessageList.add (new GenericStatusMessage(
-                            Severity.WARNING, message.getMessage()+" - "+message.getInput()));
+                            statusMessageList.size()+1,
+                            cueFile.getCuesheet().getSourceId(),
+                            Severity.WARNING, 
+                            message.getMessage()+" - "+message.getInput()));
                 }
-                     
+
                 for (FileData fileData : cueFile.getCuesheet().getFileDataList()){
                     
-                    if (fileData.getAudiofile()!=null){
+                    AudioFile audiofile = fileData.getAudiofile();
+                    
+                    if (audiofile !=null){
                           fileList.remove(fileData.getAudiofile().getFile());
-                          coverArtList.addAll(fileData.getAudiofile().getEmbeddedArtworks());
+                          coverArtList.addAll(fileData.getAudiofile().getEmbeddedArtworks());  
                     }
-
+                    
+                    Integer trackCount= fileData.getTrackDataList().size();
+                    
                     for (TrackData trackData : fileData.getTrackDataList() ){
-                        
+
                         TrackDefaultImpl track = trackMap.get(trackData.getNumber());
-                       
+
                         if ( track != null){
                             
                             merge(Section.TRACK, track.getMetadataList(), trackData.getMetadata());
                             //track.getMetadataList().addAll(trackData.getMetadata());
                             
-                            GenericStatusMessage statusMessage = new GenericStatusMessage(Severity.WARNING, "Track "+trackData.getNumber()+" is defined  in more than one cuesheet");
-                            statusMessageList.add(statusMessage);
+                            GenericStatusMessage statusMessage = new GenericStatusMessage(
+                                    statusMessageList.size()+1,
+                                    Severity.WARNING, 
+                                    "Track defined in more than one audio file or cue sheet");
+                            
+                            if (!statusMessageList.contains(statusMessage)){
+                                
+                                statusMessageList.add(statusMessage);
+                            }   
+    
+                            statusMessage = new GenericStatusMessage(
+                                    track.getMessageList().size()+1,
+                                    cueFile.getCuesheet().getSourceId(),
+                                    Severity.WARNING, 
+                                    "Track is defined in more than one audio file or cue sheet");
+                            track.addStatusMessage(statusMessage);
                             
                         } else {
                             
@@ -119,21 +140,44 @@ public class DirectoryParser {
                            trackMap.put(trackData.getNumber(), track);
                         }
                         
-                        if (track.getLength() !=0 && trackData.getLength()!= track.getLength() ||
-                            track.getOffset() !=0 && trackData.getOffset()!= track.getOffset()){
-                
+                        if (audiofile ==null){
+                            
+                            track.setFile(null);
                             track.setLength(0);
                             track.setOffset(0);
+                            track.setUrl("");
                         
-                        } else
+                        } else if ( track.getFile() != null && audiofile.getFile()!= track.getFile() &&
+                                    track.getLength() !=0 && trackData.getLength()!= track.getLength() ||
+                                    track.getOffset() !=0 && trackData.getOffset()!= track.getOffset()){
+                            
+                            track.setFile(null);
+                            track.setLength(0);
+                            track.setOffset(0);
+                            track.setUrl("");
+                        
+                        } else {
+
+                            track.setFile(audiofile.getFile());
                             track.setLength(trackData.getLength());
                             track.setOffset(trackData.getOffset());
+                            
+                            if (trackCount > 1){
+                                
+                                track.setUrl(audiofile.getFile().getCanonicalPath()+"#"+trackData.getStartInFileInMillis()/1000+"-"+(trackData.getStartInFileInMillis()+trackData.getLengthInMillis())/1000);
+                            
+                            } else {
+                                
+                                track.setUrl(audiofile.getFile().getCanonicalPath());
+                                
+                           }
                         }
+
+                    }
+                    fileList.remove(cueFile.getFile());
                 }
-                fileList.remove(cueFile.getFile());
-            }
-           
-        } 
+            } 
+        }    
         for (File file : fileList){
        
             AudioFile audiofile = AudioFile.get(file);
@@ -157,14 +201,35 @@ public class DirectoryParser {
                     
                     track = new TrackDefaultImpl(trackNo, merge(Section.TRACK,new ArrayList<>(),audiofile.getMetadata()));
                     trackMap.put(trackNo, track);
-                    track.setLength( audiofile.getAudioHeader().getTrackLength());
+                    
+                    track.setFile(audiofile.getFile());
+                    track.setLength( audiofile.getAudioHeader().getTrackLength()*75); //in auidiofile header is expressed in secs.
+                    track.setUrl(audiofile.getFile().getCanonicalPath());
                     
                  } else {    
 
                     merge(Section.TRACK, track.getMetadataList(), audiofile.getMetadata());
                     //track.getMetadataList().addAll();
-                    GenericStatusMessage statusMessage = new GenericStatusMessage(Severity.WARNING, "Track "+trackNo+" is defined in more than one audio file or cue sheet");
-                    statusMessageList.add(statusMessage);
+                    GenericStatusMessage statusMessage = new GenericStatusMessage(
+                            statusMessageList.size()+1,
+                            Severity.WARNING, 
+                            "Track defined in more than one audio file or cue sheet");
+                    
+                    if (!statusMessageList.contains(statusMessage)){
+                        
+                        statusMessageList.add(statusMessage);
+                    } 
+                    
+                    statusMessage = new GenericStatusMessage(
+                            track.getMessageList().size()+1,
+                            audiofile.getSourceId(),
+                            Severity.WARNING, 
+                            "Track is defined in more than one audio file or cue sheet");
+                    
+                    track.addStatusMessage(statusMessage);
+                    
+                    track.setFile(null);
+                    track.setUrl("");
                     
                     if (track.getLength() !=0 && audiofile.getAudioHeader().getTrackLength()!= track.getLength()){
 
@@ -172,12 +237,12 @@ public class DirectoryParser {
 
                     } else{
 
-                        track.setLength( audiofile.getAudioHeader().getTrackLength());
+                        track.setLength( audiofile.getAudioHeader().getTrackLength()*75);
                         //track.setOffset(0);
                     }  
                 }
                 
-                track.addAudioFile(audiofile);
+                track.addRawKeyValuePairSource(audiofile);
  
             } else {
            
@@ -194,24 +259,46 @@ public class DirectoryParser {
         /*
        * Validate the directory content
        */
+        
+        String url = "";
+        
         if (cueFileList.size() > 1 &&  audioFileList.size() > 0){
             
-            GenericStatusMessage statusMessage = new GenericStatusMessage(Severity.WARNING, "Cue sheets and audio files defines Album ");
+            GenericStatusMessage statusMessage = new GenericStatusMessage(
+                    statusMessageList.size()+1,
+                    Severity.WARNING, 
+                    "Cue sheets and audio files defines Album ");
+            
             statusMessageList.add(statusMessage);
            
         } else if (cueFileList.size() > 1) {
         
-            GenericStatusMessage statusMessage = new GenericStatusMessage(Severity.WARNING, "More than one cue sheet defines Album ");
+            GenericStatusMessage statusMessage = new GenericStatusMessage(
+                    statusMessageList.size()+1,
+                    Severity.WARNING, 
+                    "More than one cue sheet defines Album ");
+            
              statusMessageList.add(statusMessage);
         
         } else if (audioFileList.size() > 1){
         
-            GenericStatusMessage statusMessage = new GenericStatusMessage(Severity.WARNING, "More than one audio file defines Album ");
+            GenericStatusMessage statusMessage = new GenericStatusMessage(
+                    statusMessageList.size()+1,
+                    Severity.WARNING, 
+                    "More than one audio file defines Album ");
+            
             statusMessageList.add(statusMessage);
-        } 
+        } else if (cueFileList.size()==1){
+            
+            url=cueFileList.get(0).getSourceId();
+        
+        } else {
+            
+            url=directory.getCanonicalPath();
+        }
 
         ArrayList<Track> tracklist= new ArrayList<>(trackMap.values());
-        AlbumDefaultImpl out = new AlbumDefaultImpl(coverArtList, atAlbumLevel, tracklist, directoryfileList, cueFileList, audioFileList, imagefileList, statusMessageList);
+        AlbumDefaultImpl out = new AlbumDefaultImpl(url, coverArtList, atAlbumLevel, tracklist, directoryfileList, cueFileList, audioFileList, imagefileList, statusMessageList);
        
         return out;
     }

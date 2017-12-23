@@ -22,52 +22,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.audio.metadata.parser;
+
+package org.mc2.audio.metadata.API;
+
+import java.util.ArrayList;
+
 
 /**
  *
  * @author marco
  */
-/**
- * Files formats currently supported by Library.
- * Each enum value is associated with a file suffix (extension).
- */
-public enum SupportedFileFormat
-{
-    OGG("ogg"),
-    MP3("mp3"),
-    FLAC("flac"),
-    MP4("mp4"),
-    M4A("m4a"),
-    M4P("m4p"),
-    WMA("wma"),
-    WAV("wav"),
-    //RA("ra"),
-    //RM("rm"),
-    M4B("m4b"),
-    AIF("aif"),
-    AIFF("aiff"),
-    AIFC("aifc"),
-    DSF("dsf"),
-    DFF("dff"),
-    CUE("cue"),
-    //QBU("qbu"),
-    ;
+public interface RawKeyValuePairSource  {
 
-    private String filesuffix;
+    public String getSourceId();
+    public ArrayList<RawKeyValuePair> getRawKeyValuePairs();
 
-    /** Constructor for internal use by this enum.
-     */
-    SupportedFileFormat(String filesuffix)
-    {
-        this.filesuffix = filesuffix;
-    }
-
-    /**
-     *  Returns the file suffix (lower case without initial .) associated with the format.
-     */
-    public String getFilesuffix()
-    {
-        return filesuffix;
-    }
 }
+    

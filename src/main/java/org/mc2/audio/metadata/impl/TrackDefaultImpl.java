@@ -24,10 +24,13 @@
  */
 package org.mc2.audio.metadata.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import org.mc2.audio.metadata.API.Metadata;
+import org.mc2.audio.metadata.API.MetadataKeys;
+import org.mc2.audio.metadata.API.RawKeyValuePairSource;
+import org.mc2.audio.metadata.API.StatusMessage;
 import org.mc2.audio.metadata.API.Track;
-import org.mc2.audio.metadata.source.tags.file.AudioFile;
 import org.mc2.util.miscellaneous.CalendarUtils;
 
 /**
@@ -37,15 +40,49 @@ import org.mc2.util.miscellaneous.CalendarUtils;
 public class TrackDefaultImpl implements Track {
 
     private Integer trackNo; 
-    private int offset;
-    private int length;
+    private File file;
+    private Integer offset=0;
+    private Integer length=0;
+    private String url;
+    private String albumUrl;
+    private Integer index;
+    
     private final ArrayList<Metadata> metadataList;
-    private final ArrayList<AudioFile> audioFileList; 
+    private final ArrayList<RawKeyValuePairSource> rawKeyValuePairSources; 
+    private final ArrayList<StatusMessage> messageList;
     
     public TrackDefaultImpl(Integer trackNo, ArrayList<Metadata> metadataList) {
         this.trackNo = trackNo;
         this.metadataList = metadataList;
-        this.audioFileList =new ArrayList<>();
+        this.rawKeyValuePairSources =new ArrayList<>();
+        this.messageList =new ArrayList<>();
+    }
+    
+    /**
+     * @return the Album url
+     */
+    @Override
+    public String getAlbumUrl() {
+        return albumUrl;
+    }
+    /**
+     * @param albumUrl the albumUrl to set
+     */
+    public void setAlbumUrl(String albumUrl) {
+        this.albumUrl = albumUrl;
+    }
+     /**
+     * @return the Index position of the track in the Album (normally trackNo -1).
+     */
+    @Override
+    public Integer getIndex() {
+        return index;
+    }
+    /**
+     * @param index the index to set
+     */
+    public void setIndex(Integer index) {
+        this.index = index;
     }
     /**
      * @return the trackNo
@@ -54,8 +91,8 @@ public class TrackDefaultImpl implements Track {
     public Integer getTrackNo() {
         return trackNo;
     }
- /**
-     * @return the offset
+    /**
+     * @return the offset in sectors
      */
     @Override
     public int getOffset() {
@@ -63,14 +100,14 @@ public class TrackDefaultImpl implements Track {
     }
 
     /**
-     * @param offset the offset to set
+     * @param offset the offset in sectors to set
      */
     public void setOffset(int offset) {
         this.offset = offset;
     }
 
     /**
-     * @return the length
+     * @return the length in sectors.
      */
     @Override
     public int getLength() {
@@ -79,7 +116,7 @@ public class TrackDefaultImpl implements Track {
     /** @return file length in msec */
     @Override
     public Long getLengthInMillis(){
-        return getLength()*1000L;
+        return CalendarUtils.getMilliseconds(getLength());
     }
     /** @return file length string */
     @Override
@@ -88,7 +125,7 @@ public class TrackDefaultImpl implements Track {
         return CalendarUtils.getTimeString(getLengthInMillis());
     }
     /**
-     * @param length the length to set
+     * @param length the length in sectors to set
      */
     public void setLength(int length) {
         this.length = length;
@@ -111,17 +148,99 @@ public class TrackDefaultImpl implements Track {
     /**
      * @return the audioFileList
      */
-    public ArrayList<AudioFile> getAudioFileList() {
-        return audioFileList;
+    @Override
+    public ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources() {
+        return rawKeyValuePairSources;
     }
     /**
      * add a File to the audioFileList
+     * @param rawKeyValuePairSource
      */
-    public void addAudioFile(AudioFile audioFile) {
+    public void addRawKeyValuePairSource(RawKeyValuePairSource rawKeyValuePairSource) {
         
-        if (!audioFileList.contains(audioFile)){
-            audioFileList.add(audioFile);
+        if (!rawKeyValuePairSources.contains(rawKeyValuePairSource)){
+            rawKeyValuePairSources.add(rawKeyValuePairSource);
         }   
     }
+    /**
+     * @return the messageList
+     */
+    @Override
+    public ArrayList<StatusMessage> getMessageList() {
+        return messageList;
+    }
+    /**
+     * add a message to the messageList
+     * @param message
+     */
     
+    public void addStatusMessage(StatusMessage message) {
+        
+        if (!messageList.contains(message)){
+            messageList.add(message);
+        }   
+    }
+    @Override
+    public StatusMessage.Severity getStatus(){
+        
+        int index= 0;
+        StatusMessage.Severity status= StatusMessage.Severity.OK;
+        
+        for (StatusMessage statusMessage : getMessageList()){
+            if (statusMessage.getSeverityIndex()>index){
+                index = statusMessage.getSeverityIndex();
+                status = statusMessage.getSeverity();
+            }
+        }
+        return status;
+    }
+    @Override
+    public String getTitle(){
+    
+        return this.getMetadataValue(MetadataKeys.METADATA_KEY.TITLE.name());
+    }
+    @Override
+    public String getArtist(){
+    
+        return this.getMetadataValue(MetadataKeys.METADATA_KEY.ARTIST.name());
+    }
+    /**
+     * @return the url
+     */
+    @Override
+    public String getUrl() {
+        return url;
+    }
+    /**
+     * @return the file
+     */
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * @param file the file to set
+     */
+    public void setFile(File file) {
+        this.file = file;
+    }    
+
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    
+    protected String getMetadataValue(String key){
+        for (Metadata  metadata : metadataList){
+            
+            if (metadata.getKey().equals(key)){
+                return metadata.getValue();
+            }
+           
+        }
+        return "";
+    }
+
 }

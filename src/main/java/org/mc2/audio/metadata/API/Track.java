@@ -62,5 +62,40 @@ public interface Track {
      * @return the trackNo
      */
     Integer getTrackNo();
+    /**
+     * @return the title
+     */
+    public String getTitle();
+    /**
+     * @return the artist
+    */
+    public String getArtist();
+    /**
+     * @return the sources of Raw Key Value Pairs, like tag or cue files lines.
+     */
+    public ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources();
     
+    /**
+     * @return the message List
+     */
+    public ArrayList<StatusMessage> getMessageList();
+    
+    /**
+     * @return the overall Track status
+     */
+    StatusMessage.Severity getStatus();
+    
+    /**
+     * @return the url fo the track
+     */
+    public String getUrl();
+    
+    /**
+     * @return the Album url
+     */
+    public String getAlbumUrl();
+     /**
+     * @return the Index position of the track in the Album (normally trackNo -1).
+     */
+    public Integer getIndex();
 }

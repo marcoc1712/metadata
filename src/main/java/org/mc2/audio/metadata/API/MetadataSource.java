@@ -23,10 +23,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.mc2.audio.metadata.source;
+package org.mc2.audio.metadata.API;
 
 import java.util.ArrayList;
-import org.mc2.audio.metadata.API.Metadata;
 
 
 /**
@@ -37,7 +36,6 @@ public interface MetadataSource  {
 
     public String getSourceId();
     public ArrayList<Metadata> getMetadata();
-    
-   
+
 }
     

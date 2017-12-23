@@ -28,14 +28,21 @@ package org.mc2.audio.metadata.source.cue.file;
 import org.mc2.audio.metadata.source.cue.CueSheetMetadaParser;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import jwbroek.cuelib.LineOfInput;
 import org.apache.commons.io.FilenameUtils;
+import org.mc2.audio.metadata.API.RawKeyValuePair;
+import org.mc2.audio.metadata.API.RawKeyValuePairSource;
 import org.mc2.audio.metadata.API.exceptions.InvalidCueSheetException;
+import org.mc2.audio.metadata.impl.RawKeyValuePairDefaultImpl;
 import org.mc2.audio.metadata.source.cue.CueSheet;
 /**
  *
  * @author marco
  */
-public class CueFile {
+public class CueFile implements RawKeyValuePairSource{
 
     private File cueFile;
     private String path;
@@ -81,5 +88,31 @@ public class CueFile {
     private final boolean isCueFile() throws IOException{
         return isCueFile(getFile());
     }
+    /**
+     * 
+     * @return the lines as simple key value pairs
+    */
+    @Override
+    public String getSourceId() {
+        return this.cuesheet.getSourceId();
+    }
+    
+    /**
+     * 
+     * @return the lines as simple key value pairs
+    */
+    @Override
+    public ArrayList<RawKeyValuePair> getRawKeyValuePairs() {
+        ArrayList<RawKeyValuePair> out = new ArrayList<>();
+
+        for (LineOfInput line : this.cuesheet.getLines()){
+            
+            RawKeyValuePair pair = new RawKeyValuePairDefaultImpl(line.getLineNumber()+"", line.getInput());
+            out.add(pair);
+        }
+        return out;
+    }
+
+    
 }
     

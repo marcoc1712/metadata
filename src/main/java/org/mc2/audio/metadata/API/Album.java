@@ -26,26 +26,24 @@ package org.mc2.audio.metadata.API;
 
 import java.io.File;
 import java.util.ArrayList;
-import org.mc2.audio.metadata.source.cue.file.CueFile;
-import org.mc2.audio.metadata.source.tags.file.AudioFile;
 
 /**
  *
  * @author marco
  */
 public interface Album {
-
+    
+     /*
+     * @return the album url (a directory or a playlist).
+    */
+    public String getUrl();
+    
     /**
-     * @return the audioFileList
-     */
-    ArrayList<AudioFile> getAudioFileList();
-
-    /**
-     * @return the cueFileList
-     */
-    ArrayList<CueFile> getCueFileList();
-
-    /**
+     * @return the sources of Raw Key Value Pairs, like tag or cue files lines.
+    */
+    ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources();
+    
+    /*
      * @return the fileList
      */
     ArrayList<File> getFileList();
@@ -59,7 +57,12 @@ public interface Album {
      * @return the messageList
      */
     ArrayList<StatusMessage> getMessageList();
-
+    
+     /**
+     * @return the overall Album status
+     */
+    StatusMessage.Severity getStatus();
+            
     /**
      * @return the metadataList
      */
@@ -95,4 +98,46 @@ public interface Album {
      */
     ArrayList<CoverArt> getcoverArtList();
     
+    /**
+     * @return the Album title
+    */
+    public String getAlbum();
+    /**
+     * @return the Album main artist
+    */
+    public String getAlbumArtist();
+    /**
+     * @return the Album main genre
+    */
+    public String getGenre();
+    /**
+     * @return the Album Releease Date (or year)
+    */
+    public String getDate();
+    /**
+     * @return the Album release Country
+    */
+    public String getCountry();
+    /**
+     * @return the Album release Label
+    */
+    public String getLabel();
+    /**
+     * @return the Album CatalogNo
+    */
+    public String getCatalogNo();
+    /**
+     * @return the Media
+    */
+    public String getMedia();
+    /**
+     * @return the Album Disc Total
+    */
+    public String getDiscTotal();
+            
+    /**
+     * @return the Album DiscNo
+    */
+    public String getDiscNo();
+
 }

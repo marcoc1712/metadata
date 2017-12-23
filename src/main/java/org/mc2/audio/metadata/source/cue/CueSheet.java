@@ -29,13 +29,16 @@ import java.util.List;
 import jwbroek.cuelib.LineOfInput;
 import org.jaudiotagger.tag.FieldKey;
 import org.mc2.audio.metadata.API.Metadata;
-import org.mc2.audio.metadata.source.MetadataSource;
+import org.mc2.audio.metadata.API.MetadataSource;
+import org.mc2.audio.metadata.API.RawKeyValuePair;
+import org.mc2.audio.metadata.API.RawKeyValuePairSource;
+import org.mc2.audio.metadata.impl.RawKeyValuePairDefaultImpl;
 import org.mc2.audio.metadata.source.tags.file.AudioFile;
 /**
  *
  * @author marcoc1712
  */
-public class CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
+public class CueSheet extends jwbroek.cuelib.CueSheet implements ImputLinesSource, MetadataSource{
     
      private final static String WARNING_DATA_FILE_HAS_TRACK =  "Data File is per Album but has track defined.";
     /**
@@ -145,10 +148,11 @@ public class CueSheet extends jwbroek.cuelib.CueSheet implements MetadataSource{
      * Get the list of lines that compose the cuesheet.
      * @return the lines
      */
+    @Override
     public List<LineOfInput> getLines() {
         return lines;
     }
-
+   
     /**
      * Add a new line to the list of lines that compose the cuesheet.
      * @param line the line to add

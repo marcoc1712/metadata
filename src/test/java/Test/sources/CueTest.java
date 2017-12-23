@@ -27,6 +27,7 @@ package Test.sources;
 import Test.utils.TestUtils;
 import java.io.File;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import jwbroek.cuelib.LineOfInput;
 import jwbroek.cuelib.Message;
@@ -42,12 +43,12 @@ import org.mc2.audio.metadata.source.cue.TrackIndex;
 
 public class CueTest {
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws UnsupportedEncodingException  {
         
         System.setOut(new PrintStream(System.out, true, "utf-8"));
         
     }
-    @Test
+    //@Test
     public void TestSingleFile() throws Exception{
          
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\Albinoni Adagios - Anthony Camden, Julia Girdwood (1993 Naxos)";
@@ -149,17 +150,59 @@ public class CueTest {
         System.out.println("");
         
         for (LineOfInput line : cuesheet.getLines()){
-            
             System.out.println("    "+line.getLineNumber()+" "+line.getInput());
         }
         System.out.println("");
     
     }
+    @Test
+    public void TestMultiFilesAndMultitrackPerFile() throws Exception{
+        
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione/cue_multiFile_Multitrack";
+        String filename  = "tre_files.cue";
+        
+        String path = directory+"/"+filename;
+        
+        File cuefile = new File(path);
+        
+        
+        CueSheet cuesheet = (CueSheet) CueSheetMetadaParser.parse(cuefile);
+        
+        System.out.println("========================================================================");
+        System.out.println("\n");
+        System.out.println("Directory:"+ directory);
+        System.out.println("File     :"+ filename);
+        System.out.println("");
+        
+        for (FileData file : cuesheet.getFileDataList()){
+        
+            for (TrackData track : file.getTrackDataList()){
+
+                System.out.println("");
+                System.out.println(" - TRACK: "+track.getNumber());
+                
+
+                if (track.getPregap()!=null) {
+                    System.out.println("  - PREGAP: " +getPositionString(track.getPregap()));
+                }
+                System.out.println("ALBUM  - offeset: "+track.getOffsetString()+"  - length:  "+track.getLengthString()+"  - end:     "+track.getEndString());
+                System.out.println("FILE   - offeset: "+track.getStartInFileString()+"  - length:  "+track.getLengthString()+"  - end:     "+track.getEndInFileString());
+                
+                //printIndices("  ", track.getTrackIndexList());
+                
+                if (track.getPostgap()!=null) {
+                    System.out.println("  - POSTGAP: " +getPositionString(track.getPostgap()));
+                }
+                
+            }
+        }
+        
+    }
     //@Test
-    public void TestMultiFIlesAndMuiltitrackPerFiile() throws Exception{
+    public void TestMultiFilesAndMultitrackPerFile_Complete() throws Exception{
          
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "flac_Due_files.cue";
+        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione/cue_multiFile_Multitrack";
+        String filename  = "tre_files.cue";
         
         String path = directory+"/"+filename;
         
@@ -175,10 +218,10 @@ public class CueTest {
         System.out.println("");
         
         System.out.println("ALBUM COMMANDS:");
-        
+       
         for (Command command : cuesheet.getCommands()){
             
-             System.out.println("- "+command.toString());
+            System.out.println("- "+command.toString());
         }
         System.out.println("");
         System.out.println("ALBUM METADATA:");
@@ -195,9 +238,11 @@ public class CueTest {
             System.out.println(" - length: "+file.getLengthString()+", "
                                             +file.getLengthInMillis()+ " ms, "
                                             +file.getLength()+" sectors");
-
-            TestUtils.printAudioFile(file.getAudiofile());
             
+            if (file.getAudiofile() != null){
+                 TestUtils.printAudioFile(file.getAudiofile());
+            }
+
             for (TrackData track : file.getTrackDataList()){
                 
                 System.out.println("");

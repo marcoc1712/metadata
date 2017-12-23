@@ -27,8 +27,11 @@ package org.mc2.audio.metadata.impl;
 
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jaudiotagger.tag.TagField;
 import org.mc2.audio.metadata.API.MetadataOrigin;
+import org.mc2.audio.metadata.API.exceptions.InvalidTagException;
 import org.mc2.audio.metadata.source.tags.schema.ID3v2.ID3v2TagsSchema;
 import org.mc2.audio.metadata.source.tags.schema.ID3v2.ID3FrameAndSubId;
 
@@ -87,14 +90,21 @@ public class ID3V2MetadataOrigin  implements MetadataOrigin {
       
         for (TagField discarded : tagMetadataOrigin.getDiscardedTagField()){
             
-            String value;
-            
-            SimpleImmutableEntry<String,String> valuePair= ID3v2TagsSchema.getValuePair(discarded);
-            if (!valuePair.getValue().isEmpty() ) {
-                value = valuePair.getValue();
-            } else {
-                //value = "["+this.getOriginKey()+"] "+discarded.toString();
-                value =discarded.toString();
+            String key="";
+            String value="";
+
+            try {
+                SimpleImmutableEntry<String,String> valuePair;
+                valuePair = ID3v2TagsSchema.getValuePair(discarded);
+                key = valuePair.getKey();
+                if (!valuePair.getValue().isEmpty() ) {
+                    value = valuePair.getValue();
+                } else {
+                    //value = "["+this.getOriginKey()+"] "+discarded.toString();
+                    value =discarded.toString();
+                }
+            } catch (InvalidTagException ex) {
+                Logger.getLogger(ID3V2MetadataOrigin.class.getName()).log(Level.WARNING, null, ex);
             }
             
             if (!out.contains(value)){

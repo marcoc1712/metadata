@@ -22,42 +22,52 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.mc2.audio.metadata.API;
 
-package prove;
+/**
+ *
+ * @author marco
+ */
+/**
+ * Files formats currently supported by Library.
+ * Each enum value is associated with a file suffix (extension).
+ */
+public enum SupportedFileFormat
+{
+    OGG("ogg"),
+    MP3("mp3"),
+    FLAC("flac"),
+    MP4("mp4"),
+    M4A("m4a"),
+    M4P("m4p"),
+    WMA("wma"),
+    WAV("wav"),
+    //RA("ra"),
+    //RM("rm"),
+    M4B("m4b"),
+    AIF("aif"),
+    AIFF("aiff"),
+    AIFC("aifc"),
+    DSF("dsf"),
+    DFF("dff"),
+    CUE("cue"),
+    //QBU("qbu"),
+    ;
 
-import java.io.File;
-import java.io.PrintStream;
-import java.net.URL;
-import java.util.HashMap;
-//import jwbroek.cuelib.CueSheet.MetaDataField;
-import org.jaudiotagger.tag.FieldKey;
-import org.junit.Before;
-import org.junit.Test;
+    private String filesuffix;
 
-public class Prove {
-     
-     
-    @Before
-    public void setUp() throws Exception {
-        
-        System.setOut(new PrintStream(System.out, true, "utf-8"));
-        
+    /** Constructor for internal use by this enum.
+     */
+    SupportedFileFormat(String filesuffix)
+    {
+        this.filesuffix = filesuffix;
     }
-    @Test
-    public void prova() throws Exception{
-        
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-        String filename = "flac_16_44100_EMBEDDED_COVER_URL.flac";
-        
-        String path = directory+"/"+filename;
-        File file = new File(path);
-        int index = 0;
-        //return (new URL("http://localhost:8080""+this.file.toURI().getPath()+"&index="+this.index)).toString();
-        
-        String base = "http://localhost:8080";
-        
-        String query= base+"/embeddedart?file="+file.toURI().getPath()+"&index="+index;
-        URL url = new URL(query);
 
+    /**
+     *  Returns the file suffix (lower case without initial .) associated with the format.
+     */
+    public String getFilesuffix()
+    {
+        return filesuffix;
     }
 }

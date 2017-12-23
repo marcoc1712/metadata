@@ -23,7 +23,7 @@ package org.mc2.audio.metadata.source.cue;
 
 import java.util.ArrayList;
 import org.mc2.audio.metadata.API.Metadata;
-import org.mc2.audio.metadata.source.MetadataSource;
+import org.mc2.audio.metadata.API.MetadataSource;
 import static org.mc2.audio.metadata.API.MetadataKeys.getAlbumLevelMetadataAlias;
 import static org.mc2.audio.metadata.API.MetadataKeys.getTrackLevelMetadataAlias;
 /**

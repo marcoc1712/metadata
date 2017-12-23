@@ -43,7 +43,10 @@ import org.mc2.audio.metadata.API.CoverArt;
 import org.mc2.audio.metadata.API.Metadata;
 import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
 import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileFormatException;
-import org.mc2.audio.metadata.source.MetadataSource;
+import org.mc2.audio.metadata.API.MetadataSource;
+import org.mc2.audio.metadata.API.RawKeyValuePair;
+import org.mc2.audio.metadata.API.RawKeyValuePairSource;
+import org.mc2.audio.metadata.impl.RawKeyValuePairDefaultImpl;
 import org.mc2.audio.metadata.source.tags.TagsSource;
 import org.mc2.audio.metadata.source.tags.schema.TagSchema;
 
@@ -51,7 +54,7 @@ import org.mc2.audio.metadata.source.tags.schema.TagSchema;
  *
  * @author marco
  */
-public abstract class AudioFile implements TagsSource, MetadataSource{
+public abstract class AudioFile implements TagsSource, RawKeyValuePairSource, MetadataSource{
 
     private final File file;
     private org.jaudiotagger.audio.AudioFile audiofile;
@@ -194,6 +197,37 @@ public abstract class AudioFile implements TagsSource, MetadataSource{
     public ArrayList<TagField> geTagFields(){
 
         return getTagSchema().geTagFields();
+    }
+    @Override
+    public ArrayList<RawKeyValuePair> getRawKeyValuePairs() {
+        ArrayList<RawKeyValuePair> out = new ArrayList<>();
+        
+        AudioHeader audioHeader = this.getAudioHeader();
+
+        out.add(new RawKeyValuePairDefaultImpl("Audio Data Length: ",audioHeader.getAudioDataLength()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Audio Data Start Position: ",audioHeader.getAudioDataStartPosition()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Audio Data End Position: ",audioHeader.getAudioDataEndPosition()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Byte Rate: ",audioHeader.getByteRate()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Bit Rate: ",audioHeader.getBitRate()));
+        out.add(new RawKeyValuePairDefaultImpl("Bit Rate As Number: ",audioHeader.getBitRateAsNumber()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Sample Rate: ",audioHeader.getSampleRate()));
+        out.add(new RawKeyValuePairDefaultImpl("Sample Rate As Number: ",audioHeader.getSampleRateAsNumber()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Bits PerSample: ",audioHeader.getBitsPerSample()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Channels: ",audioHeader.getChannels()));
+        out.add(new RawKeyValuePairDefaultImpl("Encoding Type: ",audioHeader.getEncodingType()));
+        out.add(new RawKeyValuePairDefaultImpl("Format: ",audioHeader.getFormat()));
+        out.add(new RawKeyValuePairDefaultImpl("No Of Samples: ",audioHeader.getNoOfSamples()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Is Variable Bit Rate: ",audioHeader.isVariableBitRate()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Track Length: ",audioHeader.getTrackLength()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Precise Track Length: ",audioHeader.getPreciseTrackLength()+""));
+        out.add(new RawKeyValuePairDefaultImpl("Is Lossless: ",audioHeader.isLossless()+""));
+        
+        for ( TagField tagField : geTagFields()){
+            String value = tagField.isBinary() ? "[bynary content]" : tagField.toString();
+            RawKeyValuePair pair = new RawKeyValuePairDefaultImpl(tagField.getId(), value);
+            out.add(pair);
+        }
+        return out;
     }
     
     /* metadata by the Audiofile in the 'generic' FieldKey + values format.

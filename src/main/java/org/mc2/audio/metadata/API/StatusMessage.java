@@ -29,7 +29,20 @@ package org.mc2.audio.metadata.API;
  * @author marco
  */
 public interface StatusMessage {
-
+    public enum Severity{
+            OK,
+            INFO,
+            WARNING,
+            ERROR;
+        }
+    /**
+     * @return the sequenceNo
+     */
+    Integer getSequenceNo();
+     /**
+     * @return the origin
+     */
+    String getOrigin();
     /**
      * @return the message
      */
@@ -38,9 +51,10 @@ public interface StatusMessage {
     /**
      * @return the severity
      */
-    String getSeverity();
+    Severity getSeverity();
+    /**
+     * @return the severity index, 0 is minimal.
+     */
+    Integer getSeverityIndex();
 
-    @Override
-    String toString();
-    
 }

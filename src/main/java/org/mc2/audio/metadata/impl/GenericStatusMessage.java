@@ -32,28 +32,44 @@ import org.mc2.audio.metadata.API.StatusMessage;
  */
 public class GenericStatusMessage implements StatusMessage {
     
-    public enum Severity{
-        ERROR,
-        WARNING,
-        INFO;
-    }
-    
+    private final String origin;
     private final Severity severity;
     private final String message;
+    private final Integer sequenceNo;
     
-    public GenericStatusMessage( Severity severity, String message){
+    public GenericStatusMessage(Integer sequenceNo, Severity severity, String message){
+        this.sequenceNo = sequenceNo;
+        this.origin = "";
         this.severity = severity;
         this.message = message;
     }
-
+    public GenericStatusMessage(Integer sequenceNo,String origin, Severity severity, String message){
+        this.sequenceNo = sequenceNo;
+        this.origin = origin == null ? "" : origin;
+        this.severity = severity;
+        this.message = message == null ? "" : message;;
+    }
+    @Override
+    public Integer getSequenceNo() {
+        return sequenceNo;
+    }
+       
+    @Override
+    public String getOrigin() {
+        return origin;
+    }
     /**
      * @return the severity
      */
     @Override
-    public String getSeverity() {
-        return severity.name();
+    public Severity getSeverity() {
+        return severity;
     }
-
+    
+    @Override
+    public Integer getSeverityIndex() {
+        return Severity.valueOf(severity.name()).ordinal();
+    }
     /**
      * @return the message
      */
@@ -65,8 +81,23 @@ public class GenericStatusMessage implements StatusMessage {
     @Override
     public String toString(){
         
-        return getSeverity()+" "+getMessage();
+        return getSeverity()+" "+getMessage()+" ["+getOrigin()+"]";
+        
+    }
+    @Override
+    public boolean equals(Object aThat){
+        if ( this == aThat ) return true;
+        if ( !(aThat instanceof StatusMessage) ) return false;
+        
+        StatusMessage that = (StatusMessage)aThat;
+        
+        return (
+            that.getOrigin().equals(this.getOrigin()) &&
+            that.getSeverity().equals(this.getSeverity()) &&
+            that.getMessage().equals(this.getMessage())
+        ); 
     }
 
+    
 }
 
