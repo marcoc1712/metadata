@@ -31,7 +31,7 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.junit.Before;
 import org.junit.Test;
-import org.mc2.audio.metadata.source.tags.file.Dsf;
+import com.mc2.audio.metadata.source.tags.file.Dsf;
 
 public class DsfTest {
     @Before
@@ -47,7 +47,7 @@ public class DsfTest {
         String filename = "dsf_02-822-400 (dsd64)_TAG.dsf";
         String path = directory+"/"+filename;
         
-        Dsf audiofile = (Dsf)org.mc2.audio.metadata.source.tags.file.AudioFile.get(path);
+        Dsf audiofile = (Dsf)com.mc2.audio.metadata.source.tags.file.AudioFile.get(path);
         
         TestUtils.printAudioFile(audiofile);
         

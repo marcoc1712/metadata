@@ -30,12 +30,12 @@ import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.mc2.audio.metadata.API.AlbumBuilder;
-import org.mc2.audio.metadata.API.Album;
-import org.mc2.audio.metadata.API.RawKeyValuePair;
-import org.mc2.audio.metadata.API.RawKeyValuePairSource;
-import org.mc2.audio.metadata.API.StatusMessage;
-import org.mc2.audio.metadata.API.Track;
+import com.mc2.audio.metadata.API.AlbumBuilder;
+import com.mc2.audio.metadata.API.Album;
+import com.mc2.audio.metadata.API.RawKeyValuePair;
+import com.mc2.audio.metadata.API.RawKeyValuePairSource;
+import com.mc2.audio.metadata.API.StatusMessage;
+import com.mc2.audio.metadata.API.Track;
 
 public class AlbumTest {
     @Before

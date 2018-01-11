@@ -28,9 +28,9 @@ import Test.utils.TestUtils;
 import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
-import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
-import org.mc2.audio.metadata.API.exceptions.InvalidAudioFileFormatException;
-import org.mc2.audio.metadata.source.tags.file.Dff;
+import com.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
+import com.mc2.audio.metadata.API.exceptions.InvalidAudioFileFormatException;
+import com.mc2.audio.metadata.source.tags.file.Dff;
 
 public class DffTest {
     @Before
@@ -47,7 +47,7 @@ public class DffTest {
         String path = directory+"/"+filename;
         
         try{
-            Dff audiofile = (Dff)org.mc2.audio.metadata.source.tags.file.AudioFile.get(path);
+            Dff audiofile = (Dff)com.mc2.audio.metadata.source.tags.file.AudioFile.get(path);
             TestUtils.printAudioFile(audiofile);
  
         } catch (InvalidAudioFileException | InvalidAudioFileFormatException ex){

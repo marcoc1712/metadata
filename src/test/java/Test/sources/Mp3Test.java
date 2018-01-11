@@ -29,8 +29,8 @@ import Test.utils.TestUtils;
 import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
-import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.audio.metadata.source.tags.file.Mp3;
+import com.mc2.audio.metadata.source.tags.file.AudioFile;
+import com.mc2.audio.metadata.source.tags.file.Mp3;
 
 public class Mp3Test {
     @Before

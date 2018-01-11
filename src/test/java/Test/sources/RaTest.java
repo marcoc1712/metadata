@@ -29,8 +29,8 @@ import Test.utils.TestUtils;
 import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
-import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.audio.metadata.source.tags.file.Ra;
+import com.mc2.audio.metadata.source.tags.file.AudioFile;
+import com.mc2.audio.metadata.source.tags.file.Ra;
 
 public class RaTest {
     @Before

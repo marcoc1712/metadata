@@ -34,12 +34,12 @@ import jwbroek.cuelib.Message;
 import jwbroek.cuelib.Position;
 import org.junit.Before;
 import org.junit.Test;
-import org.mc2.audio.metadata.source.cue.Command;
-import org.mc2.audio.metadata.source.cue.CueSheetMetadaParser;
-import org.mc2.audio.metadata.source.cue.CueSheet;
-import org.mc2.audio.metadata.source.cue.FileData;
-import org.mc2.audio.metadata.source.cue.TrackData;
-import org.mc2.audio.metadata.source.cue.TrackIndex;
+import com.mc2.audio.metadata.source.cue.Command;
+import com.mc2.audio.metadata.source.cue.CueSheetMetadaParser;
+import com.mc2.audio.metadata.source.cue.CueSheet;
+import com.mc2.audio.metadata.source.cue.FileData;
+import com.mc2.audio.metadata.source.cue.TrackData;
+import com.mc2.audio.metadata.source.cue.TrackIndex;
 
 public class CueTest {
     @Before

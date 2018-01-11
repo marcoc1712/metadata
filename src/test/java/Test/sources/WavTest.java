@@ -32,8 +32,8 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.junit.Before;
 import org.junit.Test;
-import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.audio.metadata.source.tags.file.Wav;
+import com.mc2.audio.metadata.source.tags.file.AudioFile;
+import com.mc2.audio.metadata.source.tags.file.Wav;
 
 public class WavTest {
     

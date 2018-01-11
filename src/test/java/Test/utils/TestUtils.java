@@ -31,9 +31,9 @@ import java.util.ArrayList;
 import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.TagField;
 import org.junit.Test;
-import org.mc2.audio.metadata.API.CoverArt;
-import org.mc2.audio.metadata.API.Metadata;
-import org.mc2.audio.metadata.source.tags.file.AudioFile;
+import com.mc2.audio.metadata.API.CoverArt;
+import com.mc2.audio.metadata.API.Metadata;
+import com.mc2.audio.metadata.source.tags.file.AudioFile;
 
 /**
  *

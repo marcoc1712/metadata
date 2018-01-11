@@ -33,8 +33,8 @@ import org.jaudiotagger.tag.images.Artwork;
 import org.jaudiotagger.tag.images.StandardArtwork;
 import org.junit.Before;
 import org.junit.Test;
-import org.mc2.audio.metadata.source.tags.file.AudioFile;
-import org.mc2.audio.metadata.source.tags.file.Flac;
+import com.mc2.audio.metadata.source.tags.file.AudioFile;
+import com.mc2.audio.metadata.source.tags.file.Flac;
 
 public class FlacTest {
     @Before
