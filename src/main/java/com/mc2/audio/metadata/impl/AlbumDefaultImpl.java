@@ -154,6 +154,7 @@ public class AlbumDefaultImpl implements Album {
     public ArrayList<CoverArt> getcoverArtList() {
         return coverArtList;
     }
+	
     /**
      * @return the metadataList
      */
@@ -245,6 +246,11 @@ public class AlbumDefaultImpl implements Album {
     public String getAlbumArtist(){
     
         return this.getMetadataValue(METADATA_KEY.ALBUM_ARTIST.name());
+    }
+	@Override
+    public String getComposer(){
+    
+        return this.getMetadataValue(METADATA_KEY.COMPOSER.name());
     }
     
     @Override

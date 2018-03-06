@@ -27,7 +27,6 @@ package com.mc2.audio.metadata.source.coverart;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import org.jaudiotagger.tag.images.Artwork;
 import org.jaudiotagger.tag.reference.PictureTypes;

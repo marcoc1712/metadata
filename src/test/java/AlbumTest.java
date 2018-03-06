@@ -68,9 +68,9 @@ public class AlbumTest {
     public void Album() throws Exception{
          
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\ProvaAlbumScan";
-        //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\Albinoni Adagios - Anthony Camden, Julia Girdwood (1993 Naxos)";
+        String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\Albinoni Adagios - Anthony Camden, Julia Girdwood (1993 Naxos)";
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\cue con embedde cover";
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+        //String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         //String directory = "Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española\\CD1";
         
         Album album = AlbumBuilder.parse(directory);

@@ -97,47 +97,51 @@ public interface Album {
      * @return the coverArtList
      */
     ArrayList<CoverArt> getcoverArtList();
-    
+   
     /**
      * @return the Album title
     */
-    public String getAlbum();
+    String getAlbum();
     /**
-     * @return the Album main artist
+     * @return the Album main artist(s).
     */
-    public String getAlbumArtist();
+    String getAlbumArtist();
+   /**
+     * @return the Album composer(s).
+    */
+	String getComposer();
     /**
-     * @return the Album main genre
+     * @return the Album genre(s);
     */
-    public String getGenre();
+	String getGenre();
     /**
      * @return the Album Releease Date (or year)
     */
-    public String getDate();
+    String getDate();
     /**
      * @return the Album release Country
     */
-    public String getCountry();
+    String getCountry();
     /**
      * @return the Album release Label
     */
-    public String getLabel();
+    String getLabel();
     /**
      * @return the Album CatalogNo
     */
-    public String getCatalogNo();
+    String getCatalogNo();
     /**
      * @return the Media
     */
-    public String getMedia();
+    String getMedia();
     /**
      * @return the Album Disc Total
     */
-    public String getDiscTotal();
+    String getDiscTotal();
             
     /**
      * @return the Album DiscNo
     */
-    public String getDiscNo();
+    String getDiscNo();
 
 }
