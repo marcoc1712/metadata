@@ -32,6 +32,7 @@ import org.junit.Test;
 
 import com.mc2.audio.metadata.API.AlbumBuilder;
 import com.mc2.audio.metadata.API.Album;
+import com.mc2.audio.metadata.API.Medium;
 import com.mc2.audio.metadata.API.RawKeyValuePair;
 import com.mc2.audio.metadata.API.RawKeyValuePairSource;
 import com.mc2.audio.metadata.API.StatusMessage;
@@ -44,12 +45,38 @@ public class AlbumTest {
         System.setOut(new PrintStream(System.out, true, "utf-8"));
         
     }
+	//@Test
+    public void duplicatetrackNoSingleFiles() throws Exception{
+		
+		String directory = "F:\\SVILUPPO\\04-Leia\\TestCase\\02- flac singoli\\020 - Due dischi, track per disco";
+		printAlbum(directory);
+		
+	
+	}
+	@Test
+    public void duplicatetrackNoDoubleCue() throws Exception{
+		
+		String directory = "F:\\SVILUPPO\\04-Leia\\TestCase\\01- wav+cue\\040 -2 cue, Tracce per Disco";
+		printAlbum(directory);
+	
+	}
+	
+	//@Test
+    public void duplicatetrackNoSingleCue() throws Exception{
+		
+		String directory = "F:\\SVILUPPO\\04-Leia\\TestCase\\01- wav+cue\\030 -Tracce per Disco";
+		printAlbum(directory);
+		//expected error.
+	
+	}
     //@Test
     public void filesAndRawKeyValuePairs() throws Exception{
         
         //String directory = "Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española\\CD1";
         //String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+		
+		
       
         
         Album album = AlbumBuilder.parse(directory);
@@ -64,7 +91,7 @@ public class AlbumTest {
         }
         
     }
-    @Test
+    //@Test
     public void Album() throws Exception{
          
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\ProvaAlbumScan";
@@ -72,9 +99,13 @@ public class AlbumTest {
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\cue con embedde cover";
         //String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         //String directory = "Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española\\CD1";
-        
-        Album album = AlbumBuilder.parse(directory);
-        
+		
+		printAlbum(directory);
+	}
+		
+	private void printAlbum(String directory) throws Exception{
+       
+		Album album = AlbumBuilder.parse(directory);
         
         System.out.println("========================================================================");
         System.out.println("\n");
@@ -89,6 +120,8 @@ public class AlbumTest {
         System.out.println("");
         System.out.println("ALBUM:");
         System.out.println("");
+		System.out.println("URL: "+album.getUrl());
+		System.out.println("");
         System.out.println("Title: "+album.getAlbum() );
         System.out.println("Artist: "+album.getAlbumArtist());
         System.out.println("Genre: "+album.getGenre());
@@ -97,8 +130,6 @@ public class AlbumTest {
         System.out.println("Label: "+album.getLabel());
         System.out.println("Catalog: "+album.getCatalogNo());
         System.out.println("Media: "+album.getMedia());
-        System.out.println("no.: "+album.getDiscNo());
-        System.out.println("by : "+album.getDiscTotal());
        
         System.out.println("");
         System.out.println("STATUS : "+album.getStatus().name());
@@ -118,33 +149,62 @@ public class AlbumTest {
         for (Track track : album.getTrackList()){
                 
             System.out.println("");
-            System.out.println(" - TRACK: "+track.getTrackNo() +" title: "+track.getTitle()+" artist: "+track.getArtist()+" ["+track.getLengthString()+"]");
+            System.out.println(" - TRACK: "+track.getTrackId());
+			System.out.println("   title: "+track.getTitle());
+			System.out.println("   artist: "+track.getArtist());
+			System.out.println("   length "+track.getLength()+" ["+track.getLengthString()+"]");
+			System.out.println();
+			System.out.println("   - URL "+track.getUrl());
+			System.out.println("   - PlayList URL "+track.getPlayListUrl());
+			System.out.println();
+			System.out.println("   - Album Index "+track.getIndex());
+			System.out.println("   - PlayList Index "+track.getPlayListIndex());
+			
 
             System.out.println("");
-            System.out.println("  - FILE:");
+            System.out.println("   - FILE:");
            
             
             System.out.println("");
-            System.out.println("  - METADATA:");
+            System.out.println("   - METADATA:");
 
             TestUtils.printMetadata(track.getMetadataList());
             
             System.out.println("");
-            System.out.println("STATUS : "+track.getStatus().name());
+            System.out.println("   - STATUS : "+track.getStatus().name());
             System.out.println("");
-            System.out.println(" - STATUS MESSAGES:");
+            System.out.println("   - STATUS MESSAGES:");
             for (StatusMessage statusMessage : track.getMessageList()){
             
                 System.out.println(" - "+ statusMessage.toString());
             }
 
         }
-        System.out.println("");
-        System.out.println("  - TOC: "+album.getToc());
-        
-        System.out.println("");
-        System.out.println(" - ARTWORKS:");
-        TestUtils.printArtworks(album.getcoverArtList());
-
+		
+		for (Medium medium  : album.getMediaList()){
+		
+			System.out.println("");
+			System.out.println(" - MEDIUM: "+medium.getMediumId());
+			System.out.println("   index: "+medium.getIndex());
+			System.out.println("   type: "+medium.getType());
+			System.out.println("   number: "+medium.getNumber());
+			System.out.println("   title: "+medium.getTitle());
+			System.out.println();
+			
+			for (Track track : medium.getTrackList()){
+                
+				System.out.println("");
+				System.out.println(" - TRACK: "+track.getTrackId()+" length "+track.getLength()+" ["+track.getLengthString()+"]");
+				System.out.println();
+				System.out.println("   - Album Index "+track.getIndex());
+				System.out.println("   - PlayList Index "+track.getPlayListIndex());
+			}
+			
+			System.out.println(" - TOC: "+medium.getToc());
+		}
+		
+		System.out.println("");
+		System.out.println(" - ARTWORKS:");
+		TestUtils.printArtworks(album.getcoverArtList());
     }
 }

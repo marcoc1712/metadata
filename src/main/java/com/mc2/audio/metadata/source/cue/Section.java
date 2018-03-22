@@ -57,7 +57,6 @@ public class Section implements MetadataSource{
     }
     
     public ArrayList<Command> getCommandList(){
-
             return commandList;
     }
 

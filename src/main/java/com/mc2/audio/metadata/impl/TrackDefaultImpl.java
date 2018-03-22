@@ -24,10 +24,12 @@
  */
 package com.mc2.audio.metadata.impl;
 
+import com.mc2.audio.metadata.API.Album;
 import java.io.File;
 import java.util.ArrayList;
 import com.mc2.audio.metadata.API.Metadata;
 import com.mc2.audio.metadata.API.MetadataKeys;
+import static com.mc2.audio.metadata.API.MetadataKeys.getTrackLevelMetadataAliases;
 import com.mc2.audio.metadata.API.RawKeyValuePairSource;
 import com.mc2.audio.metadata.API.StatusMessage;
 import com.mc2.audio.metadata.API.Track;
@@ -39,71 +41,166 @@ import com.mc2.util.miscellaneous.CalendarUtils;
  */
 public class TrackDefaultImpl implements Track {
 
-    private Integer trackNo; 
+    private String trackId; 
     private File file;
     private Integer offset=0;
     private Integer length=0;
+	
     private String url;
-    private String albumUrl;
-    private Integer index;
+	
+	private String  playListUrl;
+	private Integer playListIndex;
+
+	private Album album;
+	private Integer index;
     
     private final ArrayList<Metadata> metadataList;
     private final ArrayList<RawKeyValuePairSource> rawKeyValuePairSources; 
     private final ArrayList<StatusMessage> messageList;
     
-    public TrackDefaultImpl(Integer trackNo, ArrayList<Metadata> metadataList) {
-        this.trackNo = trackNo;
+    public TrackDefaultImpl(String  trackId, ArrayList<Metadata> metadataList) {
+        this.trackId = trackId;
         this.metadataList = metadataList;
         this.rawKeyValuePairSources =new ArrayList<>();
         this.messageList =new ArrayList<>();
     }
     
-    /**
-     * @return the Album url
-     */
-    @Override
-    public String getAlbumUrl() {
-        return albumUrl;
-    }
-    /**
-     * @param albumUrl the albumUrl to set
-     */
-    public void setAlbumUrl(String albumUrl) {
-        this.albumUrl = albumUrl;
-    }
-     /**
+	/**
+	 * @return the album
+	 */
+	public Album getAlbum() {
+		return album;
+	}
+
+	/**
+	 * @param album the album to set
+	 */
+	public void setAlbum(Album album) {
+		this.album = album;
+	}
+	
+	 /**
      * @return the Index position of the track in the Album (normally trackNo -1).
      */
     @Override
     public Integer getIndex() {
         return index;
     }
+	
     /**
      * @param index the index to set
      */
     public void setIndex(Integer index) {
         this.index = index;
     }
+
     /**
-     * @return the trackNo
+     * @return the file
      */
-    @Override
-    public Integer getTrackNo() {
-        return trackNo;
-    }
-    /**
-     * @return the offset in sectors
-     */
-    @Override
-    public int getOffset() {
-        return offset;
+    public File getFile() {
+        return file;
     }
 
     /**
-     * @param offset the offset in sectors to set
+     * @param file the file to set
      */
-    public void setOffset(int offset) {
-        this.offset = offset;
+    public void setFile(File file) {
+        this.file = file;
+    }  
+	
+	/**
+     * @return the url
+     */
+	@Override
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+	
+	/**
+	 * @param playListUrl the playListUrl to set
+	 */
+	public void setPlayListUrl(String playListUrl) {
+		this.playListUrl = playListUrl;
+	}
+	/**
+     * @return the Album url
+     */
+    @Override
+    public String getPlayListUrl() {
+        return playListUrl;
+    }
+	/**
+	 * @param playListIndex the playListIndex to set
+	 */
+	public void setPlayListIndex(Integer playListIndex) {
+		this.playListIndex = playListIndex;
+	}
+   
+	@Override
+	public Integer getPlayListIndex(){
+		return playListIndex;
+	}
+	
+	public String getMedia() {
+       return this.getMetadataValue(MetadataKeys.METADATA_KEY.MEDIA.name());
+    }
+
+	public String getMedium() {
+		String media = getMedia();
+		String no = getDiscNo();
+		
+		if (!media.isEmpty() && !no.isEmpty()){
+			return media+" "+no;
+		} else if (!no.isEmpty()){
+			return no;
+		}
+		return "";
+	}
+	/**
+     * @return the discNo
+     */
+    public String getDiscNo() {
+       return this.getMetadataValue(MetadataKeys.METADATA_KEY.DISC_NO.name());
+    }
+	
+	/**
+     * @return the discTitle
+     */
+    public String getDiscTitle() {
+       return this.getMetadataValue(MetadataKeys.METADATA_KEY.DISC_SUBTITLE.name());
+    }
+	
+	/**
+     * @return the trackNo
+     */
+    public String getTrackNo() {
+         return this.getMetadataValue(MetadataKeys.METADATA_KEY.TRACK_NO.name());
+    }
+	/**
+     * @return the trackId
+     */
+    @Override
+    public String getTrackId() {
+        return trackId;
+    }
+
+     @Override
+    public String getTitle(){
+    
+        return this.getMetadataValue(MetadataKeys.METADATA_KEY.TITLE.name());
+    }
+	
+    @Override
+    public String getArtist(){
+    
+        return this.getMetadataValue(MetadataKeys.METADATA_KEY.ARTIST.name());
     }
 
     /**
@@ -113,6 +210,13 @@ public class TrackDefaultImpl implements Track {
     public int getLength() {
         return length;
     }
+	/**
+     * @param length the length in sectors to set
+     */
+    public void setLength(int length) {
+        this.length = length;
+    }
+	
     /** @return file length in msec */
     @Override
     public Long getLengthInMillis(){
@@ -124,19 +228,7 @@ public class TrackDefaultImpl implements Track {
 
         return CalendarUtils.getTimeString(getLengthInMillis());
     }
-    /**
-     * @param length the length in sectors to set
-     */
-    public void setLength(int length) {
-        this.length = length;
-    }
-    /**
-     * @return the track End position refferred to the Album (not the file).
-     */
-    @Override
-    public int getEnd() {
-        return offset+length;
-    }
+
     /**
      * @return the metadataList
      */
@@ -194,53 +286,61 @@ public class TrackDefaultImpl implements Track {
         }
         return status;
     }
-    @Override
-    public String getTitle(){
-    
-        return this.getMetadataValue(MetadataKeys.METADATA_KEY.TITLE.name());
-    }
-    @Override
-    public String getArtist(){
-    
-        return this.getMetadataValue(MetadataKeys.METADATA_KEY.ARTIST.name());
-    }
-    /**
-     * @return the url
+   // to be moved by Disc.
+	
+	 /**
+     * @return the offset in sectors
      */
-    @Override
-    public String getUrl() {
-        return url;
-    }
-    /**
-     * @return the file
-     */
-    public File getFile() {
-        return file;
+    
+    public int getOffset() {
+        return offset;
     }
 
     /**
-     * @param file the file to set
+     * @param offset the offset in sectors to set
      */
-    public void setFile(File file) {
-        this.file = file;
-    }    
-
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+	
     /**
-     * @param url the url to set
+     * @return the track End position refferred to the Album (not the file).
      */
-    public void setUrl(String url) {
-        this.url = url;
+    
+    public int getEnd() {
+        return offset+length;
     }
     
-    protected String getMetadataValue(String key){
-        for (Metadata  metadata : metadataList){
+    
+    protected String getMetadataFromTrack(String key){
+        
+		String value="";
+		for (Metadata  metadata : metadataList){
             
             if (metadata.getKey().equals(key)){
-                return metadata.getValue();
+				value = metadata.getValue();
+				if (!value.isEmpty()){return value;}
             }
            
         }
+		ArrayList<String> aliases = getTrackLevelMetadataAliases(key);
+       
+		for (String alias : aliases){
+            
+            value = getMetadataFromTrack(alias);
+            if (!value.isEmpty()){return value;}
+        }
         return "";
     }
+	
+	private  String getMetadataValue(String key){
+	
+		String value=getMetadataFromTrack(key);
+		if (!value.isEmpty()){return value;}
+		
+        value = ((AlbumDefaultImpl)album).getMetadataFromAlbum(key);
+        
+        return value;
+	}
 
 }

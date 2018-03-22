@@ -259,7 +259,7 @@ final public class CueSheetCommandParser {
     private static void parseInputLine(final LineOfInput input) {
    
         COMMAND_KEY commandKey = CommandKeys.getCommandKey(input.getInput());
-        
+
         if (commandKey == null){
             addWarning(input, WARNING_UNPARSEABLE_INPUT);
         } else {
@@ -421,7 +421,12 @@ final public class CueSheetCommandParser {
             }
 
             FileData lastFileData = getLastFileData(input);
-            lastFileData.getTrackData().add(new TrackData(lastFileData, trackNumber, dataType,0,0));
+			
+			TrackData trackData = new TrackData(lastFileData, trackNumber, dataType,0,0);
+			
+			trackData.getCommandList().add(new Command(CommandKeys.COMMAND_KEY.TRACK,"",input.getLineNumber(), trackNumber+""));
+            lastFileData.getTrackData().add(trackData);
+
         }
         else {
           
@@ -742,7 +747,7 @@ final public class CueSheetCommandParser {
     private static void addCommandLine(COMMAND_KEY commandKey, String remSubKey,TrackData trackData, int lineNo, String value){
 
         for (Command command : trackData.getCommandList()){
-        
+       
             if (command.getCommandKey().equals(commandKey) && command.getRemSubKey().equals(remSubKey)){
                 
                 command.addValue(lineNo, value);

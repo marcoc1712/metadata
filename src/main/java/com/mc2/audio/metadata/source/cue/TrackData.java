@@ -25,6 +25,7 @@ import java.util.List;
 //import jwbroek.cuelib.TrackData;
 //import jwbroek.cuelib.Index;
 import com.mc2.audio.metadata.API.Metadata;
+import com.mc2.audio.metadata.API.MetadataKeys;
 import com.mc2.audio.metadata.API.MetadataSource;
 import com.mc2.audio.metadata.source.tags.file.AudioFile;
 import com.mc2.util.miscellaneous.CalendarUtils;
@@ -61,7 +62,7 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
 
     @Override
     public int getNumber() {
-        return super.getNumber(); //To change body of generated methods, choose Tools | Templates.
+        return super.getNumber(); 
     }
     /**
      * @return the offset
@@ -216,5 +217,83 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
         
         return CalendarUtils.getTimeString(getEndInFile());
     }
-    
+    public String getTrackId(){
+		
+		String track = this.getNumber()+"";
+		if (track.length()<2) {track="0"+track;}
+		
+		String disc=getDisc();
+
+		String id="";
+		if (!disc.isEmpty() && !track.isEmpty()){
+		
+			id = disc+"."+track;
+			
+		} else if (!track.isEmpty()){
+			
+			id = track;
+		
+		}
+		
+		return id;
+	}
+	
+	private String getDisc(){
+		
+		Metadata discnumber = this.getMedata(MetadataKeys.METADATA_KEY.DISC_NO.name());
+		
+		if (discnumber == null){
+			discnumber = section.getCuesheet().getMedata(MetadataKeys.METADATA_KEY.DISC_NO.name());
+		}
+		
+		String disc="";
+		
+		if (discnumber != null && 
+		    discnumber.getValue() != null && 
+		    !discnumber.getValue().isEmpty()){
+		
+			disc = discnumber.getValue();
+			if (disc.length()<2) {disc="0"+disc;}
+		}
+		return disc;
+	}
+	
+	private String getMedia(){
+		
+		Metadata meta = this.getMedata(MetadataKeys.METADATA_KEY.MEDIA.name());
+		
+		if (meta == null){
+			meta = section.getCuesheet().getMedata(MetadataKeys.METADATA_KEY.MEDIA.name());
+		}
+		
+		String media="DISC";
+		
+		if (meta != null && 
+		    meta.getValue() != null && 
+		    !meta.getValue().isEmpty()){
+		
+			media = meta.getValue();
+		}
+		return media;
+	}
+	
+	private String getDiscTitle(){
+		
+		Metadata meta = this.getMedata(MetadataKeys.METADATA_KEY.DISC_SUBTITLE.name());
+		
+		if (meta == null){
+			meta = section.getCuesheet().getMedata(MetadataKeys.METADATA_KEY.DISC_SUBTITLE.name());
+		}
+		
+		String title="";
+		
+		if (meta != null && 
+		    meta.getValue() != null && 
+		    !meta.getValue().isEmpty()){
+		
+			title = meta.getValue();
+		}
+		return title;
+	}
+	
 }

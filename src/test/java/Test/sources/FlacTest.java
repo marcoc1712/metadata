@@ -43,9 +43,25 @@ public class FlacTest {
         System.setOut(new PrintStream(System.out, true, "utf-8"));
         
     }
-    @Test
+	@Test
+    public void TestTrackno() throws Exception{
+		
+				
+        String directory = "F:\\SVILUPPO\\04-Leia\\TestCase\\02- flac singoli\\020 - Due dischi, track per disco";
+        String filename = "04-flac16_044100.flac";
+      
+        
+        String path = directory+"/"+filename;
+        
+        Flac audiofile = (Flac)AudioFile.get(path);
+        
+        TestUtils.printAudioFile(audiofile);
+    } 
+	
+    //@Test
     public void TestRead() throws Exception{
-
+		
+				
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         String filename = "flac_16_44100_TAG.flac";
         //String directory ="Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española";

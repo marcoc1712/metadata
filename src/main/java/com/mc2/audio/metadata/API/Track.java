@@ -31,38 +31,34 @@ import java.util.ArrayList;
  * @author marco
  */
 public interface Track {
-
-    /**
-     * @return the track End position refferred to the Album (not the file).
+	
+	/**
+     * @return the playback url of the track
      */
-    int getEnd();
-
-    /**
-     * @return the length
+    String getUrl();
+	
+	/**
+     * @return the playback playlist url 
      */
-    int getLength();
-
-    /** @return file length in msec */
-    Long getLengthInMillis();
-
-    /** @return file length string */
-    String getLengthString();
-
-    /**
-     * @return the metadataList
+	String getPlayListUrl();
+	
+	/**
+     * @return the playback Playlist index position of the track in the playlist,
+	 * strating from 0.
      */
-    ArrayList<Metadata> getMetadataList();
-
-    /**
-     * @return the offset
+    Integer getPlayListIndex();
+	
+	/**
+     * @return the absolute Index position of the track in the album, starting from 0.
      */
-    int getOffset();
-
-    /**
-     * @return the trackNo
+    public Integer getIndex();
+	
+	/**
+     * @return the trackId (normally discNo.trackNo)
      */
-    Integer getTrackNo();
-    /**
+    String getTrackId();
+	
+	/**
      * @return the title
      */
     public String getTitle();
@@ -70,32 +66,40 @@ public interface Track {
      * @return the artist
     */
     public String getArtist();
-    /**
-     * @return the sources of Raw Key Value Pairs, like tag or cue files lines.
+
+	/**
+     * @return the metadataList
+     */
+    ArrayList<Metadata> getMetadataList();
+
+	/**
+     * @return the sources of Raw Key Value Pairs, like tag or cue files commands.
      */
     public ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources();
     
     /**
-     * @return the message List
+     * @return the track length in sectors
      */
-    public ArrayList<StatusMessage> getMessageList();
-    
-    /**
+    int getLength();
+
+    /** 
+	 * @return file length in msec 
+	 */
+    Long getLengthInMillis();
+
+    /** 
+	 * @return file length string
+	 */
+    String getLengthString();
+
+	/**
      * @return the overall Track status
-     */
+    */
     StatusMessage.Severity getStatus();
-    
+	
     /**
-     * @return the url fo the track
-     */
-    public String getUrl();
-    
-    /**
-     * @return the Album url
-     */
-    public String getAlbumUrl();
-     /**
-     * @return the Index position of the track in the Album (normally trackNo -1).
-     */
-    public Integer getIndex();
+     * @return the status message List
+    */
+    public ArrayList<StatusMessage> getMessageList();
+
 }

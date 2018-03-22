@@ -69,21 +69,6 @@ public interface Album {
     ArrayList<Metadata> getMetadataList();
 
     /**
-     * @return the discId offsets
-     */
-    Integer[] getOffsetArray();
-
-    /**
-     * @return the discId offsets
-     */
-    ArrayList<Integer> getOffsets();
-
-    /**
-     * @return the discId offsets
-     */
-    String getToc();
-
-    /**
      * @return the totalLength
      */
     Integer getTotalLength();
@@ -91,7 +76,12 @@ public interface Album {
     /**
      * @return the trackList
      */
-    ArrayList<Track> getTrackList();
+    ArrayList<? extends Track> getTrackList();
+	
+	/**
+     * @return the media
+     */
+    ArrayList<? extends Medium> getMediaList();
 
     /**
      * @return the coverArtList
@@ -131,17 +121,7 @@ public interface Album {
     */
     String getCatalogNo();
     /**
-     * @return the Media
+     * @return the Media descriptor (es. 2 CD + 1 DVD)
     */
-    String getMedia();
-    /**
-     * @return the Album Disc Total
-    */
-    String getDiscTotal();
-            
-    /**
-     * @return the Album DiscNo
-    */
-    String getDiscNo();
-
+	public String getMedia();
 }

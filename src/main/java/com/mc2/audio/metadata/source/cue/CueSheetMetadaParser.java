@@ -61,6 +61,8 @@ public class CueSheetMetadaParser {
     private final static String WARNING_INVALID_DISCID          = "Invalid discId.";
     private final static String WARNING_INVALID_DISC_NUMBER     = "Invalid disc number. Should be a number from 1 to 9999.";
     private final static String WARNING_INVALID_DISC_TOTAL      = "Invalid disc total. Should be a number from 1 to 9999.";
+	private final static String WARNING_INVALID_TRACK_NUMBER    = "Invalid track number. Should be a number from 1 to 9999.";
+	private final static String WARNING_INVALID_TRACK_TOTAL     = "Invalid track total. Should be a number from 1 to 9999.";
 
     private final static String WARNING_FIELD_LENGTH_OVER_80    = "The field is too long to burn as CD-TEXT. The maximum length is 80.";
     private final static String WARNING_DATUM_APPEARS_TOO_OFTEN = "Datum appears too often.";
@@ -176,7 +178,7 @@ public class CueSheetMetadaParser {
     private static void parseCommand(CueSheet cuesheet, Command command) {
         
        COMMAND_KEY commandKey = command.getCommandKey();
-        
+
         switch (commandKey){
 
             case CATALOG:
@@ -207,10 +209,12 @@ public class CueSheetMetadaParser {
     */
     private static void parseCommand(TrackData track, Command command) {
         
-       COMMAND_KEY commandKey = command.getCommandKey();
-        
+        COMMAND_KEY commandKey = command.getCommandKey();
+				
         switch (commandKey){
-
+			case TRACK:
+                parseTrack(track, command);
+                break;
             case PERFORMER:
                 parsePerformer(track.getTrackSection(), command);
                 break;
@@ -572,7 +576,7 @@ public class CueSheetMetadaParser {
     * 
     * @param input
     */
-    private static void parseIsrc(TrackData track, Command command ) {
+    private static void parseIsrc(TrackData track, Command command) {
        
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseIsrc(Command)", command);
 
@@ -615,9 +619,62 @@ public class CueSheetMetadaParser {
         
         logger.exiting(CueSheetMetadaParser.class.getCanonicalName(), "parseIsrc(LineOfInput)");
     }
+	/**
+    * Parse the ISRC command.
+    *
+    * ISRC [code]
+    * International Standard Recording Code of track. Must come after TRACK, but before INDEX.
+    * 
+    * @param input
+    */
+    private static void parseTrack(TrackData track, Command command ) {
+       
+        logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseTrack(Command)", command);
+
+        ArrayList<Command> validCommands= new ArrayList<>();
+        ArrayList<Command> discardedCommands= new ArrayList<>();  
+        ArrayList<Command> invalidCommands= new ArrayList<>();
+        ArrayList<Message> messages = new ArrayList<>();
+        
+        for (int key : command.getValueMap().keySet()){
+            
+            String value = command.getValueMap().get(key);
+            
+            if (!StringUtils.isNumeric(value)) {
+                
+                addWarning(messages, track, key, value, WARNING_INVALID_TRACK_NUMBER);
+                invalidCommands.add(command);
+                
+            } else { 
+                int trackNo = Integer.parseInt(value);
+
+                if (trackNo < 1 || trackNo > 9999) {
+                    addWarning(messages, track, key,  value, WARNING_INVALID_TRACK_NUMBER);
+                    invalidCommands.add(command);
+                
+                } else{
+                    validCommands.add(command);
+                }
+            }
+        }
+         
+        Metadata metadata = addOrUpdateMetadata(track.getTrackSection(), 
+                                            command.getCommandKey(), 
+                                            command.getRemSubKey(),
+                                            METADATA_KEY.TRACK_NO.name(),
+                                            validCommands,
+                                            discardedCommands,
+                                            invalidCommands,
+                                            messages);
+
+        //track.setNumber(metadata.getValue());
+            
+        
+        logger.exiting(CueSheetMetadaParser.class.getCanonicalName(), "parseIsrc(LineOfInput)");
+    }
     /**
     * Parse the REM command. Will recognize and validate a  number of non-standard 
-    * commands used by Exact Audio Copy or generic 'namend' comments (commands).
+    * commands used by Exact Audio Copy or generic 'named' comments (commands).
     * 
     * NOTE: 
     * 

@@ -55,8 +55,11 @@ public class CueTest {
         //String filename = "Albinoni - Adagio.cue";
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\provaDff";
         //String filename = "dff_02-822-400 (dsd64).cue";
-        String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
-        String filename = "12 Concertos Op. 10 (CD 1) CD1.cue";
+        //String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
+        //String filename = "12 Concertos Op. 10 (CD 1) CD1.cue";
+		
+		String directory ="F:\\SVILUPPO\\04-Leia\\TestCase\\01- wav+cue\\030 -1 cue Tracce per Disco";
+		String filename = "test2.cue";
         
         String path = directory+"/"+filename;
         
@@ -67,6 +70,7 @@ public class CueTest {
         
         System.out.println("========================================================================");
         System.out.println("\n");
+		System.out.println("TEST: TestSingleFile");
         System.out.println("Directory:"+ directory);
         System.out.println("File     :"+ filename);
         System.out.println("");
@@ -155,7 +159,7 @@ public class CueTest {
         System.out.println("");
     
     }
-    @Test
+    //@Test
     public void TestMultiFilesAndMultitrackPerFile() throws Exception{
         
         String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione/cue_multiFile_Multitrack";

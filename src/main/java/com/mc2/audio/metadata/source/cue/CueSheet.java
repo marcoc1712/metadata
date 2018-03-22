@@ -30,9 +30,6 @@ import jwbroek.cuelib.LineOfInput;
 import org.jaudiotagger.tag.FieldKey;
 import com.mc2.audio.metadata.API.Metadata;
 import com.mc2.audio.metadata.API.MetadataSource;
-import com.mc2.audio.metadata.API.RawKeyValuePair;
-import com.mc2.audio.metadata.API.RawKeyValuePairSource;
-import com.mc2.audio.metadata.impl.RawKeyValuePairDefaultImpl;
 import com.mc2.audio.metadata.source.tags.file.AudioFile;
 /**
  *

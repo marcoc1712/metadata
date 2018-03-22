@@ -112,7 +112,6 @@ public abstract class AudioFile implements TagsSource, RawKeyValuePairSource, Me
             throw new InvalidAudioFileFormatException ("File format not suupported");
         }
     }
-    
     protected AudioFile (String  path) throws InvalidAudioFileException {
         this.file = new File(path);
         init(file);
@@ -287,5 +286,42 @@ public abstract class AudioFile implements TagsSource, RawKeyValuePairSource, Me
         }
         return out;
     }
-    
+	public String getTrackId(){
+		
+		Metadata tracknumber = this.getMetadata(FieldKey.TRACK);
+		Metadata discnumber = this.getMetadata(FieldKey.DISC_NO);
+		
+		String track="";
+		String disc="";
+		
+		String id="";
+		
+		if (discnumber != null && 
+		    discnumber.getValue() != null && 
+		    !discnumber.getValue().isEmpty()){
+		
+			disc = discnumber.getValue();
+			if (disc.length()<2) {disc="0"+disc;}
+		}
+		
+		if (tracknumber != null && 
+		    tracknumber.getValue() != null && 
+		    !tracknumber.getValue().isEmpty()){
+		
+			track = tracknumber.getValue();
+			if (track.length()<2) {track="0"+track;}
+		}
+		
+		if (!disc.isEmpty() && !track.isEmpty()){
+		
+			id = disc+"."+track;
+			
+		} else if (!track.isEmpty()){
+			
+			id = track;
+		
+		}
+		
+		return id;
+	}
 }
