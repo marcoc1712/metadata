@@ -45,6 +45,18 @@ public class AlbumTest {
         System.setOut(new PrintStream(System.out, true, "utf-8"));
         
     }
+	@Test
+    public void Album() throws Exception{
+        //String directory = "F:\\SVILUPPO\\04-Leia\\TestCase\\DSD SAMPLE";
+        //String filename = "001_DSD128_Tascam DA-3000.dff";
+		
+		//String directory = "Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española\\CD1";
+		//String directory =  "Z:/recorder/Berlziot - Te Deum, Abbado";
+		String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
+		printAlbum(directory);
+		
+		
+	}
 	//@Test
     public void duplicatetrackNoSingleFiles() throws Exception{
 		
@@ -53,7 +65,7 @@ public class AlbumTest {
 		
 	
 	}
-	@Test
+	//@Test
     public void duplicatetrackNoDoubleCue() throws Exception{
 		
 		String directory = "F:\\SVILUPPO\\04-Leia\\TestCase\\01- wav+cue\\040 -2 cue, Tracce per Disco";
@@ -92,21 +104,22 @@ public class AlbumTest {
         
     }
     //@Test
-    public void Album() throws Exception{
+    public void DSD() throws Exception{
          
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\ProvaAlbumScan";
-        String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\Albinoni Adagios - Anthony Camden, Julia Girdwood (1993 Naxos)";
+        //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\Albinoni Adagios - Anthony Camden, Julia Girdwood (1993 Naxos)";
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\cue con embedde cover";
         //String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
         //String directory = "Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española\\CD1";
-		
+		String directory = "F:\\SVILUPPO\\04-Leia\\TestCase\\DSD SAMPLE\\Channel classics";
+		 
 		printAlbum(directory);
 	}
 		
 	private void printAlbum(String directory) throws Exception{
        
 		Album album = AlbumBuilder.parse(directory);
-        
+		        
         System.out.println("========================================================================");
         System.out.println("\n");
         System.out.println("Directory:"+ directory);
@@ -124,12 +137,18 @@ public class AlbumTest {
 		System.out.println("");
         System.out.println("Title: "+album.getAlbum() );
         System.out.println("Artist: "+album.getAlbumArtist());
+		System.out.println("Composer: "+album.getComposers());
         System.out.println("Genre: "+album.getGenre());
         System.out.println("Date: "+album.getDate());
         System.out.println("Country: "+album.getCountry());
         System.out.println("Label: "+album.getLabel());
         System.out.println("Catalog: "+album.getCatalogNo());
+		System.out.println("");
         System.out.println("Media: "+album.getMedia());
+		
+		System.out.println("discNo: "+album.getDisc());
+		System.out.println("discTor: "+album.getTotalDiscs());
+		System.out.println("discTitle: "+album.getDiscTitle());
        
         System.out.println("");
         System.out.println("STATUS : "+album.getStatus().name());
@@ -144,8 +163,7 @@ public class AlbumTest {
         System.out.println("");
         System.out.println(" - METADATA:");
         TestUtils.printMetadata(album.getMetadataList());
-
-        
+		
         for (Track track : album.getTrackList()){
                 
             System.out.println("");

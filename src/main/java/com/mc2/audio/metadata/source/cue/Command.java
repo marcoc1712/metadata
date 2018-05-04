@@ -19,6 +19,7 @@
  */
 package com.mc2.audio.metadata.source.cue;
 
+import static com.mc2.audio.metadata.API.Metadata.SEPARATOR;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.mc2.audio.metadata.source.cue.CommandKeys.COMMAND_KEY;
@@ -87,14 +88,15 @@ public class Command {
         return getValueList().get(0);
     }
     /**
-     * @return values joined in string by "; " added separator.
+     * @return values joined in string by  
+	 * com.mc2.audio.metadata.API.Metadata.SEPARATOR added separator.
      * quotes are removed in multi value string.
      */
     public String getValueString() {
   
         String out="";
         for (String value: getValueList()){
-            if (!out.isEmpty()) {out=out+";";}
+            if (!out.isEmpty()) {out=out+SEPARATOR;}
             out=out+removeQuotes(value);
         }
         return out;

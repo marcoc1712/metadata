@@ -25,7 +25,7 @@ import java.util.List;
 //import jwbroek.cuelib.TrackData;
 //import jwbroek.cuelib.Index;
 import com.mc2.audio.metadata.API.Metadata;
-import com.mc2.audio.metadata.API.MetadataKeys;
+import com.mc2.audio.metadata.API.MetadataKey;
 import com.mc2.audio.metadata.API.MetadataSource;
 import com.mc2.audio.metadata.source.tags.file.AudioFile;
 import com.mc2.util.miscellaneous.CalendarUtils;
@@ -240,10 +240,10 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
 	
 	private String getDisc(){
 		
-		Metadata discnumber = this.getMedata(MetadataKeys.METADATA_KEY.DISC_NO.name());
+		Metadata discnumber = this.getMedata(MetadataKey.METADATA_KEY.DISC_NO.name());
 		
 		if (discnumber == null){
-			discnumber = section.getCuesheet().getMedata(MetadataKeys.METADATA_KEY.DISC_NO.name());
+			discnumber = section.getCuesheet().getMedata(MetadataKey.METADATA_KEY.DISC_NO.name());
 		}
 		
 		String disc="";
@@ -260,10 +260,10 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
 	
 	private String getMedia(){
 		
-		Metadata meta = this.getMedata(MetadataKeys.METADATA_KEY.MEDIA.name());
+		Metadata meta = this.getMedata(MetadataKey.METADATA_KEY.MEDIA.name());
 		
 		if (meta == null){
-			meta = section.getCuesheet().getMedata(MetadataKeys.METADATA_KEY.MEDIA.name());
+			meta = section.getCuesheet().getMedata(MetadataKey.METADATA_KEY.MEDIA.name());
 		}
 		
 		String media="DISC";
@@ -279,10 +279,10 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
 	
 	private String getDiscTitle(){
 		
-		Metadata meta = this.getMedata(MetadataKeys.METADATA_KEY.DISC_SUBTITLE.name());
+		Metadata meta = this.getMedata(MetadataKey.METADATA_KEY.DISC_SUBTITLE.name());
 		
 		if (meta == null){
-			meta = section.getCuesheet().getMedata(MetadataKeys.METADATA_KEY.DISC_SUBTITLE.name());
+			meta = section.getCuesheet().getMedata(MetadataKey.METADATA_KEY.DISC_SUBTITLE.name());
 		}
 		
 		String title="";

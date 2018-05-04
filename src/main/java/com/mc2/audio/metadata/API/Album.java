@@ -62,11 +62,6 @@ public interface Album {
      * @return the overall Album status
      */
     StatusMessage.Severity getStatus();
-            
-    /**
-     * @return the metadataList
-     */
-    ArrayList<Metadata> getMetadataList();
 
     /**
      * @return the totalLength
@@ -77,7 +72,7 @@ public interface Album {
      * @return the trackList
      */
     ArrayList<? extends Track> getTrackList();
-	
+
 	/**
      * @return the media
      */
@@ -99,7 +94,15 @@ public interface Album {
    /**
      * @return the Album composer(s).
     */
-	String getComposer();
+	String getAlbumComposer();
+	/**
+     * @return the composer(s) from tracks.
+    */
+	String getTrackLevelComposers();
+	/**
+     * @return all composer(s)from Album and form tracks.
+    */
+	String getComposers();
     /**
      * @return the Album genre(s);
     */
@@ -120,8 +123,86 @@ public interface Album {
      * @return the Album CatalogNo
     */
     String getCatalogNo();
-    /**
+   
+	/**
+     * @return the Disc number (in case of single disk in a boxset)
+    */
+	public String getDisc();
+	/**
+     * @return the total Discs (in case of single disk in a boxset)
+    */
+    public String getTotalDiscs();
+	/**
+     * @return the Disc title (in case of single disk in a boxset)
+    */
+	public String getDiscTitle();
+	 /**
      * @return the Media descriptor (es. 2 CD + 1 DVD)
     */
 	public String getMedia();
+	
+	/**
+	 * @return the corresponding musicbrainz release ID, if any.
+	 */
+	String getMbReleaseId();
+	
+	 /**
+     * @return the format
+     */
+    public String getFormat();
+	
+	/**
+     * @return the Sampling rate, the number of samples taken per second
+     */
+    public Integer getSampleRate();
+	
+	/**
+	 * @return the bitsPerSample
+	 */
+	public Integer getBitsPerSample();
+
+	/**
+	 * @return the channels
+	 */
+	public String getChannels();
+	
+	/**
+     * @return if the sampling bitRate is variable or constant
+     */
+    public boolean isVariableBitRate();
+	
+	/**
+     * @return bitRate as a number, this is the amount of kilobits of data sampled per second
+     */
+    public long getBitRate();
+	
+	/**
+	 * @return the isLossless
+	 */
+	public Boolean isLossless();
+	
+	/**
+	 * @return ture if the file is in hight resolution Audio
+	*/
+	public Boolean isHiRes();
+	
+	/**
+     * @return the metadataList
+     */
+    ArrayList<Metadata> getMetadataList();
+	
+	ArrayList<? extends MetadataRow> getDescriptionMetadataList();
+	ArrayList<? extends MetadataRow> getCommentMetadataList();
+	ArrayList<? extends MetadataRow> getAwardMetadataList();
+	ArrayList<? extends MetadataRow> getCollectionMetadataList();
+	ArrayList<? extends MetadataRow> getGoodiesMetadataList();
+	ArrayList<? extends MetadataRow> getURLMetadataList();
+	ArrayList<? extends MetadataRow> getMusicDescriptorMetadataList();
+	ArrayList<? extends MetadataRow> getCreditMetadataList();
+	ArrayList<? extends MetadataRow> getOtherInvolvedPersonMetadataList();
+	ArrayList<? extends MetadataRow> getMediaDescriptorMetadataList();
+	ArrayList<? extends MetadataRow> getWorkDescriptorMetadataList();
+	ArrayList<? extends MetadataRow> getMiscellaneaMetadataList();
+	ArrayList<? extends MetadataRow> getRatingMetadataList();
+	ArrayList<? extends MetadataRow> getMetadaWithNoCategory();
 }

@@ -28,6 +28,9 @@ package com.mc2.audio.metadata.impl;
 import java.util.ArrayList;
 import java.util.List;
 import com.mc2.audio.metadata.API.Metadata;
+import com.mc2.audio.metadata.API.MetadataKey;
+import com.mc2.audio.metadata.API.MetadataKey.METADATA_CATEGORY;
+import com.mc2.audio.metadata.API.MetadataKey.METADATA_KEY;
 import com.mc2.audio.metadata.API.MetadataOrigin;
 
 /**
@@ -44,7 +47,7 @@ import com.mc2.audio.metadata.API.MetadataOrigin;
  */
 
 public class MetadataDefaultImpl implements Metadata {
-    
+
     private final boolean defaultMergeDiscarded=false;
     private final boolean defaultMergeInvalid=false;
     
@@ -86,28 +89,19 @@ public class MetadataDefaultImpl implements Metadata {
     @Override
     public String getValue(boolean mergeDiscarded, boolean mergeInvalid){
     
-        String out=getValidValue();
-                       
-        if (out.isEmpty()){
+		String out="";
+		
+		for (String value : this.getValues(mergeDiscarded, mergeInvalid)){
             
-            out=getDiscardedValue();
-            
-        } else if (mergeDiscarded && !getDiscardedValue().isEmpty()){
-            
-            out=out+";"+getDiscardedValue();
-            
-        }
-        if (out.isEmpty()){
-            
-            out=getInvalidValue();
-        
-        }else if (mergeInvalid && !getInvalidValue().isEmpty()){
-            
-            out=out+";"+getInvalidValue();
-            
+			if (!out.isEmpty()){
+                out=out+SEPARATOR+value;
+            } else{
+                out=value;
+            }
         }
         return out;
     }
+	
     /**
      * @return the valid value.
      */
@@ -118,7 +112,7 @@ public class MetadataDefaultImpl implements Metadata {
         
         for (String value : this.getValidValues()){
             if (!out.isEmpty()){
-                out=out+"; "+value;
+                out=out+SEPARATOR+value;
             } else{
                 out=value;
             }
@@ -135,7 +129,7 @@ public class MetadataDefaultImpl implements Metadata {
         
         for (String value : this.getDiscardedValues()){
             if (!out.isEmpty()){
-                out=out+"; "+value;
+                out=out+SEPARATOR+value;
             } else{
                 out=value;
             }
@@ -152,7 +146,7 @@ public class MetadataDefaultImpl implements Metadata {
         
         for (String value : this.getInvalidValues()){
             if (!out.isEmpty()){
-                out=out+"; "+value;
+                out=out+SEPARATOR+value;
             } else{
                 out=value;
             }
@@ -184,7 +178,60 @@ public class MetadataDefaultImpl implements Metadata {
         return this.getValidValues().isEmpty() &&  
                this.getDiscardedValues().isEmpty() &&
                this.getInvalidValues().isEmpty();
-    }   
+    }  
+	/**
+     * @return the values
+    */
+	
+    @Override
+    public ArrayList<String> getValues(){
+        return getValues(defaultMergeDiscarded,defaultMergeInvalid);
+    }
+    /** Return the value, merging values accordingly with the input flags.
+     * @param mergeDiscarded
+     * @param mergeInvalid
+     * @return the values.
+     */
+	@Override
+	public ArrayList<String> getValues(boolean mergeDiscarded, boolean mergeInvalid){
+		
+		ArrayList<String> out= getValidValues();
+		
+		if (out.isEmpty()){
+            
+            out=getDiscardedValues();
+			
+		} else if (mergeDiscarded && !getDiscardedValues().isEmpty()){
+			
+			for (String value : this.getDiscardedValues()){
+				
+				if (!out.contains(value)){
+
+					out.add(value);
+
+				} 
+			}
+		} 
+		
+		if (out.isEmpty()){
+            
+            out=getInvalidValues();
+        
+        }else if (mergeInvalid && !getInvalidValues().isEmpty()){
+            
+            for (String value : this.getInvalidValues()){
+				
+				if (!out.contains(value)){
+
+					out.add(value);
+
+				} 
+			}
+            
+        }
+        return out;
+        		
+	}
     /**
      * @return the valid values
      */
@@ -279,5 +326,52 @@ public class MetadataDefaultImpl implements Metadata {
         }
         return false;
     }
+
+	@Override
+	public METADATA_KEY getAlbumLevelMetadataKey() {
+		
+		if (this.getKey() == null ) return null;
+		
+		String generic=this.getKey();
+		String alias = MetadataKey.getAlbumLevelMetadataAlias(generic);
+		
+		if (alias != null ){generic = alias;}
+		
+		return MetadataKey.getByName(generic);
+	}
+
+	@Override
+	public METADATA_KEY getTrackLevelMetadataKey() {
+		
+		if (this.getKey() == null ) return null;
+		
+		String generic=this.getKey();
+		String alias = MetadataKey.getTrackLevelMetadataAlias(generic);
+		
+		if (alias != null){generic = alias;}
+		
+		return MetadataKey.getByName(generic);
+	}
+	
+	@Override
+	public METADATA_CATEGORY getAlbumLevelCategory() {
+		
+		
+		METADATA_KEY mk = getAlbumLevelMetadataKey();
+		
+		if (mk == null) return null;
+
+		return mk.getAlbumLevelCategory();	
+	}
+
+	@Override
+	public MetadataKey.METADATA_CATEGORY getTrackLevelCategory() {
+	
+		METADATA_KEY mk = getTrackLevelMetadataKey();
+		
+		if (mk == null) return null;
+
+		return mk.getTrackLevelCategory();	
+	}
 }
     

@@ -24,6 +24,8 @@
  */
 package com.mc2.audio.metadata.API;
 
+import com.mc2.audio.metadata.API.MetadataKey.METADATA_CATEGORY;
+import com.mc2.audio.metadata.API.MetadataKey.METADATA_KEY;
 import java.util.ArrayList;
 
 /**
@@ -32,6 +34,8 @@ import java.util.ArrayList;
  */
 public interface Metadata {
     
+	public static final String  SEPARATOR = ";";
+	
     public enum STATUS {
     
         VALID,
@@ -100,11 +104,46 @@ public interface Metadata {
      * @return the value.
      */
     String getValue(boolean mergeDiscarded, boolean mergeInvalid);
-
+	
+	 /**
+     * @return the values
+     */
+	ArrayList<String> getValues();
+	
+	 /** Return the value, merging values accordingly with the input flags.
+     * @param mergeDiscarded
+     * @param mergeInvalid
+     * @return the values.
+     */
+	ArrayList<String> getValues(boolean mergeDiscarded, boolean mergeInvalid);
+			
     /**
      * True if the metadata carry no values (valid or discarded).
      * @return isEmpty.
      */
     boolean isEmpty();
+	
+	 /**
+     * 'standard' name  for the metadata Key, at Album level.
+	 * @return METADATA_KEY
+     */
+	METADATA_KEY getAlbumLevelMetadataKey();
+	
+	/**
+     * 'standard' name  for the metadata Key, at Track level.
+	 * @return METADATA_KEY
+     */
+	METADATA_KEY getTrackLevelMetadataKey();
+	
+	 /**
+     * category in witch the metadata is listed at Album level.
+	 * @return METADATA_CATEGORY
+     */
+	METADATA_CATEGORY getAlbumLevelCategory();
+	/**
+     * category in witch the metadata is listed at Track level.
+     * @return METADATA_CATEGORY
+	 */
+	METADATA_CATEGORY getTrackLevelCategory();
     
 }

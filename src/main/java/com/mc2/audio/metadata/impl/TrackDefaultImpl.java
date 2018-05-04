@@ -28,8 +28,9 @@ import com.mc2.audio.metadata.API.Album;
 import java.io.File;
 import java.util.ArrayList;
 import com.mc2.audio.metadata.API.Metadata;
-import com.mc2.audio.metadata.API.MetadataKeys;
-import static com.mc2.audio.metadata.API.MetadataKeys.getTrackLevelMetadataAliases;
+import com.mc2.audio.metadata.API.MetadataKey;
+import static com.mc2.audio.metadata.API.MetadataKey.getAlbumLevelMetadataAliases;
+import static com.mc2.audio.metadata.API.MetadataKey.getTrackLevelMetadataAliases;
 import com.mc2.audio.metadata.API.RawKeyValuePairSource;
 import com.mc2.audio.metadata.API.StatusMessage;
 import com.mc2.audio.metadata.API.Track;
@@ -54,6 +55,15 @@ public class TrackDefaultImpl implements Track {
 	private Album album;
 	private Integer index;
     
+	private String  format;
+	private Integer sampleRate;
+	private Integer bitsPerSample;
+	private String  channels;
+	private Boolean isVariableBitRate;
+	private	Long    bitRate;
+	private Boolean isLossless;
+	
+	
     private final ArrayList<Metadata> metadataList;
     private final ArrayList<RawKeyValuePairSource> rawKeyValuePairSources; 
     private final ArrayList<StatusMessage> messageList;
@@ -148,8 +158,118 @@ public class TrackDefaultImpl implements Track {
 		return playListIndex;
 	}
 	
+	/**
+	 * @return the format
+	 */
+	@Override
+	public String getFormat() {
+		return format;
+	}
+
+	/**
+	 * @return the sampleRate
+	 */
+	@Override
+	public Integer getSampleRate() {
+		return sampleRate;
+	}
+
+	/**
+	 * @return the bitsPerSample
+	 */
+	@Override
+	public Integer getBitsPerSample() {
+		return bitsPerSample;
+	}
+
+	/**
+	 * @return the channels
+	 */
+	@Override
+	public String getChannels() {
+		return channels;
+	}
+	/**
+     * @return if the sampling bitRate is variable or constant
+     */
+	@Override
+    public boolean isVariableBitRate(){
+		return isVariableBitRate;
+	};
+	
+	/**
+     * @return bitRate as a number, this is the amount of kilobits of data sampled per second
+     */
+	@Override
+    public long getBitRate(){
+		return bitRate;
+	};
+	/**
+	 * @return the isLossless
+	 */
+	@Override
+	public Boolean isLossless() {
+		return isLossless;
+	}
+	/**
+	 * @return ture if the file is in hight resolution Audio
+	*/
+	@Override
+	public Boolean isHiRes(){
+		
+		if (getBitsPerSample() != null && getBitsPerSample() >16) return true;
+		if (getSampleRate() != null && getSampleRate() > 44100) return true;
+		
+		return false;
+	}
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	/**
+	 * @param sampleRate the sampleRate to set
+	 */
+	public void setSampleRate(Integer sampleRate) {
+		this.sampleRate = sampleRate;
+	}
+
+	/**
+	 * @param bitsPerSample the bitsPerSample to set
+	 */
+	public void setBitsPerSample(Integer bitsPerSample) {
+		this.bitsPerSample = bitsPerSample;
+	}
+
+	/**
+	 * @param channels the channels to set
+	 */
+	public void setChannels(String channels) {
+		this.channels = channels;
+	}
+	/**
+	 * @param isLossless the isLossless to set
+	 */
+	public void setLossless(Boolean isLossless) {
+		this.isLossless = isLossless;
+	}
+	/**
+	 * @param isVariableBitRate the VariableBitRate to set
+	 */
+	public void setVariableBitRate(Boolean isVariableBitRate) {
+		this.isVariableBitRate = isVariableBitRate;
+	}
+	/**
+	 * @param bitRate the bitrate to set
+	 */
+	public void setBitRate(Long bitRate) {
+		this.bitRate = bitRate;
+	}
+	
 	public String getMedia() {
-       return this.getMetadataValue(MetadataKeys.METADATA_KEY.MEDIA.name());
+       return this.getMetadataValue(MetadataKey.METADATA_KEY.MEDIA.name());
     }
 
 	public String getMedium() {
@@ -167,21 +287,21 @@ public class TrackDefaultImpl implements Track {
      * @return the discNo
      */
     public String getDiscNo() {
-       return this.getMetadataValue(MetadataKeys.METADATA_KEY.DISC_NO.name());
+       return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_NO.name());
     }
 	
 	/**
      * @return the discTitle
      */
     public String getDiscTitle() {
-       return this.getMetadataValue(MetadataKeys.METADATA_KEY.DISC_SUBTITLE.name());
+       return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_SUBTITLE.name());
     }
 	
 	/**
      * @return the trackNo
      */
     public String getTrackNo() {
-         return this.getMetadataValue(MetadataKeys.METADATA_KEY.TRACK_NO.name());
+         return this.getMetadataValue(MetadataKey.METADATA_KEY.TRACK_NO.name());
     }
 	/**
      * @return the trackId
@@ -194,13 +314,13 @@ public class TrackDefaultImpl implements Track {
      @Override
     public String getTitle(){
     
-        return this.getMetadataValue(MetadataKeys.METADATA_KEY.TITLE.name());
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.TITLE.name());
     }
 	
     @Override
     public String getArtist(){
     
-        return this.getMetadataValue(MetadataKeys.METADATA_KEY.ARTIST.name());
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.ARTIST.name());
     }
 
     /**
@@ -311,7 +431,36 @@ public class TrackDefaultImpl implements Track {
         return offset+length;
     }
     
-    
+    protected String getAlbumMetadataFromTrack(String key){
+	
+		String value="";
+		for (Metadata  metadata : metadataList){
+            
+            if (metadata.getKey().equals(key)){
+				value = metadata.getValue();
+				if (!value.isEmpty()){return value;}
+            }
+           
+        }
+		ArrayList<String> aliases = getAlbumLevelMetadataAliases(key);
+
+		// WARNING: it keeps only the first found.
+		for (String alias : aliases){
+            
+            value = getMetadataFromTrack(alias);
+            if (!value.isEmpty()){return value;}
+        }
+        aliases = getTrackLevelMetadataAliases(key);
+
+		// WARNING: it keeps only the first found.
+		for (String alias : aliases){
+            
+            value = getMetadataFromTrack(alias);
+            if (!value.isEmpty()){return value;}
+        }
+        return "";
+		
+	}
     protected String getMetadataFromTrack(String key){
         
 		String value="";
@@ -324,7 +473,8 @@ public class TrackDefaultImpl implements Track {
            
         }
 		ArrayList<String> aliases = getTrackLevelMetadataAliases(key);
-       
+
+		// WARNING: it keeps only the first found.
 		for (String alias : aliases){
             
             value = getMetadataFromTrack(alias);
@@ -333,14 +483,34 @@ public class TrackDefaultImpl implements Track {
         return "";
     }
 	
-	private  String getMetadataValue(String key){
+	protected ArrayList<String> getMetadataValuesFromTrack(String key){
+        
+		ArrayList<String> values= new ArrayList<>();
+		for (Metadata  metadata : metadataList){
+            
+            if (metadata.getKey().equals(key)){
+				values = metadata.getValues();
+				if (!values.isEmpty()){return values;}
+            }
+           
+        }
+		ArrayList<String> aliases = getTrackLevelMetadataAliases(key);
+       
+		for (String alias : aliases){
+            
+            values = getMetadataValuesFromTrack(alias);
+            if (!values.isEmpty()){return values;}
+        }
+        return values;
+    }
+	
+	protected  String getMetadataValue(String key){
 	
 		String value=getMetadataFromTrack(key);
 		if (!value.isEmpty()){return value;}
 		
-        value = ((AlbumDefaultImpl)album).getMetadataFromAlbum(key);
+        value = ((AlbumDefaultImpl)album).getMetadataValueFromAlbum(key);
         
         return value;
 	}
-
 }

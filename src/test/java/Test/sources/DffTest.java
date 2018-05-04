@@ -42,8 +42,12 @@ public class DffTest {
     @Test
     public void TestRead() throws Exception{
 
-        String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione/provaDff";
-        String filename = "dff_02-822-400 (dsd64)_TAG.dff";
+        //String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione/provaDff";
+        //String filename = "dff_02-822-400 (dsd64)_TAG.dff";
+		
+		String directory = "F:/SVILUPPO/04-Leia/TestCase//04 DSD";
+        String filename = "001_DSD128_Tascam DA-3000.dff";
+		
         String path = directory+"/"+filename;
         
         try{

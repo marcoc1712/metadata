@@ -36,9 +36,9 @@ import com.mc2.audio.metadata.API.Metadata;
 
 import com.mc2.audio.metadata.impl.CueMetadataOrigin;
 import com.mc2.audio.metadata.source.cue.CommandKeys.COMMAND_KEY;
-import com.mc2.audio.metadata.API.MetadataKeys.METADATA_KEY;
-import static com.mc2.audio.metadata.API.MetadataKeys.getAlbumLevelMetadataAlias;
-import static com.mc2.audio.metadata.API.MetadataKeys.getTrackLevelMetadataAlias;
+import com.mc2.audio.metadata.API.MetadataKey.METADATA_KEY;
+import static com.mc2.audio.metadata.API.MetadataKey.getAlbumLevelMetadataAlias;
+import static com.mc2.audio.metadata.API.MetadataKey.getTrackLevelMetadataAlias;
 import com.mc2.audio.metadata.impl.MetadataDefaultImpl;
 
 /**

@@ -92,6 +92,44 @@ public interface Track {
 	 */
     String getLengthString();
 
+	 /**
+     * @return the format
+     */
+    public String getFormat();
+	
+	/**
+     * @return the Sampling rate, the number of samples taken per second
+     */
+    public Integer getSampleRate();
+	
+	/**
+	 * @return the bitsPerSample
+	 */
+	public Integer getBitsPerSample();
+
+	/**
+	 * @return the channels
+	 */
+	public String getChannels();
+	
+	/**
+     * @return if the sampling bitRate is variable or constant
+     */
+    public boolean isVariableBitRate();
+	
+	/**
+     * @return bitRate as a number, this is the amount of kilobits of data sampled per second
+     */
+    public long getBitRate();
+	
+	/**
+	 * @return the isLossless
+	 */
+	public Boolean isLossless();
+	/**
+	 * @return ture if the file is in hight resolution Audio
+	*/
+	public Boolean isHiRes();
 	/**
      * @return the overall Track status
     */

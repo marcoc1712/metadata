@@ -43,11 +43,10 @@ import com.mc2.audio.metadata.source.tags.file.AudioFile;
 import com.mc2.audio.metadata.impl.AlbumDefaultImpl;
 import com.mc2.audio.metadata.API.CoverArt;
 import com.mc2.audio.metadata.API.Metadata;
-import static com.mc2.audio.metadata.API.MetadataKeys.getAlbumLevelMetadataAlias;
-import static com.mc2.audio.metadata.API.MetadataKeys.getTrackLevelMetadataAlias;
+import static com.mc2.audio.metadata.API.MetadataKey.getAlbumLevelMetadataAlias;
+import static com.mc2.audio.metadata.API.MetadataKey.getTrackLevelMetadataAlias;
 import com.mc2.audio.metadata.API.StatusMessage;
 import com.mc2.audio.metadata.API.StatusMessage.Severity;
-import com.mc2.audio.metadata.API.Track;
 import com.mc2.audio.metadata.impl.GenericStatusMessage;
 import com.mc2.audio.metadata.impl.TrackDefaultImpl;
 import com.mc2.audio.metadata.source.coverart.FileCoverArt;
@@ -163,6 +162,14 @@ public class DirectoryParser {
 								track.setUrl("");
 								track.setPlayListUrl("");
 								
+								track.setFormat("");
+								track.setSampleRate(0);
+								track.setBitsPerSample(0);
+								track.setChannels("");
+								track.setLossless(false);
+								track.setVariableBitRate(false);
+								track.setBitRate(0L);
+								
 
 							} else if ( track.getFile() != null && audiofile.getFile()!= track.getFile() &&
 										track.getLength() !=0 && trackData.getLength()!= track.getLength() ||
@@ -174,13 +181,79 @@ public class DirectoryParser {
 								track.setUrl("");
 								track.setPlayListUrl("");
 								
+								if (track.getFormat() !="" && audiofile.getAudioHeader().getFormat()!= track.getFormat()){
+
+									track.setFormat("");
+
+									} else{
+
+										track.setFormat(audiofile.getAudioHeader().getFormat());
+								} 
+
+								if (track.getSampleRate() !=0 && audiofile.getAudioHeader().getSampleRateAsNumber()!= track.getSampleRate()){
+
+										track.setSampleRate(0);
+
+									} else{
+
+										track.setSampleRate(audiofile.getAudioHeader().getSampleRateAsNumber());
+								}
+								if (track.getBitsPerSample() !=0 && audiofile.getAudioHeader().getBitsPerSample()!= track.getBitsPerSample()){
+
+										track.setBitsPerSample(0);
+
+									} else{
+
+										track.setBitsPerSample(audiofile.getAudioHeader().getBitsPerSample());
+								}
+								if (track.getChannels() !="" && audiofile.getAudioHeader().getChannels()!= track.getChannels()){
+
+										track.setChannels("");
+
+									} else{
+
+										track.setChannels(audiofile.getAudioHeader().getChannels());
+								}
+								if (track.isVariableBitRate()&& !audiofile.getAudioHeader().isVariableBitRate()){
+
+										track.setVariableBitRate(false);
+
+									} else{
+
+										track.setVariableBitRate(audiofile.getAudioHeader().isVariableBitRate());
+								}
+								if (track.getBitRate()!=0 && audiofile.getAudioHeader().getBitRateAsNumber()!= track.getBitRate()){
+
+										track.setBitRate(0L);
+
+									} else{
+
+										track.setBitRate(audiofile.getAudioHeader().getBitRateAsNumber());
+								}
+								if (track.isLossless()  && !audiofile.getAudioHeader().isLossless()){
+
+										track.setLossless(false);
+
+									} else{
+
+										track.setLossless(audiofile.getAudioHeader().isLossless());
+								}
+								
 
 							} else {
 
 								track.setFile(audiofile.getFile());
 								track.setLength(trackData.getLength());
 								track.setOffset(trackData.getOffset());
-
+								
+								track.setFormat(audiofile.getAudioHeader().getFormat());
+								track.setSampleRate(audiofile.getAudioHeader().getSampleRateAsNumber());
+								track.setBitsPerSample(audiofile.getAudioHeader().getBitsPerSample());
+								track.setChannels(audiofile.getAudioHeader().getChannels());
+								track.setVariableBitRate(audiofile.getAudioHeader().isVariableBitRate());
+								track.setBitRate(audiofile.getAudioHeader().getBitRateAsNumber());
+								track.setLossless(audiofile.getAudioHeader().isLossless());
+								
 								if (trackCount > 1){
 
 									track.setUrl(audiofile.getFile().getCanonicalPath()+"#"+trackData.getStartInFileInMillis()/1000+"-"+(trackData.getStartInFileInMillis()+trackData.getLengthInMillis())/1000);
@@ -192,6 +265,7 @@ public class DirectoryParser {
 								}
 								
 								track.setPlayListUrl(cueFile.getSourceId());
+
 							}
 
 						}
@@ -221,6 +295,14 @@ public class DirectoryParser {
 						track.setFile(audiofile.getFile());
 						track.setLength( audiofile.getAudioHeader().getTrackLength()*75); //in auidiofile header is expressed in secs.
 						track.setUrl(audiofile.getFile().getCanonicalPath());
+						
+						track.setFormat(audiofile.getAudioHeader().getFormat());
+						track.setSampleRate(audiofile.getAudioHeader().getSampleRateAsNumber());
+						track.setBitsPerSample(audiofile.getAudioHeader().getBitsPerSample());
+						track.setChannels(audiofile.getAudioHeader().getChannels());
+						track.setVariableBitRate(audiofile.getAudioHeader().isVariableBitRate());
+						track.setBitRate(audiofile.getAudioHeader().getBitRateAsNumber());
+						track.setLossless(audiofile.getAudioHeader().isLossless());
 
 					 } else {    
 
@@ -258,7 +340,65 @@ public class DirectoryParser {
 							//track.setOffset(0);
 						}  
 					}
+					
+					if (track.getFormat() !="" && audiofile.getAudioHeader().getFormat()!= track.getFormat()){
 
+							track.setFormat("");
+
+						} else{
+
+							track.setFormat(audiofile.getAudioHeader().getFormat());
+					} 
+					
+					if (track.getSampleRate() !=0 && audiofile.getAudioHeader().getSampleRateAsNumber()!= track.getSampleRate()){
+
+							track.setSampleRate(0);
+
+						} else{
+
+							track.setSampleRate(audiofile.getAudioHeader().getSampleRateAsNumber());
+					}
+					if (track.getBitsPerSample() !=0 && audiofile.getAudioHeader().getBitsPerSample()!= track.getBitsPerSample()){
+
+							track.setBitsPerSample(0);
+
+						} else{
+
+							track.setBitsPerSample(audiofile.getAudioHeader().getBitsPerSample());
+					}
+					if (track.getChannels() !="" && audiofile.getAudioHeader().getChannels()!= track.getChannels()){
+
+							track.setChannels("");
+
+						} else{
+
+							track.setChannels(audiofile.getAudioHeader().getChannels());
+					}
+					if (track.isVariableBitRate() && !audiofile.getAudioHeader().isVariableBitRate()){
+
+							track.setVariableBitRate(false);
+
+						} else{
+
+							track.setVariableBitRate(audiofile.getAudioHeader().isVariableBitRate());
+					}
+					if (track.getBitRate()!=0 && audiofile.getAudioHeader().getBitRateAsNumber()!= track.getBitRate()){
+
+							track.setBitRate(0L);
+
+						} else{
+
+							track.setBitRate(audiofile.getAudioHeader().getBitRateAsNumber());
+					}
+					if (track.isLossless()  && !audiofile.getAudioHeader().isLossless()){
+
+							track.setLossless(false);
+
+						} else{
+
+							track.setLossless(audiofile.getAudioHeader().isLossless());
+					}
+					
 					track.addRawKeyValuePairSource(audiofile);
 
 				} else {
@@ -405,6 +545,5 @@ public class DirectoryParser {
 			
 		}
 		return false;
-	}
-   
+	}  
 }
