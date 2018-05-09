@@ -394,8 +394,20 @@ public class CueSheetMetadaParser {
                 validCommands.add(command);
             }
         }
+
+        if (section instanceof TrackSection) {
+            Metadata metadata = addOrUpdateMetadata(section, 
+                                                command.getCommandKey(), 
+                                                command.getRemSubKey(),
+                                                METADATA_KEY.ARTIST.name(),
+                                                validCommands,
+                                                discardedCommands,
+                                                invalidCommands,
+                                                messages);
+            ((TrackSection)section).getTrackdata().setPerformer(metadata.getValue());
         
-        Metadata metadata = addOrUpdateMetadata(section, 
+        } else{
+             Metadata metadata = addOrUpdateMetadata(section, 
                                                 command.getCommandKey(), 
                                                 command.getRemSubKey(),
                                                 METADATA_KEY.ALBUM_ARTIST.name(),
@@ -403,13 +415,6 @@ public class CueSheetMetadaParser {
                                                 discardedCommands,
                                                 invalidCommands,
                                                 messages);
-        
-        if (section instanceof TrackSection) {
-            
-            ((TrackSection)section).getTrackdata().setPerformer(metadata.getValue());
-        
-        } else{
-            
             section.getCuesheet().setPerformer(metadata.getValue());
         }
         

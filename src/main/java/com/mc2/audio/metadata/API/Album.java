@@ -83,6 +83,11 @@ public interface Album {
      */
     ArrayList<CoverArt> getcoverArtList();
    
+	/**
+	 *@return the most representative coverArt
+	 */
+	CoverArt getCoverArt();
+	
     /**
      * @return the Album title
     */
@@ -205,4 +210,11 @@ public interface Album {
 	ArrayList<? extends MetadataRow> getMiscellaneaMetadataList();
 	ArrayList<? extends MetadataRow> getRatingMetadataList();
 	ArrayList<? extends MetadataRow> getMetadaWithNoCategory();
+	
+	/*
+	* returns the complete and unordered list of tracks extracted form all the
+	* files in the directory. This is similar to a playlist, but is made by 'real' 
+	* files.
+	*/
+	ArrayList<? extends Track> getSingleTrackList();
 }

@@ -25,7 +25,6 @@
 package com.mc2.audio.metadata.impl;
 
 import com.mc2.audio.metadata.API.Metadata;
-import com.mc2.audio.metadata.API.MetadataKey;
 import com.mc2.audio.metadata.API.MetadataKey.METADATA_CATEGORY;
 import com.mc2.audio.metadata.API.MetadataKey.METADATA_LEVEL;
 import com.mc2.audio.metadata.API.Track;
@@ -42,14 +41,14 @@ public class MetadataTable {
 	private final METADATA_LEVEL level;
 	private final AlbumDefaultImpl album;
 	private final TrackDefaultImpl track;
-	private final List<MetadataRowDefaultImpl> metadataCategoryList;
+	private final List<MetadataRowDefaultImpl> metadataRowList;
 	
 	public MetadataTable(TrackDefaultImpl track){
 		
 		this.level = METADATA_LEVEL.TRACK;
 		this.album = (AlbumDefaultImpl)track.getAlbum();
 		this.track = track;
-		this.metadataCategoryList = new ArrayList<>();
+		this.metadataRowList = new ArrayList<>();
 		
 		ArrayList<String> keys= new ArrayList<>();
 		
@@ -57,10 +56,11 @@ public class MetadataTable {
 
 			addTrackMetadata(metadata, keys);
 		}
-		
-		for (Metadata metadata : this.album.getMetadataList()){
+		if (this.album != null) {
+			for (Metadata metadata : this.album.getMetadataList()){
 
-			addTrackMetadata(metadata, keys);
+				addTrackMetadata(metadata, keys);
+			}
 		}
 		
 	}
@@ -70,14 +70,15 @@ public class MetadataTable {
 		this.level = METADATA_LEVEL.ALBUM;
 		this.album = album;
 		this.track = null;
-		this.metadataCategoryList = new ArrayList<>();
+		this.metadataRowList = new ArrayList<>();
 		
 		ArrayList<String> keys= new ArrayList<>();
-		
+
 		for (Metadata metadata : this.album.getMetadataList()){
 
 			addAlbumMetadata(metadata, keys);
 		}
+		
 		for (Track track : this.album.getTrackList() ){
 			for (Metadata metadata : track.getMetadataList()){
 				addAlbumMetadata(metadata, keys);
@@ -101,10 +102,14 @@ public class MetadataTable {
 		if (!keys.contains(metadataKey)){
 
 			keys.add(metadataKey);
-
-			String albumValue   = this.album.getMetadataValueFromAlbum(metadataKey);
-			String tracksValue  = this.album.getMetadataValueFromTracksIfTheSame(metadataKey);
-			String value  = albumValue != null && !albumValue.isEmpty() ? albumValue : tracksValue;
+			
+			String albumValue=this.album.cleanMetadada(this.album.getMetadataValueFromAlbum(metadataKey));
+			String tracksCommonValue =this.album.cleanMetadada(this.album.getMetadataValueFromTracksIfTheSame(metadataKey));
+			String value;
+			
+			if (albumValue.equals(tracksCommonValue)) value = albumValue;
+			else if (albumValue.isEmpty()) value = tracksCommonValue;
+			else value = "";
 
 			if (value != null && !value.isEmpty()){
 
@@ -116,10 +121,10 @@ public class MetadataTable {
 										 metadataCategoryName,
 										 metadataKey,
 										 albumValue,
-										 tracksValue,
+										 tracksCommonValue,
 										 value
 					);
-				metadataCategoryList.add(metadataCategory);
+				metadataRowList.add(metadataCategory);
 			}
 		}
 	}
@@ -141,8 +146,9 @@ public class MetadataTable {
 
 			keys.add(metadataKey);
 
-			String albumValue   = this.album.getMetadataValueFromAlbum(metadataKey);
+			String albumValue   = this.album != null ? this.album.getMetadataValueFromAlbum(metadataKey) : "";
 			String tracksValue  = this.track.getMetadataFromTrack(metadataKey);
+			
 			String value  = tracksValue != null && !tracksValue.isEmpty() ? tracksValue : albumValue;
 
 			if (value != null && !value.isEmpty()){
@@ -158,7 +164,7 @@ public class MetadataTable {
 										 tracksValue,
 										 value
 					);
-				metadataCategoryList.add(metadataCategory);
+				metadataRowList.add(metadataCategory);
 			}
 		}
 	}
@@ -166,7 +172,7 @@ public class MetadataTable {
 		
 		ArrayList<MetadataRowDefaultImpl> out = new ArrayList<>();
 		
-		for (MetadataRowDefaultImpl mk : metadataCategoryList){
+		for (MetadataRowDefaultImpl mk : metadataRowList){
 			
 			if  (mk.getCategory() != null && mk.getCategory().equals(category)){		
 				out.add(mk);
@@ -178,7 +184,7 @@ public class MetadataTable {
 		
 		ArrayList<MetadataRowDefaultImpl> out = new ArrayList<>();
 		
-		for (MetadataRowDefaultImpl mk : metadataCategoryList){
+		for (MetadataRowDefaultImpl mk : metadataRowList){
 			
 			if  (mk.getCategory() == null){		
 				out.add(mk);

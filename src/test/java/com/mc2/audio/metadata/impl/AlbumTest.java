@@ -1,3 +1,5 @@
+package com.mc2.audio.metadata.impl;
+
 /*
  * Library for manipulating metadata from Audiofiles and cue sheets.
  *
@@ -37,6 +39,7 @@ import com.mc2.audio.metadata.API.RawKeyValuePair;
 import com.mc2.audio.metadata.API.RawKeyValuePairSource;
 import com.mc2.audio.metadata.API.StatusMessage;
 import com.mc2.audio.metadata.API.Track;
+import java.util.ArrayList;
 
 public class AlbumTest {
     @Before
@@ -49,11 +52,12 @@ public class AlbumTest {
     public void Album() throws Exception{
         //String directory = "F:\\SVILUPPO\\04-Leia\\TestCase\\DSD SAMPLE";
         //String filename = "001_DSD128_Tascam DA-3000.dff";
-		
-		//String directory = "Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española\\CD1";
+		//String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
+		String directory = "Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española\\CD1";
 		//String directory =  "Z:/recorder/Berlziot - Te Deum, Abbado";
-		String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
-		printAlbum(directory);
+		//String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
+		//String directory = "Y:/Audiophile/aavv/The Best acoustic Album In The World... Ever (2005 EMI)/cd2";
+		printAlbum(directory, true);
 		
 		
 	}
@@ -115,8 +119,10 @@ public class AlbumTest {
 		 
 		printAlbum(directory);
 	}
-		
 	private void printAlbum(String directory) throws Exception{
+		printAlbum(directory, false);
+	}	
+	private void printAlbum(String directory, Boolean single) throws Exception{
        
 		Album album = AlbumBuilder.parse(directory);
 		        
@@ -164,7 +170,15 @@ public class AlbumTest {
         System.out.println(" - METADATA:");
         TestUtils.printMetadata(album.getMetadataList());
 		
-        for (Track track : album.getTrackList()){
+		ArrayList<? extends Track> tracks = new ArrayList<>();
+		if (single){
+			tracks = album.getSingleTrackList();
+		} else {
+			tracks = album.getTrackList();
+		}
+		
+		
+        for (Track track : tracks){
                 
             System.out.println("");
             System.out.println(" - TRACK: "+track.getTrackId());
@@ -178,6 +192,9 @@ public class AlbumTest {
 			System.out.println("   - Album Index "+track.getIndex());
 			System.out.println("   - PlayList Index "+track.getPlayListIndex());
 			
+			System.out.println("");
+			System.out.println(" - ARTWORKS:");
+			TestUtils.printArtworks(track.getCoverArtList());
 
             System.out.println("");
             System.out.println("   - FILE:");

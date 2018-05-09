@@ -59,13 +59,15 @@ import java.util.logging.Logger;
  * @author marco
  */
 public class DirectoryParser {
-	private static Logger log = Logger.getLogger(DirectoryParser.class.getName()); 
+	private static Logger logger = Logger.getLogger(DirectoryParser.class.getName()); 
 	
     public static AlbumDefaultImpl parse(String directory) throws IOException, InvalidAudioFileException, InvalidAudioFileFormatException {
          return parse(new File(directory));
     }
     public static AlbumDefaultImpl parse(File directory) throws IOException,  InvalidAudioFileException, InvalidAudioFileFormatException{
         
+		logger.info("ENTRY");
+		
 		ArrayList<File> directoryfileList = new ArrayList<>(Arrays.asList(directory.listFiles(new GenericFileFilter(false))));
 		ArrayList<File> fileList = new ArrayList<>(Arrays.asList(directory.listFiles(new AudioFileFilter(false))));
 		ArrayList<File> imagefileList = new ArrayList<>(Arrays.asList(directory.listFiles(new ImageFileFilter())));
@@ -76,11 +78,21 @@ public class DirectoryParser {
 		ArrayList<StatusMessage> statusMessageList= new ArrayList<>();
 		ArrayList<Metadata> atAlbumLevel= new ArrayList<>();
 		ArrayList<CoverArt> coverArtList= new ArrayList<>();
+		
+		ArrayList<TrackDefaultImpl> singleTrackList = new ArrayList<>();
 
 		HashMap<String,TrackDefaultImpl> trackMap = new HashMap<>();
 
 		if (containsAudio(fileList)){
 	    
+			ArrayList<CoverArt> directorycoverArtList= new ArrayList<>();
+			for (File file : imagefileList){
+
+				CoverArt imagefileCoverArt = new FileCoverArt(file);
+				directorycoverArtList.add(imagefileCoverArt);
+
+			}
+			
 			if (containsCueFile(fileList)){
 
 				cueFileList = getCueFileList(fileList);
@@ -100,214 +112,144 @@ public class DirectoryParser {
 					
 						merge(Section.ALBUM, atAlbumLevel, cueFile.getCuesheet().getMetadata());
 					}
+					
 					for (FileData fileData : cueFile.getCuesheet().getFileDataList()){
 
 						AudioFile audiofile = fileData.getAudiofile();
+						ArrayList<CoverArt> fileCoverArtList = new ArrayList<>();
 
 						if (audiofile !=null){
-							  fileList.remove(fileData.getAudiofile().getFile());
-							  coverArtList.addAll(fileData.getAudiofile().getEmbeddedArtworks());  
-						}
+							  
+							fileList.remove(fileData.getAudiofile().getFile());
+							fileCoverArtList = fileData.getAudiofile().getEmbeddedArtworks();
+							coverArtList.addAll(fileCoverArtList);  
 
-						Integer trackCount= fileData.getTrackDataList().size();
+							Integer trackCount= fileData.getTrackDataList().size();
 
-						for (TrackData trackData : fileData.getTrackDataList() ){
+							for (TrackData trackData : fileData.getTrackDataList() ){
 
-							String trackId = trackData.getTrackId();
-
-							TrackDefaultImpl track = trackMap.get(trackData.getTrackId());
-							
-							ArrayList<Metadata> fromAlbum = new ArrayList<>();
-									
-							if (cueFileList.size() > 1) {
-					
+								String trackId = trackData.getTrackId();
+								ArrayList<Metadata> fromAlbum = new ArrayList<>();
 								merge(Section.TRACK,  fromAlbum, cueFile.getCuesheet().getMetadata());
-
-							}
-
-							if ( track != null){
 								
-								merge(Section.TRACK, track.getMetadataList(), fromAlbum);
-								merge(Section.TRACK, track.getMetadataList(), trackData.getMetadata());
-								//track.getMetadataList().addAll(trackData.getMetadata());
+								ArrayList<CoverArt> trackCoverArt = new ArrayList<>();
+								trackCoverArt.addAll(fileCoverArtList);
+								trackCoverArt.addAll(directorycoverArtList);
 
-								GenericStatusMessage statusMessage = new GenericStatusMessage(
-										statusMessageList.size()+1,
-										Severity.WARNING, 
-										"Track defined in more than one audio file or cue sheet");
+								TrackDefaultImpl singleTrack = new TrackDefaultImpl(
+									trackData.getTrackId(), 
+									merge(Section.TRACK,fromAlbum, 
+									trackData.getMetadata()), 
+									trackCoverArt);
 
-								if (!statusMessageList.contains(statusMessage)){
-
-									statusMessageList.add(statusMessage);
-								}   
-
-								statusMessage = new GenericStatusMessage(
-										track.getMessageList().size()+1,
-										cueFile.getCuesheet().getSourceId(),
-										Severity.WARNING, 
-										"Track is defined in more than one audio file or cue sheet");
-								track.addStatusMessage(statusMessage);
-
-							} else {
-
-							   track = new TrackDefaultImpl(trackData.getTrackId(), merge(Section.TRACK,fromAlbum, trackData.getMetadata()));
-							   trackMap.put(trackData.getTrackId(), track);
-							}
-
-							if (audiofile ==null){
-
-								track.setFile(null);
-								track.setLength(0);
-								track.setOffset(0);
-								track.setUrl("");
-								track.setPlayListUrl("");
+								completeTrack (	singleTrack,
+									cueFile.getSourceId(),
+									audiofile, 
+									trackCount,
+									trackData.getLength(),
+									trackData.getOffset(),
+									trackData.getStartInFileInMillis(),
+									trackData.getLengthInMillis());
 								
-								track.setFormat("");
-								track.setSampleRate(0);
-								track.setBitsPerSample(0);
-								track.setChannels("");
-								track.setLossless(false);
-								track.setVariableBitRate(false);
-								track.setBitRate(0L);
-								
+								singleTrackList.add(singleTrack);
 
-							} else if ( track.getFile() != null && audiofile.getFile()!= track.getFile() &&
-										track.getLength() !=0 && trackData.getLength()!= track.getLength() ||
-										track.getOffset() !=0 && trackData.getOffset()!= track.getOffset()){
+								TrackDefaultImpl track = trackMap.get(trackId);
+								if ( track == null){
 
-								track.setFile(null);
-								track.setLength(0);
-								track.setOffset(0);
-								track.setUrl("");
-								track.setPlayListUrl("");
-								
-								if (track.getFormat() !="" && audiofile.getAudioHeader().getFormat()!= track.getFormat()){
+									track = singleTrack;
+									trackMap.put(trackData.getTrackId(), track);
 
-									track.setFormat("");
 
-									} else{
-
-										track.setFormat(audiofile.getAudioHeader().getFormat());
-								} 
-
-								if (track.getSampleRate() !=0 && audiofile.getAudioHeader().getSampleRateAsNumber()!= track.getSampleRate()){
-
-										track.setSampleRate(0);
-
-									} else{
-
-										track.setSampleRate(audiofile.getAudioHeader().getSampleRateAsNumber());
-								}
-								if (track.getBitsPerSample() !=0 && audiofile.getAudioHeader().getBitsPerSample()!= track.getBitsPerSample()){
-
-										track.setBitsPerSample(0);
-
-									} else{
-
-										track.setBitsPerSample(audiofile.getAudioHeader().getBitsPerSample());
-								}
-								if (track.getChannels() !="" && audiofile.getAudioHeader().getChannels()!= track.getChannels()){
-
-										track.setChannels("");
-
-									} else{
-
-										track.setChannels(audiofile.getAudioHeader().getChannels());
-								}
-								if (track.isVariableBitRate()&& !audiofile.getAudioHeader().isVariableBitRate()){
-
-										track.setVariableBitRate(false);
-
-									} else{
-
-										track.setVariableBitRate(audiofile.getAudioHeader().isVariableBitRate());
-								}
-								if (track.getBitRate()!=0 && audiofile.getAudioHeader().getBitRateAsNumber()!= track.getBitRate()){
-
-										track.setBitRate(0L);
-
-									} else{
-
-										track.setBitRate(audiofile.getAudioHeader().getBitRateAsNumber());
-								}
-								if (track.isLossless()  && !audiofile.getAudioHeader().isLossless()){
-
-										track.setLossless(false);
-
-									} else{
-
-										track.setLossless(audiofile.getAudioHeader().isLossless());
-								}
-								
-
-							} else {
-
-								track.setFile(audiofile.getFile());
-								track.setLength(trackData.getLength());
-								track.setOffset(trackData.getOffset());
-								
-								track.setFormat(audiofile.getAudioHeader().getFormat());
-								track.setSampleRate(audiofile.getAudioHeader().getSampleRateAsNumber());
-								track.setBitsPerSample(audiofile.getAudioHeader().getBitsPerSample());
-								track.setChannels(audiofile.getAudioHeader().getChannels());
-								track.setVariableBitRate(audiofile.getAudioHeader().isVariableBitRate());
-								track.setBitRate(audiofile.getAudioHeader().getBitRateAsNumber());
-								track.setLossless(audiofile.getAudioHeader().isLossless());
-								
-								if (trackCount > 1){
-
-									track.setUrl(audiofile.getFile().getCanonicalPath()+"#"+trackData.getStartInFileInMillis()/1000+"-"+(trackData.getStartInFileInMillis()+trackData.getLengthInMillis())/1000);
-								
 								} else {
 
-									track.setUrl(audiofile.getFile().getCanonicalPath());
+									merge(Section.TRACK, track.getMetadataList(), fromAlbum);
+									merge(Section.TRACK, track.getMetadataList(), trackData.getMetadata());
+									//track.getMetadataList().addAll(trackData.getMetadata());
+
+									track.getCoverArtList().addAll(fileCoverArtList);
+
+									GenericStatusMessage statusMessage = new GenericStatusMessage(
+											statusMessageList.size()+1,
+											Severity.WARNING, 
+											"Track defined in more than one audio file or cue sheet");
+
+									if (!statusMessageList.contains(statusMessage)){
+
+										statusMessageList.add(statusMessage);
+									}   
+
+									statusMessage = new GenericStatusMessage(
+											track.getMessageList().size()+1,
+											cueFile.getCuesheet().getSourceId(),
+											Severity.WARNING, 
+											"Track is defined in more than one audio file or cue sheet");
 									
-								}
-								
-								track.setPlayListUrl(cueFile.getSourceId());
-
+									track.addStatusMessage(statusMessage);
+									
+									completeTrack (	track,
+											cueFile.getSourceId(),
+											audiofile, 
+											trackCount,
+											trackData.getLength(),
+											trackData.getOffset(),
+											trackData.getStartInFileInMillis(),
+											trackData.getLengthInMillis());
+								} 
 							}
-
+							fileList.remove(cueFile.getFile());
 						}
-						fileList.remove(cueFile.getFile());
 					}
 				} 
 			}
 			for (File file : fileList){
 
 				AudioFile audiofile = AudioFile.get(file);
+				
+				if (audiofile != null){ 
+					
+					ArrayList<CoverArt> fileCoverArtList= new ArrayList<>();
+					fileCoverArtList.addAll(audiofile.getEmbeddedArtworks());
+					coverArtList.addAll(fileCoverArtList);  
 
-				coverArtList.addAll(audiofile.getEmbeddedArtworks());
+					String trackId = audiofile.getTrackId();
+					
+					ArrayList<CoverArt> trackCoverArt = new ArrayList<>();
+					trackCoverArt.addAll(fileCoverArtList);
+					trackCoverArt.addAll(directorycoverArtList);
+					
+					TrackDefaultImpl singleTrack = 
+							new TrackDefaultImpl(
+									trackId, 
+									merge(Section.TRACK,new ArrayList<>(),audiofile.getMetadata()),
+									trackCoverArt);	
+					
+					singleTrack.setPlayListUrl(directory.getCanonicalPath());
+					
+					completeTrack (	singleTrack,
+									directory.getCanonicalPath(),
+									audiofile, 
+									1,
+									audiofile.getAudioHeader().getTrackLength()*75,
+									0,
+									0L,
+									0L);
 
-				String trackId = audiofile.getTrackId();
-							
-				if (!trackId.isEmpty()) {
+					singleTrack.addRawKeyValuePairSource(audiofile);
+
+					singleTrackList.add(singleTrack);
 
 					TrackDefaultImpl track = trackMap.get(trackId);
 
 					if ( track == null){
 
-						track = new TrackDefaultImpl(trackId, merge(Section.TRACK,new ArrayList<>(),audiofile.getMetadata()));
-						track.setPlayListUrl(directory.getCanonicalPath());
-						
+						track = singleTrack;
 						trackMap.put(trackId, track);
 
-						track.setFile(audiofile.getFile());
-						track.setLength( audiofile.getAudioHeader().getTrackLength()*75); //in auidiofile header is expressed in secs.
-						track.setUrl(audiofile.getFile().getCanonicalPath());
-						
-						track.setFormat(audiofile.getAudioHeader().getFormat());
-						track.setSampleRate(audiofile.getAudioHeader().getSampleRateAsNumber());
-						track.setBitsPerSample(audiofile.getAudioHeader().getBitsPerSample());
-						track.setChannels(audiofile.getAudioHeader().getChannels());
-						track.setVariableBitRate(audiofile.getAudioHeader().isVariableBitRate());
-						track.setBitRate(audiofile.getAudioHeader().getBitRateAsNumber());
-						track.setLossless(audiofile.getAudioHeader().isLossless());
+					} else {    
 
-					 } else {    
-
+						track.getCoverArtList().addAll(fileCoverArtList);
 						merge(Section.TRACK, track.getMetadataList(), audiofile.getMetadata());
-						//track.getMetadataList().addAll();
+
 						GenericStatusMessage statusMessage = new GenericStatusMessage(
 								statusMessageList.size()+1,
 								Severity.WARNING, 
@@ -326,93 +268,29 @@ public class DirectoryParser {
 
 						track.addStatusMessage(statusMessage);
 
-						track.setFile(null);
-						track.setUrl("");
-						track.setPlayListUrl("");
+						track.addRawKeyValuePairSource(audiofile);
 
-						if (track.getLength() !=0 && audiofile.getAudioHeader().getTrackLength()!= track.getLength()){
-
-							track.setLength(0);
-
-						} else{
-
-							track.setLength( audiofile.getAudioHeader().getTrackLength()*75);
-							//track.setOffset(0);
-						}  
+						completeTrack (	track,
+										directory.getCanonicalPath(),
+										audiofile, 
+										1,
+										audiofile.getAudioHeader().getTrackLength()*75,
+										0,
+										0L,
+										0L);
 					}
-					
-					if (track.getFormat() !="" && audiofile.getAudioHeader().getFormat()!= track.getFormat()){
 
-							track.setFormat("");
+					/* }
+					// Don't add no tracks file at album level, handle them as 
+					// track zeto. BEWARE to embedded cue sheets.
+					 else {
 
-						} else{
-
-							track.setFormat(audiofile.getAudioHeader().getFormat());
-					} 
-					
-					if (track.getSampleRate() !=0 && audiofile.getAudioHeader().getSampleRateAsNumber()!= track.getSampleRate()){
-
-							track.setSampleRate(0);
-
-						} else{
-
-							track.setSampleRate(audiofile.getAudioHeader().getSampleRateAsNumber());
-					}
-					if (track.getBitsPerSample() !=0 && audiofile.getAudioHeader().getBitsPerSample()!= track.getBitsPerSample()){
-
-							track.setBitsPerSample(0);
-
-						} else{
-
-							track.setBitsPerSample(audiofile.getAudioHeader().getBitsPerSample());
-					}
-					if (track.getChannels() !="" && audiofile.getAudioHeader().getChannels()!= track.getChannels()){
-
-							track.setChannels("");
-
-						} else{
-
-							track.setChannels(audiofile.getAudioHeader().getChannels());
-					}
-					if (track.isVariableBitRate() && !audiofile.getAudioHeader().isVariableBitRate()){
-
-							track.setVariableBitRate(false);
-
-						} else{
-
-							track.setVariableBitRate(audiofile.getAudioHeader().isVariableBitRate());
-					}
-					if (track.getBitRate()!=0 && audiofile.getAudioHeader().getBitRateAsNumber()!= track.getBitRate()){
-
-							track.setBitRate(0L);
-
-						} else{
-
-							track.setBitRate(audiofile.getAudioHeader().getBitRateAsNumber());
-					}
-					if (track.isLossless()  && !audiofile.getAudioHeader().isLossless()){
-
-							track.setLossless(false);
-
-						} else{
-
-							track.setLossless(audiofile.getAudioHeader().isLossless());
-					}
-					
-					track.addRawKeyValuePairSource(audiofile);
-
-				} else {
-
-				   atAlbumLevel.addAll(audiofile.getMetadata());
-				   audioFileList.add(audiofile);
+					   atAlbumLevel.addAll(audiofile.getMetadata());
+					   audioFileList.add(audiofile);
+					}*/
 				}
 			}
-			for (File file : imagefileList){
-
-				CoverArt fileCoverArt = new FileCoverArt(file);
-				coverArtList.add(fileCoverArt);
-
-			}
+			coverArtList.addAll(directorycoverArtList);	
 		} 
         /*
        * Validate the directory content
@@ -420,7 +298,7 @@ public class DirectoryParser {
         
         String url = "";
 
-        if (cueFileList.size() > 1 &&  audioFileList.size() > 0){
+        if (cueFileList.size() > 0 &&  audioFileList.size() > 0){
             
             GenericStatusMessage statusMessage = new GenericStatusMessage(
                     statusMessageList.size()+1,
@@ -464,12 +342,126 @@ public class DirectoryParser {
 		for (Object key : keys){
 			tracklist.add(trackMap.get((String)key));
 		}
-
-        AlbumDefaultImpl out = new AlbumDefaultImpl(url, coverArtList, atAlbumLevel, tracklist, directoryfileList, cueFileList, audioFileList, imagefileList, statusMessageList);
-       
+		logger.info("ENTRY ALBUM BUILD");
+        AlbumDefaultImpl out = new AlbumDefaultImpl(url, coverArtList, atAlbumLevel, tracklist, directoryfileList, cueFileList, audioFileList, imagefileList, statusMessageList, singleTrackList);
+        logger.info("RETURN");
         return out;
     }
+	private static void completeTrack(	TrackDefaultImpl track,
+										String playListUrl, //CueFile cueFile, directory.getCanonicalPath()
+										AudioFile audiofile,
+										Integer trackCount,
+										//TrackData trackData,
+										Integer length,
+										Integer offset,
+										Long startInFileInMillis,
+										Long lengthInMillis ) throws IOException{
 
+		if ( track.getFile() != null && audiofile.getFile()!= track.getFile() &&
+			 track.getLength() != null && !track.getLength().equals(length) &&
+			 track.getOffset()!= null && !track.getOffset().equals(offset)){
+
+			track.setFile(null);
+			track.setLength(0);
+			track.setOffset(0);
+			track.setUrl("");
+			track.setPlayListUrl("");
+			
+			if (track.getFormat() == null || track.getFormat().equals("")){
+				
+				track.setFormat(audiofile.getAudioHeader().getFormat());
+				
+			} else if (!audiofile.getAudioHeader().getFormat().equals(track.getFormat())){
+				
+				track.setFormat("");
+			}
+
+			if (track.getSampleRate() == null || track.getSampleRate() == 0){
+
+					track.setSampleRate(audiofile.getAudioHeader().getSampleRateAsNumber());
+
+			} else if (audiofile.getAudioHeader().getSampleRateAsNumber()!= track.getSampleRate()){
+					
+					track.setSampleRate(0);
+					
+			}
+			
+			if (track.getBitsPerSample() == null || track.getBitsPerSample() ==0){
+
+					track.setBitsPerSample(audiofile.getAudioHeader().getBitsPerSample());
+
+			} else if (audiofile.getAudioHeader().getBitsPerSample()!= track.getBitsPerSample()){
+					
+					track.setBitsPerSample(0);
+					
+			}
+			
+			if (track.getChannels() == null || track.getChannels().equals("")){
+				
+				track.setChannels(audiofile.getAudioHeader().getChannels());
+				
+			} else if (!audiofile.getAudioHeader().getChannels().equals(track.getChannels())){
+				
+				track.setChannels("");
+			}
+			
+			if (track.getBitRate() == null || track.getBitRate() ==0){
+
+					track.setBitRate(audiofile.getAudioHeader().getBitRateAsNumber());
+
+			} else if (audiofile.getAudioHeader().getBitRateAsNumber()!= track.getBitRate()){
+					
+					track.setBitRate(0L);
+					
+			}
+						
+			if (track.isVariableBitRate() == null || (track.isVariableBitRate() && !audiofile.getAudioHeader().isVariableBitRate())){
+
+					track.setVariableBitRate(false);
+
+				} else{
+
+					track.setVariableBitRate(audiofile.getAudioHeader().isVariableBitRate());
+			}
+			
+			if (track.isLossless() == null || (track.isLossless() && !audiofile.getAudioHeader().isLossless())){
+
+					track.setLossless(false);
+
+				} else{
+
+					track.setLossless(audiofile.getAudioHeader().isLossless());
+			}
+
+
+		} else {
+
+			track.setFile(audiofile.getFile());
+			track.setLength(length);
+			track.setOffset(offset);
+
+			track.setFormat(audiofile.getAudioHeader().getFormat());
+			track.setSampleRate(audiofile.getAudioHeader().getSampleRateAsNumber());
+			track.setBitsPerSample(audiofile.getAudioHeader().getBitsPerSample());
+			track.setChannels(audiofile.getAudioHeader().getChannels());
+			track.setVariableBitRate(audiofile.getAudioHeader().isVariableBitRate());
+			track.setBitRate(audiofile.getAudioHeader().getBitRateAsNumber());
+			track.setLossless(audiofile.getAudioHeader().isLossless());
+
+			if (trackCount > 1){
+
+				track.setUrl(audiofile.getFile().getCanonicalPath()+"#"+startInFileInMillis/1000+"-"+(startInFileInMillis+lengthInMillis)/1000);
+
+			} else {
+
+				track.setUrl(audiofile.getFile().getCanonicalPath());
+
+			}
+
+			track.setPlayListUrl(playListUrl);
+
+		}
+	}
     private static ArrayList<Metadata> merge(String level, ArrayList<Metadata> target, ArrayList<Metadata> source){
         
         for (Metadata toAdd : source){

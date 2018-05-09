@@ -44,14 +44,14 @@ public interface Track {
 	
 	/**
      * @return the playback Playlist index position of the track in the playlist,
-	 * strating from 0.
+	 * stating from 0.
      */
     Integer getPlayListIndex();
 	
 	/**
      * @return the absolute Index position of the track in the album, starting from 0.
      */
-    public Integer getIndex();
+    Integer getIndex();
 	
 	/**
      * @return the trackId (normally discNo.trackNo)
@@ -61,26 +61,52 @@ public interface Track {
 	/**
      * @return the title
      */
-    public String getTitle();
+    String getTitle();
     /**
      * @return the artist
     */
-    public String getArtist();
+    String getArtist();
 
+	/**
+	 *@return the coverArt List
+	 */
+	ArrayList<CoverArt> getCoverArtList();
+	
+	/**
+	 *@return the most representative coverArt
+	 */
+	CoverArt getCoverArt();
+	
 	/**
      * @return the metadataList
      */
     ArrayList<Metadata> getMetadataList();
-
+	
+	ArrayList<? extends MetadataRow> getDescriptionMetadataList();
+	ArrayList<? extends MetadataRow> getCommentMetadataList();
+	ArrayList<? extends MetadataRow> getAwardMetadataList();
+	ArrayList<? extends MetadataRow> getCollectionMetadataList();
+	ArrayList<? extends MetadataRow> getGoodiesMetadataList();
+	ArrayList<? extends MetadataRow> getURLMetadataList();
+	ArrayList<? extends MetadataRow> getMusicDescriptorMetadataList();
+	ArrayList<? extends MetadataRow> getCreditMetadataList();
+	ArrayList<? extends MetadataRow> getOtherInvolvedPersonMetadataList();
+	ArrayList<? extends MetadataRow> getMediaDescriptorMetadataList();
+	ArrayList<? extends MetadataRow> getWorkDescriptorMetadataList();
+	ArrayList<? extends MetadataRow> getMiscellaneaMetadataList();
+	ArrayList<? extends MetadataRow> getRatingMetadataList();
+	ArrayList<? extends MetadataRow> getAlbumInfoMetada();
+	ArrayList<? extends MetadataRow> getMetadaWithNoCategory();
+	
 	/**
-     * @return the sources of Raw Key Value Pairs, like tag or cue files commands.
+     * @return the sources of Raw Key Value Pairs, like tags or cue files commands.
      */
-    public ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources();
+    ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources();
     
     /**
      * @return the track length in sectors
      */
-    int getLength();
+    Integer getLength();
 
     /** 
 	 * @return file length in msec 
@@ -95,41 +121,41 @@ public interface Track {
 	 /**
      * @return the format
      */
-    public String getFormat();
+    String getFormat();
 	
 	/**
      * @return the Sampling rate, the number of samples taken per second
      */
-    public Integer getSampleRate();
+    Integer getSampleRate();
 	
 	/**
 	 * @return the bitsPerSample
 	 */
-	public Integer getBitsPerSample();
+	Integer getBitsPerSample();
 
 	/**
 	 * @return the channels
 	 */
-	public String getChannels();
+	String getChannels();
 	
 	/**
      * @return if the sampling bitRate is variable or constant
      */
-    public boolean isVariableBitRate();
+    Boolean isVariableBitRate();
 	
 	/**
      * @return bitRate as a number, this is the amount of kilobits of data sampled per second
      */
-    public long getBitRate();
+    Long getBitRate();
 	
 	/**
 	 * @return the isLossless
 	 */
-	public Boolean isLossless();
+	Boolean isLossless();
 	/**
 	 * @return ture if the file is in hight resolution Audio
 	*/
-	public Boolean isHiRes();
+	Boolean isHiRes();
 	/**
      * @return the overall Track status
     */
@@ -138,6 +164,6 @@ public interface Track {
     /**
      * @return the status message List
     */
-    public ArrayList<StatusMessage> getMessageList();
-
+    ArrayList<StatusMessage> getMessageList();
+	
 }

@@ -28,6 +28,9 @@ import java.io.File;
 import java.util.ArrayList;
 import com.mc2.audio.metadata.API.Album;
 import com.mc2.audio.metadata.API.CoverArt;
+import static com.mc2.audio.metadata.API.CoverArt.SOURCE_EMBEDDED_FILE;
+import static com.mc2.audio.metadata.API.CoverArt.SOURCE_IMAGE_FILE;
+import static com.mc2.audio.metadata.API.CoverArt.SOURCE_MUSICBRAINZ_COVER_ARCHIVE;
 import com.mc2.audio.metadata.API.Medium;
 import com.mc2.audio.metadata.API.Metadata;
 import static com.mc2.audio.metadata.API.Metadata.SEPARATOR;
@@ -77,6 +80,8 @@ public class AlbumDefaultImpl implements Album {
 	
 	private final MetadataTable metadataTable;
 	
+	private final  ArrayList<TrackDefaultImpl> singleTracksList;
+	
     public AlbumDefaultImpl(String url,
                             ArrayList<CoverArt> coverArtList,
                             ArrayList<Metadata> metadataList, 
@@ -85,10 +90,11 @@ public class AlbumDefaultImpl implements Album {
                             ArrayList<CueFile> cueFileList, 
                             ArrayList<AudioFile> audioFileList, 
                             ArrayList<File> imageFileList,
-                            ArrayList<StatusMessage> messageList) {
+                            ArrayList<StatusMessage> messageList,
+							ArrayList<TrackDefaultImpl> singleTracksList) {
         
         this.url = url;
-        this.coverArtList = coverArtList;  
+        
         this.metadataList = metadataList;  
         this.fileList = fileList;
         this.cueFileList = cueFileList;
@@ -101,6 +107,9 @@ public class AlbumDefaultImpl implements Album {
 		this.mediaString = initMediaString(this.mediaList);
 
 		this.metadataTable = new MetadataTable(this);
+		this.singleTracksList = singleTracksList;
+		
+		this.coverArtList = this.orderCoverArt(coverArtList);
 
     }
 	private String initMediaString(ArrayList<MediumDefaultImpl> media){
@@ -132,31 +141,35 @@ public class AlbumDefaultImpl implements Album {
 				return "";
 			}
 
-			if (keys.length == 1 && count < 2){
+			if (keys.length == 1 && count < 2 && !getDisc().isEmpty()){
 				
-				Integer disc = Integer.parseInt(getDisc());
+				Integer disc=0;
 				
-				
-				if (  disc == 1 && getTotalDiscs().isEmpty()) {
+				try {
+					
+					disc = Integer.parseInt(getDisc());
+					if (  disc == 1 && getTotalDiscs().isEmpty()) {
 					
 					return "1x"+type;
 					
-				}
-				if (type.isEmpty()) {
-				
-					type = "disc";
-				
-				}
-				if (  disc > 0 ) {
-					
-					String value = type+" "+disc;
-					
-					value = value +" of "+ (getTotalDiscs().isEmpty() ? "?" :  getTotalDiscs());
+					}
+					if (type.isEmpty()) {
 
-					if (!getDiscTitle().trim().isEmpty()) value = value+" ("+getDiscTitle().trim()+")";
-					
-					return value;
-				}
+						type = "disc";
+
+					}
+					if (  disc > 0 ) {
+
+						String value = type+" "+disc;
+
+						value = value +" of "+ (getTotalDiscs().isEmpty() ? "?" :  getTotalDiscs());
+
+						if (!getDiscTitle().trim().isEmpty()) value = value+" ("+getDiscTitle().trim()+")";
+
+						return value;
+					}
+				
+				} catch (java.lang.NumberFormatException ex){}
 			}
 			if (type.trim().isEmpty()) {
 				
@@ -244,7 +257,7 @@ public class AlbumDefaultImpl implements Album {
 			else if (!_bitRate.equals(track.getBitRate())) _bitRate=0L;
 			
 			if (_isLossless == null) _isLossless = track.isLossless();
-			else if (!_isLossless.equals(track.isLossless())) _isLossless=null;
+			else if (!_isLossless.equals(track.isLossless())) _isLossless=false;
 
             if ( track instanceof TrackDefaultImpl){
                 totalLength= totalLength+track.getLength();
@@ -264,60 +277,7 @@ public class AlbumDefaultImpl implements Album {
 		
        return trackList;
     }
-	/*
-    private ArrayList<Track> initTrackList2(ArrayList<Track> trackList){
-
-        discIdOffsets.add(0,0);
-        
-        Integer offset = 0;
-        Integer index = 0;
-        for (Track track : trackList){
-            
-            if ( track instanceof TrackDefaultImpl){
-				
-                ((TrackDefaultImpl)track).setOffset(offset);
-                offset= offset+track.getLength();
-                totalLength= totalLength+track.getLength();
-                discIdOffsets.add(track.getOffset());
-				((TrackDefaultImpl)track).setAlbum(this);
-                ((TrackDefaultImpl)track).setIndex(index);
-            
-			}
-            index++;
-            //System.out.println(track.getOffset()+" "+track.getLength()+" "+totalLength);
-        }
-        
-        discIdOffsets.set(0, totalLength);
-        return trackList;
-    }
-	 /**
-     * @return the discId offsets
-
-    @Override
-    public Integer[] getOffsetArray() {
-        return (Integer[])discIdOffsets.toArray();
-    }
-    /**
-     * @return the discId offsets
-
-    @Override
-    public ArrayList<Integer> getOffsets() {
-        return  discIdOffsets;
-    }
-    /**
-     * @return the discId offsets
-
-    @Override
-    public String getToc() {
-        
-        String offests="";
-        for (Integer offset : discIdOffsets){
-            offests=offests+" "+offset;
-        }
-        return  "1 "+ (discIdOffsets.size()-1) + offests;
-    }
-	*/
-	 
+		 
     @Override
     public String getAlbum(){
         return this.getMetadataValue(METADATA_KEY.ALBUM.name());
@@ -327,8 +287,7 @@ public class AlbumDefaultImpl implements Album {
     public String getMbReleaseId(){
         return this.getMetadataValue(METADATA_KEY.MUSICBRAINZ_RELEASEID.name());
     }
-	
-	
+
     @Override
     public String getAlbumArtist(){
         return this.getMetadataValue(METADATA_KEY.ALBUM_ARTIST.name());
@@ -421,6 +380,14 @@ public class AlbumDefaultImpl implements Album {
     public ArrayList<CoverArt> getcoverArtList() {
         return coverArtList;
     }
+	
+	@Override
+	public CoverArt getCoverArt(){
+		
+		if (coverArtList == null || coverArtList.isEmpty()) {return null;}
+		return coverArtList.get(0);
+	}
+	
 	 /**
      * @return the metadataTable;
      */
@@ -641,35 +608,84 @@ public class AlbumDefaultImpl implements Album {
     public String getUrl() {
         return url;
     }
-	private String cleanMetadada(String metadata){
-		
-		if (metadata==null || metadata.isEmpty()) return "";
-		String out="";
-		ArrayList<String> list = new ArrayList<>(Arrays.asList(metadata.split(SEPARATOR)));
-		ArrayList<String> newList=new ArrayList<>();
-		
-		for (String value : list){
-		
-			value= value.trim();
-			
-			if (!newList.contains(value)){
-				newList.add(value);
-			}
-		}
-		return String.join(SEPARATOR, newList);
-	}
-    private String getMetadataValue(String key){
+	
+	@Override
+    public ArrayList<? extends Track> getSingleTrackList() {
+        return singleTracksList;
+    }
+	
+	private ArrayList<CoverArt> orderCoverArt(ArrayList<CoverArt> coverArtList){
 
-		String out=cleanMetadada(getMetadataValueFromAlbum(key));
-		
-		if (!out.isEmpty()){
-			return out;
+		HashMap< Integer, ArrayList<CoverArt> > scored = new HashMap<>();
+		for (CoverArt coverArt :coverArtList){
+			
+			Integer sourceScore;
+			Integer typeScore;
+			
+			String source = coverArt.getSource() != null ? coverArt.getSource() : "";
+			String type = coverArt.getType()!= null ? coverArt.getType().toLowerCase().trim() : "";
+			
+			switch (source) {
+				case "" :  sourceScore = 9;
+						 break;
+				case SOURCE_MUSICBRAINZ_COVER_ARCHIVE :  sourceScore = 5;
+						 break;
+				case SOURCE_EMBEDDED_FILE :  sourceScore = 3;
+						 break;
+				case SOURCE_IMAGE_FILE :  sourceScore = 0;
+						 break;
+				default :  sourceScore = 7;
+			}
+			switch (type) {
+				case "" :  typeScore = 9;
+						 break;
+				case "front" :  typeScore = 5;
+						 break;
+				case "cover (front)" :  typeScore = 3;
+						 break;
+				case "cover" :  typeScore = 0;
+						 break;
+				default :  typeScore = 7;
+			}
+			
+			Integer score = typeScore*10+sourceScore;
+			if (scored.get(score) == null){
+				
+				scored.put(score,new  ArrayList<>());
+				
+			}
+			
+			scored.get(score).add(coverArt);
+
 		}
+		ArrayList<CoverArt> out = new  ArrayList<>();
+		for (Integer score : scored.keySet()){
+			
+			out.addAll(scored.get(score));
+		}
+		return out;
+	}
+	
+	// Protected from here
+	
+	 protected String getMetadataValue(String key){
 		
-        return cleanMetadada(getMetadataValueFromTracksIfTheSame(key));
-        
+		String out="";
+		
+		if (getMetadataValuesFromTracks(key).size() > 1){
+			return "";
+		}
+		String albumValue=cleanMetadada(getMetadataValueFromAlbum(key));
+		String tracksCommonValue =cleanMetadada(getMetadataValueFromTracksIfTheSame(key));
+		
+		
+		
+		if (albumValue.equals(tracksCommonValue)) return albumValue;
+		if (albumValue.isEmpty()) return tracksCommonValue;
+        return "";
         
     }
+	 
 	protected String getMetadataValueFromAlbum(String key){
 		
 		String out="";
@@ -699,6 +715,7 @@ public class AlbumDefaultImpl implements Album {
         }
 		return cleanMetadada(out);
 	}
+	
 	/*
 	if all tracks store the same value for that key, returns the value, 
 	blank instead.
@@ -730,7 +747,43 @@ public class AlbumDefaultImpl implements Album {
         }
         return out;
     }
-	private String getMetadataValueFromAlbumAndTracks(String key){
+	protected String getMetadataValueFromTracks(String key){
+		
+		ArrayList<String> values= getMetadataValuesFromTracks(key);
+
+		String out="";
+		for (String value : values){
+			value= value.trim();
+            if (!out.isEmpty()){
+                out=out+SEPARATOR+value;
+            } else{
+                out=value;
+            }
+        }
+		return out;
+	}
+	
+	// Private from here //
+	
+	protected String cleanMetadada(String metadata){
+		
+		if (metadata==null || metadata.isEmpty()) return "";
+		String out="";
+		ArrayList<String> list = new ArrayList<>(Arrays.asList(metadata.split(SEPARATOR)));
+		ArrayList<String> newList=new ArrayList<>();
+		
+		for (String value : list){
+		
+			value= value.trim();
+			
+			if (!newList.contains(value)){
+				newList.add(value);
+			}
+		}
+		return String.join(SEPARATOR, newList);
+	}
+
+	protected String getMetadataValueFromAlbumAndTracks(String key){
 
 		ArrayList<String> values=getMetadataValuesFromAlbumAndTracks(key);
 		
@@ -747,7 +800,7 @@ public class AlbumDefaultImpl implements Album {
 		
 	}
 	
-	private ArrayList<String> getMetadataValuesFromAlbumAndTracks(String key){
+	protected ArrayList<String> getMetadataValuesFromAlbumAndTracks(String key){
 
 		ArrayList<String> values=getMetadataValuesFromAlbum(key);
 		
@@ -760,7 +813,7 @@ public class AlbumDefaultImpl implements Album {
 		}
         return values;
     }
-	private ArrayList<String> getMetadataValuesFromAlbum(String key){
+	protected ArrayList<String> getMetadataValuesFromAlbum(String key){
         
 		ArrayList<String> values= new ArrayList<>();
 		for (Metadata  metadata : metadataList){
@@ -781,7 +834,7 @@ public class AlbumDefaultImpl implements Album {
         return values;
     }
 
-	private ArrayList<String> getMetadataValuesFromTracks(String key){
+	protected ArrayList<String> getMetadataValuesFromTracks(String key){
 		
 		ArrayList<String> values= new ArrayList<>();
         
@@ -799,19 +852,5 @@ public class AlbumDefaultImpl implements Album {
 		}
 		return values;
 	}
-	protected String getMetadataValueFromTracks(String key){
-		
-		ArrayList<String> values= getMetadataValuesFromTracks(key);
 
-		String out="";
-		for (String value : values){
-            if (!out.isEmpty()){
-                out=out+SEPARATOR+value;
-            } else{
-                out=value;
-            }
-        }
-		return out;
-	}
-	
 }
