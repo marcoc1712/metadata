@@ -24,7 +24,6 @@
  */
 package com.mc2.audio.metadata.API;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -36,23 +35,13 @@ public interface Album {
      /*
      * @return the album url (a directory or a playlist).
     */
-    public String getUrl();
-    
+    String getUrl();
+
     /**
      * @return the sources of Raw Key Value Pairs, like tag or cue files lines.
     */
     ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources();
     
-    /*
-     * @return the fileList
-     */
-    ArrayList<File> getFileList();
-
-    /**
-     * @return the imageFileList
-     */
-    ArrayList<File> getImageFileList();
-
     /**
      * @return the messageList
      */
@@ -132,19 +121,19 @@ public interface Album {
 	/**
      * @return the Disc number (in case of single disk in a boxset)
     */
-	public String getDisc();
+	String getDisc();
 	/**
      * @return the total Discs (in case of single disk in a boxset)
     */
-    public String getTotalDiscs();
+    String getTotalDiscs();
 	/**
      * @return the Disc title (in case of single disk in a boxset)
     */
-	public String getDiscTitle();
+	String getDiscTitle();
 	 /**
      * @return the Media descriptor (es. 2 CD + 1 DVD)
     */
-	public String getMedia();
+	String getMedia();
 	
 	/**
 	 * @return the corresponding musicbrainz release ID, if any.
@@ -154,42 +143,42 @@ public interface Album {
 	 /**
      * @return the format
      */
-    public String getFormat();
+    String getFormat();
 	
 	/**
      * @return the Sampling rate, the number of samples taken per second
      */
-    public Integer getSampleRate();
+    Integer getSampleRate();
 	
 	/**
 	 * @return the bitsPerSample
 	 */
-	public Integer getBitsPerSample();
+	Integer getBitsPerSample();
 
 	/**
 	 * @return the channels
 	 */
-	public String getChannels();
+	String getChannels();
 	
 	/**
      * @return if the sampling bitRate is variable or constant
      */
-    public boolean isVariableBitRate();
+    Boolean isVariableBitRate();
 	
 	/**
      * @return bitRate as a number, this is the amount of kilobits of data sampled per second
      */
-    public long getBitRate();
+    Long getBitRate();
 	
 	/**
 	 * @return the isLossless
 	 */
-	public Boolean isLossless();
+	Boolean isLossless();
 	
 	/**
 	 * @return ture if the file is in hight resolution Audio
 	*/
-	public Boolean isHiRes();
+	Boolean isHiRes();
 	
 	/**
      * @return the metadataList
@@ -214,7 +203,7 @@ public interface Album {
 	/*
 	* returns the complete and unordered list of tracks extracted form all the
 	* files in the directory. This is similar to a playlist, but is made by 'real' 
-	* files.
+	* files, more a 'compilation' or a 'collection' of songs.
 	*/
 	ArrayList<? extends Track> getSingleTrackList();
 }

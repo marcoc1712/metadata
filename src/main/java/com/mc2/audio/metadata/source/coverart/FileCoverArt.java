@@ -44,7 +44,8 @@ public class FileCoverArt extends CoverArtAbstract implements CoverArt {
         
         this.file = file;
         
-        init();
+		//lazy load.
+        //init();
     }
     
     private void init(){
@@ -63,6 +64,7 @@ public class FileCoverArt extends CoverArtAbstract implements CoverArt {
         setOriginalSizeImageData(bytes);
         setOriginalSizeImage(bufferedImage);
     }
+	
     @Override
     public File getFile() {
         return file;
@@ -89,6 +91,16 @@ public class FileCoverArt extends CoverArtAbstract implements CoverArt {
     public String getComment() {
        return file.getParentFile().getPath();
     }
-
-
+	@Override
+    public byte[] getOriginalSizeImageData() {
+		
+		if (super.getOriginalSizeImageData() == null) init();
+		return super.getOriginalSizeImageData();
+	}
+	@Override
+    public BufferedImage getOriginalSizeImage() {
+		
+		if (super.getOriginalSizeImage() == null) init();
+		return super.getOriginalSizeImage();
+	}
 }

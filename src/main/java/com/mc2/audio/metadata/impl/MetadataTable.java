@@ -84,6 +84,32 @@ public class MetadataTable {
 				addAlbumMetadata(metadata, keys);
 			}
 		}
+		
+		for (MetadataRowDefaultImpl albumMetadataRow : this.metadataRowList){
+			
+			if  (albumMetadataRow.getKeyName() != null && 
+				 albumMetadataRow.getTrackLevelValue() != null &&
+				 !albumMetadataRow.getTrackLevelValue().isEmpty()){		
+				
+				for (Track track : album.getTrackList()){
+					
+					for (MetadataRowDefaultImpl trackMetadataRow : ((TrackDefaultImpl)track).getMetadataTable().metadataRowList){
+						
+						if(trackMetadataRow.getKeyName() != null &&
+							trackMetadataRow.getKeyName().equals(albumMetadataRow.getKeyName()) &&
+							trackMetadataRow.getAlbumLevelValue().isEmpty()	){
+
+							trackMetadataRow.setAlbumLevelValue(albumMetadataRow.getTrackLevelValue());
+						}
+						
+					}
+				}
+			}
+		}
+	}
+	protected List<MetadataRowDefaultImpl> getMetadataRows(){
+		
+		return metadataRowList;
 	}
 	private void addAlbumMetadata(Metadata metadata, ArrayList<String> keys){
 		
@@ -113,7 +139,7 @@ public class MetadataTable {
 
 			if (value != null && !value.isEmpty()){
 
-				MetadataRowDefaultImpl metadataCategory = 
+				MetadataRowDefaultImpl metadataRow = 
 					new MetadataRowDefaultImpl(METADATA_LEVEL.ALBUM,
 										 metadata.getAlbumLevelCategory(),
 										 metadata.getAlbumLevelMetadataKey(),
@@ -124,7 +150,7 @@ public class MetadataTable {
 										 tracksCommonValue,
 										 value
 					);
-				metadataRowList.add(metadataCategory);
+				metadataRowList.add(metadataRow);
 			}
 		}
 	}
@@ -168,6 +194,8 @@ public class MetadataTable {
 			}
 		}
 	}
+	
+	
 	public ArrayList<MetadataRowDefaultImpl> getMetadaPerCategory(METADATA_CATEGORY category){
 		
 		ArrayList<MetadataRowDefaultImpl> out = new ArrayList<>();

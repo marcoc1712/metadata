@@ -46,9 +46,11 @@ import com.mc2.audio.metadata.API.exceptions.InvalidAudioFileFormatException;
 import com.mc2.audio.metadata.API.MetadataSource;
 import com.mc2.audio.metadata.API.RawKeyValuePair;
 import com.mc2.audio.metadata.API.RawKeyValuePairSource;
+import com.mc2.audio.metadata.API.SupportedFileFormat;
 import com.mc2.audio.metadata.impl.RawKeyValuePairDefaultImpl;
 import com.mc2.audio.metadata.source.tags.TagsSource;
 import com.mc2.audio.metadata.source.tags.schema.TagSchema;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  *
@@ -62,21 +64,31 @@ public abstract class AudioFile implements TagsSource, RawKeyValuePairSource, Me
     private Tag tag;
     private TagSchema tagSchema;
     
-    public static AudioFile get(String path) throws InvalidAudioFileException, InvalidAudioFileFormatException{
+	public static Boolean isAudiofile(String path) throws InvalidAudioFileException, IOException{
+		 return isAudiofile(new File(path));
+	}
+	public static Boolean isAudiofile(File file) throws InvalidAudioFileException, IOException{ 
+		
+		if (file == null) throw new InvalidAudioFileException ("Invalid file");
+		
+		String extension =  FilenameUtils.getExtension(file.getCanonicalPath());
+		
+		try{
+			return SupportedFileFormat.valueOf(extension.toUpperCase()) != null;
+		} catch (IllegalArgumentException ex) {
+			return false;
+		}
+		
+	}
+    public static AudioFile get(String path) throws InvalidAudioFileException, InvalidAudioFileFormatException, IOException{
         
         return get(new File(path));
     }
-    public static AudioFile get(File file) throws InvalidAudioFileException, InvalidAudioFileFormatException{
+    public static AudioFile get(File file) throws InvalidAudioFileException, InvalidAudioFileFormatException, IOException{
         
         if (file == null) throw new InvalidAudioFileException ("Invalid file");
-        
-        String name = file.getName().toLowerCase();
-        int i = name.lastIndexOf(".");
-        if (i == -1) {
-            throw new InvalidAudioFileFormatException ("File format not supported");
-        }
-
-        String extension = name.substring(i + 1);
+		
+		String extension =  FilenameUtils.getExtension(file.getCanonicalPath());
             
         if(SupportedAudioFileFormat.FLAC.getFilesuffix().equals(extension)) {
             return new Flac (file);
@@ -109,7 +121,7 @@ public abstract class AudioFile implements TagsSource, RawKeyValuePairSource, Me
         } else if(SupportedAudioFileFormat.DFF.getFilesuffix().equals(extension)){
             return new Dff(file);
         } else {
-            throw new InvalidAudioFileFormatException ("File format not suupported");
+            throw new InvalidAudioFileFormatException ("File format not supported");
         }
     }
     protected AudioFile (String  path) throws InvalidAudioFileException {
@@ -270,7 +282,7 @@ public abstract class AudioFile implements TagsSource, RawKeyValuePairSource, Me
     public Metadata getMetadata(FieldKey fieldKey) {
         return getTagSchema().getMetadata(fieldKey);
     }
-    
+	
     public ArrayList<CoverArt> getEmbeddedArtworks(){
         
         ArrayList<CoverArt> out=new ArrayList<>();

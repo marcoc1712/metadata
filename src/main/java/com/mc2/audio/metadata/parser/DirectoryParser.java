@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import jwbroek.cuelib.Message;
 
-import org.apache.commons.io.FilenameUtils;
 import com.mc2.audio.metadata.impl.MetadataDefaultImpl;
 import com.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
 import com.mc2.audio.metadata.API.exceptions.InvalidAudioFileFormatException;
@@ -52,7 +51,11 @@ import com.mc2.audio.metadata.impl.TrackDefaultImpl;
 import com.mc2.audio.metadata.source.coverart.FileCoverArt;
 import com.mc2.audio.metadata.source.cue.Section;
 import static com.mc2.audio.metadata.source.cue.Section.ALBUM;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import static com.mc2.util.miscellaneous.ImageHandler.isFileAnImage;
+import com.mc2.util.performance.PerformanceLogger;
+import com.mc2.util.performance.monitor.PerformanceSnapshot;
 
 /**
  *
@@ -60,18 +63,42 @@ import java.util.logging.Logger;
  */
 public class DirectoryParser {
 	private static Logger logger = Logger.getLogger(DirectoryParser.class.getName()); 
-	
+	private static PerformanceLogger performanceLogger = new PerformanceLogger(DirectoryParser.class.getName()); 
+
     public static AlbumDefaultImpl parse(String directory) throws IOException, InvalidAudioFileException, InvalidAudioFileFormatException {
          return parse(new File(directory));
     }
+	
     public static AlbumDefaultImpl parse(File directory) throws IOException,  InvalidAudioFileException, InvalidAudioFileFormatException{
         
-		logger.info("ENTRY");
+		PerformanceSnapshot start = performanceLogger.log( Level.INFO, "");
+		PerformanceSnapshot now = start;
+		PerformanceSnapshot prev;
+				
+		ArrayList<File> directoryfileList =  getFileList(directory);
 		
-		ArrayList<File> directoryfileList = new ArrayList<>(Arrays.asList(directory.listFiles(new GenericFileFilter(false))));
-		ArrayList<File> fileList = new ArrayList<>(Arrays.asList(directory.listFiles(new AudioFileFilter(false))));
-		ArrayList<File> imagefileList = new ArrayList<>(Arrays.asList(directory.listFiles(new ImageFileFilter())));
-
+		prev=now;
+		now = performanceLogger.log(	
+				Level.INFO, 
+				"Library: parse - directoryfileList CREATED",
+				prev);
+		
+		ArrayList<File> fileList = getAudioFileList(directoryfileList);
+		
+		prev=now;
+		now = performanceLogger.log(	
+				Level.INFO, 
+				"Library: parse - AudioFileList CREATED",
+				prev);
+		
+		ArrayList<File> imagefileList = getImageFileList(directoryfileList);
+		
+		prev=now;
+		now = performanceLogger.log(	
+				Level.INFO, 
+				"Library: parse - imagefileList CREATED",
+				prev);
+		
 		ArrayList<CueFile> cueFileList= new ArrayList<>();
 		ArrayList<AudioFile> audioFileList= new ArrayList<>();
 
@@ -83,15 +110,30 @@ public class DirectoryParser {
 
 		HashMap<String,TrackDefaultImpl> trackMap = new HashMap<>();
 
+		PerformanceSnapshot beforeAudio= now;
+		
 		if (containsAudio(fileList)){
 	    
 			ArrayList<CoverArt> directorycoverArtList= new ArrayList<>();
+
 			for (File file : imagefileList){
 
 				CoverArt imagefileCoverArt = new FileCoverArt(file);
 				directorycoverArtList.add(imagefileCoverArt);
-
+				
+				prev=now;
+				now = performanceLogger.log(	
+					Level.FINE, 
+					"Library: store - imagefileCoverArt for file: "+file+" CREATED",
+					prev);
 			}
+			
+			prev=beforeAudio;
+			
+			now = performanceLogger.log(	
+					Level.FINE, 
+					"Library: store - directorycoverArtList CREATED",
+					prev);
 			
 			if (containsCueFile(fileList)){
 
@@ -138,8 +180,7 @@ public class DirectoryParser {
 
 								TrackDefaultImpl singleTrack = new TrackDefaultImpl(
 									trackData.getTrackId(), 
-									merge(Section.TRACK,fromAlbum, 
-									trackData.getMetadata()), 
+									merge(Section.TRACK,fromAlbum, trackData.getMetadata()), 
 									trackCoverArt);
 
 								completeTrack (	singleTrack,
@@ -155,10 +196,22 @@ public class DirectoryParser {
 
 								TrackDefaultImpl track = trackMap.get(trackId);
 								if ( track == null){
+									
+									track = new TrackDefaultImpl(
+										trackData.getTrackId(), 
+										merge(Section.TRACK,fromAlbum, trackData.getMetadata()), 
+										trackCoverArt);
 
-									track = singleTrack;
+									completeTrack (	track,
+										cueFile.getSourceId(),
+										audiofile, 
+										trackCount,
+										trackData.getLength(),
+										trackData.getOffset(),
+										trackData.getStartInFileInMillis(),
+										trackData.getLengthInMillis());
+
 									trackMap.put(trackData.getTrackId(), track);
-
 
 								} else {
 
@@ -201,14 +254,36 @@ public class DirectoryParser {
 					}
 				} 
 			}
+			
+			prev=now;
+			PerformanceSnapshot beforeFiles=performanceLogger.log(	
+					Level.INFO, 
+					"Library: parse - Cue files PARSED",
+					prev);
+			
+			now = beforeFiles;
+			
 			for (File file : fileList){
 
 				AudioFile audiofile = AudioFile.get(file);
 				
+				prev=now;
+				now=performanceLogger.log(	
+					Level.INFO, 
+					"Library: parse - File PARSED: "+file.getPath(),
+					prev);
+
 				if (audiofile != null){ 
 					
 					ArrayList<CoverArt> fileCoverArtList= new ArrayList<>();
 					fileCoverArtList.addAll(audiofile.getEmbeddedArtworks());
+					
+					prev=now;
+					now=performanceLogger.log(	
+						Level.INFO, 
+						"Library: EmbeddedArtwork estracted: ",
+						prev);
+					
 					coverArtList.addAll(fileCoverArtList);  
 
 					String trackId = audiofile.getTrackId();
@@ -223,6 +298,12 @@ public class DirectoryParser {
 									merge(Section.TRACK,new ArrayList<>(),audiofile.getMetadata()),
 									trackCoverArt);	
 					
+					prev=now;
+					now=performanceLogger.log(	
+						Level.FINE, 
+						"Library: TrackDefaultImpl created: ",
+						prev);
+					
 					singleTrack.setPlayListUrl(directory.getCanonicalPath());
 					
 					completeTrack (	singleTrack,
@@ -233,16 +314,44 @@ public class DirectoryParser {
 									0,
 									0L,
 									0L);
-
+					
+					prev=now;
+					now=performanceLogger.log(	
+						Level.FINE, 
+						"Library: completeTrack  ",
+						prev);
+					
 					singleTrack.addRawKeyValuePairSource(audiofile);
-
+					
+					prev=now;
+					now=performanceLogger.log(	
+						Level.FINE, 
+						"Library: addRawKeyValuePairSource  ",
+						prev);
+					
 					singleTrackList.add(singleTrack);
 
 					TrackDefaultImpl track = trackMap.get(trackId);
 
 					if ( track == null){
 
-						track = singleTrack;
+						track =  new TrackDefaultImpl(
+									trackId, 
+									merge(Section.TRACK,new ArrayList<>(),audiofile.getMetadata()),
+									trackCoverArt);	
+						
+						track.setPlayListUrl(directory.getCanonicalPath());
+
+						completeTrack (	track,
+										directory.getCanonicalPath(),
+										audiofile, 
+										1,
+										audiofile.getAudioHeader().getTrackLength()*75,
+										0,
+										0L,
+										0L);
+
+						track.addRawKeyValuePairSource(audiofile);
 						trackMap.put(trackId, track);
 
 					} else {    
@@ -289,63 +398,118 @@ public class DirectoryParser {
 					   audioFileList.add(audiofile);
 					}*/
 				}
+				prev=now;
+				now=performanceLogger.log(	
+					Level.INFO, 
+					"Library: File DONE  ",
+					prev);
 			}
+			
 			coverArtList.addAll(directorycoverArtList);	
-		} 
-        /*
-       * Validate the directory content
-       */
-        
-        String url = "";
+			
+			prev=beforeFiles;
+			now = performanceLogger.log(	
+					Level.INFO, 
+					"Library: parse - Audio files PARSED",
+					prev);
+			
+			/*
+		   * Validate the directory content
+		   */
 
-        if (cueFileList.size() > 0 &&  audioFileList.size() > 0){
-            
-            GenericStatusMessage statusMessage = new GenericStatusMessage(
-                    statusMessageList.size()+1,
-                    Severity.WARNING, 
-                    "Cue sheets and audio files defines Album ");
-            
-            statusMessageList.add(statusMessage);
-           
-        } else if (cueFileList.size() > 1) {
-        
-            GenericStatusMessage statusMessage = new GenericStatusMessage(
-                    statusMessageList.size()+1,
-                    Severity.INFO, 
-                    "More than one cue sheet defines Album");
-            
-             statusMessageList.add(statusMessage);
-			 url=directory.getCanonicalPath();
-        
-        } else if (audioFileList.size() > 1){
-        
-            GenericStatusMessage statusMessage = new GenericStatusMessage(
-                    statusMessageList.size()+1,
-                    Severity.WARNING, 
-                    "More than one audio file defines Album ");
-            
-            statusMessageList.add(statusMessage);
-        
-		} else if (cueFileList.size()==1){
-            
-            url=cueFileList.get(0).getSourceId();
-        
-        } else {
-            
-            url=directory.getCanonicalPath();
-        }
-		
-		Object[] keys = trackMap.keySet().toArray();
-		Arrays.sort(keys);
-		
-		ArrayList<TrackDefaultImpl> tracklist= new ArrayList<>();
-		for (Object key : keys){
-			tracklist.add(trackMap.get((String)key));
+			String url = "";
+
+			if (cueFileList.size() > 0 &&  audioFileList.size() > 0){
+
+				GenericStatusMessage statusMessage = new GenericStatusMessage(
+						statusMessageList.size()+1,
+						Severity.WARNING, 
+						"Cue sheets and audio files defines Album ");
+
+				statusMessageList.add(statusMessage);
+
+			} else if (cueFileList.size() > 1) {
+
+				GenericStatusMessage statusMessage = new GenericStatusMessage(
+						statusMessageList.size()+1,
+						Severity.INFO, 
+						"More than one cue sheet defines Album");
+
+				 statusMessageList.add(statusMessage);
+				 url=directory.getCanonicalPath();
+
+			} else if (audioFileList.size() > 1){
+
+				GenericStatusMessage statusMessage = new GenericStatusMessage(
+						statusMessageList.size()+1,
+						Severity.WARNING, 
+						"More than one audio file defines Album ");
+
+				statusMessageList.add(statusMessage);
+
+			} else if (cueFileList.size()==1){
+
+				url=cueFileList.get(0).getSourceId();
+
+			} else {
+
+				url=directory.getCanonicalPath();
+			}
+
+			prev=now;
+			now = performanceLogger.log(	
+					Level.FINE, 
+					"Library: parse - Directory VALIDATED",
+					prev);
+
+			Object[] keys = trackMap.keySet().toArray();
+			Arrays.sort(keys);
+
+			ArrayList<TrackDefaultImpl> tracklist= new ArrayList<>();
+			for (Object key : keys){
+				tracklist.add(trackMap.get((String)key));
+			}
+			prev=now;
+			now = performanceLogger.log(	
+					Level.FINE, 
+					"Library: parse - Tracks Created",
+					prev);
+
+			prev=start;
+			now = performanceLogger.log(	
+					Level.FINE, 
+					"Library: parse - Directory Parsed",
+					prev);
+			
+			AlbumDefaultImpl out = new AlbumDefaultImpl(url, coverArtList, atAlbumLevel, tracklist,  cueFileList, audioFileList, statusMessageList, singleTrackList);
+
+			prev=now;
+			now = performanceLogger.log(	
+					Level.FINE, 
+					"Library: parse - Album Created",
+					prev);
+
+			prev=start;
+			now = performanceLogger.log(	
+					Level.INFO, 
+					"Library: parse - Done",
+					prev);
+
+			return out;
 		}
-		logger.info("ENTRY ALBUM BUILD");
-        AlbumDefaultImpl out = new AlbumDefaultImpl(url, coverArtList, atAlbumLevel, tracklist, directoryfileList, cueFileList, audioFileList, imagefileList, statusMessageList, singleTrackList);
-        logger.info("RETURN");
-        return out;
+		prev=beforeAudio;
+		now = performanceLogger.log(	
+				Level.INFO, 
+				"Library: parse - Album NOT Created",
+				prev);
+
+		prev=start;
+		now = performanceLogger.log(	
+				Level.INFO, 
+				"Library: parse - Done",
+				prev);
+		
+		return null;
     }
 	private static void completeTrack(	TrackDefaultImpl track,
 										String playListUrl, //CueFile cueFile, directory.getCanonicalPath()
@@ -490,6 +654,50 @@ public class DirectoryParser {
         return target;
     }
     
+	private static ArrayList<File> getFileList(File directory){
+		
+		ArrayList<File> out = new  ArrayList<>();
+		
+		for (File file : Arrays.asList(directory.listFiles())){
+			
+		
+			if (!file.isHidden() && file.canRead() && !file.isDirectory()) {
+				out.add(file);
+			}
+			
+		}
+		
+		return out;
+	}
+	
+	private static ArrayList<File> getAudioFileList(ArrayList<File> directoryfileList){
+		
+		ArrayList<File> out = new  ArrayList<>();
+		for (File file : directoryfileList){
+			
+			try {
+				if (AudioFile.isAudiofile(file)){
+					out.add(file);
+				}
+			} catch (InvalidAudioFileException | IOException ex) {
+				Logger.getLogger(DirectoryParser.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+		
+		return out;
+	}
+	
+	private static ArrayList<File> getImageFileList(ArrayList<File> directoryfileList){
+		
+		ArrayList<File> out = new  ArrayList<>();
+		for (File file : directoryfileList){
+		 
+			if (isFileAnImage(file)){ out.add(file);}
+			
+		}
+
+		return out;
+	}
     private static ArrayList<CueFile> getCueFileList(ArrayList<File> fileList) throws IOException {
         
         ArrayList<CueFile> out= new ArrayList<>();
@@ -511,8 +719,8 @@ public class DirectoryParser {
     private static boolean containsCueFile(ArrayList<File> fileList) throws IOException{
         
         for (File file : fileList){
-            String ext =  FilenameUtils.getExtension(file.getCanonicalPath());
-            if (CueFile.isCueFile(file)){
+           
+			if (CueFile.isCueFile(file)){
                 return true;
             }
             
@@ -527,12 +735,12 @@ public class DirectoryParser {
 		for (File file : fileList){
 		
 			try {
-				if (AudioFile.get(file) != null){
+				if (AudioFile.isAudiofile(file) != null){
 					return true; 
 				}
 					
-			} catch (InvalidAudioFileException  | InvalidAudioFileFormatException ex) {
-				//do nothing
+			} catch (InvalidAudioFileException  ex) {
+				//do nothing;
 			}
 			
 		}

@@ -42,6 +42,7 @@ public class EmbeddedArtwork extends CoverArtAbstract implements CoverArt {
     private final Artwork artwork;
     private final Integer index;
     private final File file;
+	private Boolean loaded=false;
 
     public EmbeddedArtwork(File file, Artwork artwork, Integer index){
         super();
@@ -49,8 +50,9 @@ public class EmbeddedArtwork extends CoverArtAbstract implements CoverArt {
         this.artwork = artwork;
         this.index = index;
         this.file = file;
-        
-         if ( artwork.isLinked()){
+		
+        /* lazy loading.
+        if ( artwork.isLinked()){
             
             init(artwork.getImageUrl());
             
@@ -58,6 +60,7 @@ public class EmbeddedArtwork extends CoverArtAbstract implements CoverArt {
         
             init(artwork.getBinaryData());
         }
+		*/
     }
     
     private void init(byte[] originalSizeImageData){
@@ -74,8 +77,9 @@ public class EmbeddedArtwork extends CoverArtAbstract implements CoverArt {
         
     }
     private void init(String imageUrl){
-        
+	
         setOriginalSizeImageUrl(imageUrl);
+		
         byte[] bytes = ImageHandler.EMPTY;
         BufferedImage bufferedImage;
         
@@ -89,7 +93,38 @@ public class EmbeddedArtwork extends CoverArtAbstract implements CoverArt {
         }
         setOriginalSizeImageData(bytes);
         setOriginalSizeImage(bufferedImage);
+		
     }
+	@Override
+    public BufferedImage getOriginalSizeImage() {
+		
+		if ( !loaded && artwork.isLinked()){
+            
+            init(artwork.getImageUrl());
+            
+        } else if (!loaded) {
+        
+            init(artwork.getBinaryData());
+        }
+		loaded=true;
+		
+		return super.getOriginalSizeImage();
+	}
+	 @Override
+    public byte[] getOriginalSizeImageData() {
+		
+		if (!loaded && artwork.isLinked()){
+            
+            init(artwork.getImageUrl());
+            
+        } else if (!loaded) {
+        
+            init(artwork.getBinaryData());
+        }
+		loaded=true;
+		
+		return super.getOriginalSizeImageData();
+	}
     @Override
     public File getFile() {
         return file;

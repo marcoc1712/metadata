@@ -49,5 +49,12 @@ public interface MetadataRow {
 	 * @return the value
 	 */
 	String getValue();
-	
+	/**
+	 * @return the albumLevelValue
+	 */
+	String getAlbumLevelValue();
+	/**
+	 * @return the trackLevelValue
+	 */
+	String getTrackLevelValue();
 }

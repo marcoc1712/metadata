@@ -32,14 +32,18 @@ import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mc2.audio.metadata.API.AlbumBuilder;
 import com.mc2.audio.metadata.API.Album;
 import com.mc2.audio.metadata.API.Medium;
+import com.mc2.audio.metadata.API.MetadataKey;
+import com.mc2.audio.metadata.API.MetadataRow;
 import com.mc2.audio.metadata.API.RawKeyValuePair;
 import com.mc2.audio.metadata.API.RawKeyValuePairSource;
 import com.mc2.audio.metadata.API.StatusMessage;
 import com.mc2.audio.metadata.API.Track;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import com.mc2.audio.metadata.API.Factory;
 
 public class AlbumTest {
     @Before
@@ -53,11 +57,36 @@ public class AlbumTest {
         //String directory = "F:\\SVILUPPO\\04-Leia\\TestCase\\DSD SAMPLE";
         //String filename = "001_DSD128_Tascam DA-3000.dff";
 		//String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
-		String directory = "Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española\\CD1";
+		//String directory = "Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española\\CD1";
 		//String directory =  "Z:/recorder/Berlziot - Te Deum, Abbado";
 		//String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
 		//String directory = "Y:/Audiophile/aavv/The Best acoustic Album In The World... Ever (2005 EMI)/cd2";
-		printAlbum(directory, true);
+		//String directory = "Z:\\Classica\\aavv\\Anne-Sophie Mutter\\The Four Seasons and The Devil's Trill";
+		String directory = "Z:\\Classica\\aavv\\111 Years Of Deutsche Grammophon (55 CD) (2009 DG)\\01 - Abbado - Brahms - Hungarian Dances\\art";
+		//String directory = "X:\\musica-test\\TestCase\\02- flac singoli\\021 - flc singoli con embedded";
+		
+		Album album = Factory.parse(directory);
+		if (album != null){
+			/*for (MetadataRow row : ((AlbumDefaultImpl)album).getMetadataRows()){
+
+				System.out.println("Key: "+row.getKeyName()+" - Category: "+row.getCategoryName());
+				System.out.println("At Album level: "+row.getAlbumLevelValue());
+				System.out.println("Tracks common value: "+row.getTrackLevelValue());
+				System.out.println("Value: "+row.getValue());
+			}*/
+
+			for (MetadataRow row : album.getCreditMetadataList()){
+
+				System.out.println(MetadataKey.METADATA_CATEGORY.CREDIT);
+
+				System.out.println("Key: "+row.getKeyName()+" - Category: "+row.getCategoryName());
+				System.out.println("At Album level: "+row.getAlbumLevelValue());
+				System.out.println("Tracks common value: "+row.getTrackLevelValue());
+				System.out.println("Value: "+row.getValue());
+			}
+		}
+		
+		//printAlbum(directory, true);
 		
 		
 	}
@@ -95,7 +124,7 @@ public class AlbumTest {
 		
       
         
-        Album album = AlbumBuilder.parse(directory);
+        Album album = Factory.parse(directory);
 
         for (RawKeyValuePairSource rawKeyValuePairSource : album.getRawKeyValuePairSources()){
             System.out.println(rawKeyValuePairSource.getSourceId());
@@ -123,18 +152,13 @@ public class AlbumTest {
 		printAlbum(directory, false);
 	}	
 	private void printAlbum(String directory, Boolean single) throws Exception{
-       
-		Album album = AlbumBuilder.parse(directory);
+
+		Album album = Factory.parse(directory);
 		        
         System.out.println("========================================================================");
         System.out.println("\n");
         System.out.println("Directory:"+ directory);
         System.out.println("");
-        System.out.println("Files:");
-        
-        for (File file : album.getFileList()){
-            System.out.println("- "+file.getName());
-        }
 
         System.out.println("");
         System.out.println("ALBUM:");
@@ -165,20 +189,67 @@ public class AlbumTest {
             
             System.out.println(" - "+ statusMessage.toString());
         }
-        
+
         System.out.println("");
         System.out.println(" - METADATA:");
         TestUtils.printMetadata(album.getMetadataList());
+			
 		
+		System.out.println("");
+        System.out.println(" - METADATA ROWS:");
+
+		/*
+        TestUtils.printMetadataRows(album.getAwardMetadataList());
+		TestUtils.printMetadataRows(album.getCollectionMetadataList());
+		TestUtils.printMetadataRows(album.getCommentMetadataList());
+		TestUtils.printMetadataRows(album.getCreditMetadataList());
+		TestUtils.printMetadataRows(album.getDescriptionMetadataList());
+		TestUtils.printMetadataRows(album.getGoodiesMetadataList());
+		TestUtils.printMetadataRows(album.getMediaDescriptorMetadataList());
+		TestUtils.printMetadataRows(album.getMetadaWithNoCategory());
+		TestUtils.printMetadataRows(album.getMiscellaneaMetadataList());
+		TestUtils.printMetadataRows(album.getMusicDescriptorMetadataList());
+		TestUtils.printMetadataRows(album.getRatingMetadataList());
+		TestUtils.printMetadataRows(album.getURLMetadataList());
+		TestUtils.printMetadataRows(album.getWorkDescriptorMetadataList());
+		*/
 		ArrayList<? extends Track> tracks = new ArrayList<>();
-		if (single){
-			tracks = album.getSingleTrackList();
-		} else {
-			tracks = album.getTrackList();
+		
+		System.out.println("");
+        System.out.println(" - SINGLE TRACKLIST:");
+		System.out.println("");
+		tracks = album.getSingleTrackList();
+		printTracks(tracks);
+		
+		System.out.println("");
+        System.out.println(" - TRACKLIST:");
+		System.out.println("");
+		tracks = album.getTrackList();
+        printTracks(tracks);
+		
+		for (Medium medium  : album.getMediaList()){
+		
+			System.out.println("");
+			System.out.println(" - MEDIUM: "+medium.getMediumId());
+			System.out.println("   index: "+medium.getIndex());
+			System.out.println("   type: "+medium.getType());
+			System.out.println("   number: "+medium.getNumber());
+			System.out.println("   title: "+medium.getTitle());
+			System.out.println();
+			
+			tracks = medium.getTrackList();
+			printTracks(tracks);
+				
+			System.out.println(" - TOC: "+medium.getToc());
 		}
 		
-		
-        for (Track track : tracks){
+		System.out.println("");
+		System.out.println(" - ARTWORKS:");
+		TestUtils.printArtworks(album.getcoverArtList());
+    }
+	private void printTracks(ArrayList<? extends Track> tracks) throws IOException, URISyntaxException{
+	
+		 for (Track track : tracks){
                 
             System.out.println("");
             System.out.println(" - TRACK: "+track.getTrackId());
@@ -215,31 +286,5 @@ public class AlbumTest {
             }
 
         }
-		
-		for (Medium medium  : album.getMediaList()){
-		
-			System.out.println("");
-			System.out.println(" - MEDIUM: "+medium.getMediumId());
-			System.out.println("   index: "+medium.getIndex());
-			System.out.println("   type: "+medium.getType());
-			System.out.println("   number: "+medium.getNumber());
-			System.out.println("   title: "+medium.getTitle());
-			System.out.println();
-			
-			for (Track track : medium.getTrackList()){
-                
-				System.out.println("");
-				System.out.println(" - TRACK: "+track.getTrackId()+" length "+track.getLength()+" ["+track.getLengthString()+"]");
-				System.out.println();
-				System.out.println("   - Album Index "+track.getIndex());
-				System.out.println("   - PlayList Index "+track.getPlayListIndex());
-			}
-			
-			System.out.println(" - TOC: "+medium.getToc());
-		}
-		
-		System.out.println("");
-		System.out.println(" - ARTWORKS:");
-		TestUtils.printArtworks(album.getcoverArtList());
-    }
+	}
 }

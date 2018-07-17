@@ -48,6 +48,7 @@ import com.mc2.audio.metadata.API.StatusMessage.Severity;
 import com.mc2.audio.metadata.source.cue.FileData;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,11 +57,14 @@ import java.util.Map;
  */
 public class AlbumDefaultImpl implements Album {
     
+	private final static String UNKNOWN_MEDIA_TYPE = "disc";
+	private final static String UNKNOWN_DISC_NO = "?";
+	private final static String UNKNOWN_DISC_TOT = "?";
+	
     private final String url;
-    private final ArrayList<File> fileList;
+
     private final ArrayList<CueFile> cueFileList;
     private final ArrayList<AudioFile> audioFileList;  
-    private final ArrayList<File> imageFileList;  
     private final ArrayList<TrackDefaultImpl> trackList;
     private final ArrayList<CoverArt> coverArtList;
     private final ArrayList<Metadata> metadataList;
@@ -85,21 +89,17 @@ public class AlbumDefaultImpl implements Album {
     public AlbumDefaultImpl(String url,
                             ArrayList<CoverArt> coverArtList,
                             ArrayList<Metadata> metadataList, 
-                            ArrayList<TrackDefaultImpl> trackList, 
-                            ArrayList<File> fileList, 
+                            ArrayList<TrackDefaultImpl> trackList,
                             ArrayList<CueFile> cueFileList, 
                             ArrayList<AudioFile> audioFileList, 
-                            ArrayList<File> imageFileList,
                             ArrayList<StatusMessage> messageList,
 							ArrayList<TrackDefaultImpl> singleTracksList) {
         
         this.url = url;
         
         this.metadataList = metadataList;  
-        this.fileList = fileList;
         this.cueFileList = cueFileList;
         this.audioFileList = audioFileList;
-        this.imageFileList = imageFileList;
         this.messageList = messageList;
         
 		this.trackList = initTrackList(trackList);
@@ -132,55 +132,58 @@ public class AlbumDefaultImpl implements Album {
 		for (Object key : keys){
 
 			int count = mediaMap.get((String)key);
-			
-			String type = (String)key;
+			String type = ((String)key).trim().isEmpty() ? UNKNOWN_MEDIA_TYPE : ((String)key).trim();
 
 			if (keys.length == 1 && count < 2 && 
-				type.isEmpty() && getTotalDiscs().isEmpty()){
+				type.equals(UNKNOWN_MEDIA_TYPE) && getDisc().isEmpty() && getTotalDiscs().isEmpty()){
 				
 				return "";
 			}
-
+			if (keys.length == 1 && count < 2 && 
+				type.equals(UNKNOWN_MEDIA_TYPE) && getDisc().isEmpty() && !getTotalDiscs().isEmpty()){
+				
+				return UNKNOWN_MEDIA_TYPE+" "+UNKNOWN_DISC_NO+" of "+getTotalDiscs();
+			}
+			
 			if (keys.length == 1 && count < 2 && !getDisc().isEmpty()){
 				
 				Integer disc=0;
+				String discNo;
 				
 				try {
 					
 					disc = Integer.parseInt(getDisc());
-					if (  disc == 1 && getTotalDiscs().isEmpty()) {
+					if (  disc == 1 &&  type.equals(UNKNOWN_MEDIA_TYPE) && getTotalDiscs().isEmpty()) {
 					
-					return "1x"+type;
+						return "";
 					
 					}
-					if (type.isEmpty()) {
+					
+					discNo=disc+"";
+					
+				} catch (java.lang.NumberFormatException ex){
+					
+					discNo=UNKNOWN_DISC_NO;
+				}
+								
+				String value = type+" "+discNo;
+	
+				if (!getTotalDiscs().isEmpty()){
 
-						type = "disc";
+					value = value +" of "+ getTotalDiscs();
+				} else {
+					value = value +" of "+ UNKNOWN_DISC_TOT;
+				}
 
-					}
-					if (  disc > 0 ) {
+				return value;
 
-						String value = type+" "+disc;
-
-						value = value +" of "+ (getTotalDiscs().isEmpty() ? "?" :  getTotalDiscs());
-
-						if (!getDiscTitle().trim().isEmpty()) value = value+" ("+getDiscTitle().trim()+")";
-
-						return value;
-					}
-				
-				} catch (java.lang.NumberFormatException ex){}
 			}
-			if (type.trim().isEmpty()) {
-				
-				type = "?";
-				
-			}
+			
 			if (!out.isEmpty()){
 				out= out+" + ";
 			}
 
-			out = out+count+"x"+type;
+			out = out+count+" "+type;
 		}
 		
 		return out;
@@ -271,13 +274,13 @@ public class AlbumDefaultImpl implements Album {
 		sampleRate = _sampleRate;
 		bitsPerSample = _bitsPerSample;
 		channels  = _channels;
-		isLossless = _isLossless;
+		isLossless = _isLossless != null && _isLossless;
 		isVariableBitRate = _isVariableBitRate;
 		bitRate = _bitRate;
 		
        return trackList;
     }
-		 
+	
     @Override
     public String getAlbum(){
         return this.getMetadataValue(METADATA_KEY.ALBUM.name());
@@ -472,6 +475,10 @@ public class AlbumDefaultImpl implements Album {
 		
 		return metadataTable.getMetadaWithNoCategory();
     }
+	protected List< ? extends MetadataRow > getMetadataRows(){
+		
+		return metadataTable.getMetadataRows();
+	}
 	/**
 	 * @return the sampleRate
 	 */
@@ -506,7 +513,7 @@ public class AlbumDefaultImpl implements Album {
      * @return if the sampling bitRate is variable or constant
      */
 	@Override
-    public boolean isVariableBitRate(){
+    public Boolean isVariableBitRate(){
 		return isVariableBitRate;
 	};
 	
@@ -514,7 +521,7 @@ public class AlbumDefaultImpl implements Album {
      * @return bitRate as a number, this is the amount of kilobits of data sampled per second
      */
 	@Override
-    public long getBitRate(){
+    public Long getBitRate(){
 		return bitRate;
 	};
 	
@@ -536,22 +543,7 @@ public class AlbumDefaultImpl implements Album {
 
 		return false;
 	}
-    /**
-     * @return the fileList
-     */
-    @Override
-    public ArrayList<File> getFileList() {
-        return fileList;
-    }
-    
-    /**
-     * @return the imageFileList
-     */
-    @Override
-    public ArrayList<File> getImageFileList() {
-        return imageFileList;
-    }
-    
+
     @Override
     public ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources() {
         ArrayList<RawKeyValuePairSource> sources=  new ArrayList<>();
@@ -641,7 +633,11 @@ public class AlbumDefaultImpl implements Album {
 						 break;
 				case "front" :  typeScore = 5;
 						 break;
+				case "folder  (front)" :  typeScore = 4;
+						 break;
 				case "cover (front)" :  typeScore = 3;
+						 break;
+				case "folder" :  typeScore = 1;
 						 break;
 				case "cover" :  typeScore = 0;
 						 break;

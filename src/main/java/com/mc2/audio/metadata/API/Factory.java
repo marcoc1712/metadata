@@ -35,7 +35,7 @@ import com.mc2.audio.metadata.parser.DirectoryParser;
  *
  * @author marco
  */
-public interface AlbumBuilder {
+public class Factory {
 
     /**
      * Parse directory and build an album.

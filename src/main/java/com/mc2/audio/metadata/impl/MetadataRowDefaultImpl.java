@@ -42,7 +42,7 @@ public class MetadataRowDefaultImpl implements MetadataRow {
 	private final String categoryName;
 	private final String keyName;
 	
-	private final String albumLevelValue;
+	private String albumLevelValue;
 	private final String trackLevelValue;
 	private final String value;
 	
@@ -108,13 +108,19 @@ public class MetadataRowDefaultImpl implements MetadataRow {
 	/**
 	 * @return the albumLevelValue
 	 */
+	@Override
 	public String getAlbumLevelValue() {
 		return albumLevelValue;
 	}
 
+	protected void setAlbumLevelValue(String value) {
+		albumLevelValue = value;
+	}
+	
 	/**
 	 * @return the trackLevelValue
 	 */
+	@Override
 	public String getTrackLevelValue() {
 		return trackLevelValue;
 	}

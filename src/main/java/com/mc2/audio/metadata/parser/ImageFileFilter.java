@@ -28,7 +28,7 @@ package com.mc2.audio.metadata.parser;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import static com.mc2.util.miscellaneous.ImageHandler.isFileAnImage;
+import static com.mc2.util.miscellaneous.ImageHandler.isFileARealImage;
 
 /**
  * <p>This is a simple FileFilter that will only allow the audio file supported 
@@ -70,7 +70,7 @@ public class ImageFileFilter implements FileFilter
         }
 
         try {
-            if (isFileAnImage(file)){ return true;}
+            if (isFileARealImage(file)){ return true;}
         }
         catch(IOException ex) {
             return false;

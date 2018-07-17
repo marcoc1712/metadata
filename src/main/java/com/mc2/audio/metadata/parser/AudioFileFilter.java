@@ -26,9 +26,14 @@
 package com.mc2.audio.metadata.parser;
 
 import com.mc2.audio.metadata.API.SupportedFileFormat;
+import com.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
+import com.mc2.audio.metadata.API.exceptions.InvalidAudioFileFormatException;
+import com.mc2.audio.metadata.source.tags.file.AudioFile;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -78,12 +83,11 @@ public class AudioFileFilter implements FileFilter
 
         try
         {
-            String ext =  FilenameUtils.getExtension(file.getCanonicalPath());
-            if (SupportedFileFormat.valueOf(ext.toUpperCase()) != null) { return true; }
+            return AudioFile.isAudiofile(file);
         }
-        catch(IllegalArgumentException | IOException ex) {
-            return false;
-        }
+        catch(IllegalArgumentException | IOException | InvalidAudioFileException ex) {
+            //Logger.getLogger(AudioFileFilter.class.getName()).log(Level.SEVERE, null, ex);
+		}
         return false;
 	}
 }

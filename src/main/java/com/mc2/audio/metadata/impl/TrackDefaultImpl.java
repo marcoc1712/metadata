@@ -80,6 +80,7 @@ public class TrackDefaultImpl implements Track {
     public TrackDefaultImpl(String  trackId,
 							ArrayList<Metadata> metadataList,  
 							ArrayList<CoverArt> coverArtList) {
+		
         this.trackId = trackId;
         this.metadataList = metadataList;
 		this.coverArtList = this.orderCoverArt(coverArtList);
@@ -191,6 +192,13 @@ public class TrackDefaultImpl implements Track {
 		
 		if (coverArtList == null || coverArtList.isEmpty()) {return null;}
 		return coverArtList.get(0);
+	}
+	/**
+     * @return the metadataTable;
+     */
+	
+	public MetadataTable getMetadataTable(){
+		 return metadataTable;
 	}
 	 /**
      * @return the metadataList
@@ -306,12 +314,12 @@ public class TrackDefaultImpl implements Track {
         this.length = length;
     }
 	
-    /** @return file length in msec */
+    /** @return length in msec */
     @Override
     public Long getLengthInMillis(){
         return CalendarUtils.getMilliseconds(getLength());
     }
-    /** @return file length string */
+    /** @return length string */
     @Override
     public String getLengthString(){
 
