@@ -72,10 +72,10 @@ public class MusicBrainzCoverArtArchive  {
            MusicBrainzCoverArt musicBrainzCoverArt = new MusicBrainzCoverArtImpl(this.mbId, i.next());
            
             getCoverArtList().add(musicBrainzCoverArt);
-           
-           if(musicBrainzCoverArt.getType().equals(CoverArtType.FRONT.toString())){
+			
+			if(front == null && musicBrainzCoverArt.getType().equals(CoverArtType.FRONT.toString())){
                front=  musicBrainzCoverArt;
-           }
+			}
         }
     }
 
