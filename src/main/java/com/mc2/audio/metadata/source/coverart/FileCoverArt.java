@@ -73,10 +73,7 @@ public class FileCoverArt extends CoverArtAbstract implements CoverArt {
     public Integer getIndex() {
         return -1;
     }
-    @Override
-    public String getUrl() {
-        return "";
-    }
+    
     @Override
     public String getSource() {
         return CoverArt.SOURCE_IMAGE_FILE;
@@ -102,5 +99,20 @@ public class FileCoverArt extends CoverArtAbstract implements CoverArt {
 		
 		if (super.getOriginalSizeImage() == null) init();
 		return super.getOriginalSizeImage();
+	}
+	@Override
+	public String toString() {
+		
+		String description =  this.getSource()+" "+this.getType();
+		if (description == null || description.isEmpty()){
+
+			description = this.getComment()== null ? 
+						  "" : 
+						  this.getComment();
+		}
+
+		description = description+  " - "+this.getFile().getPath();
+
+		return description;
 	}
 }

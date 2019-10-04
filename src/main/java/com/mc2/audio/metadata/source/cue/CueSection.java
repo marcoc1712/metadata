@@ -17,16 +17,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+
 package com.mc2.audio.metadata.source.cue;
 
+import com.mc2.audio.metadata.source.Section;
+import java.util.ArrayList;
 /**
- * 
+ *
  * @author marcoc1712
  */
-public class AlbumSection extends CueSection {
-
-    public AlbumSection(CueSheet cuesheet){
-        super (cuesheet);
+public class CueSection extends Section{
+    
+    private final CueSheet cuesheet;
+    private final ArrayList<Command> commandList = new ArrayList<>();
+    
+    public CueSection(CueSheet cuesheet){
+        this.cuesheet = cuesheet;  
     }
     
+    public final CueSheet getCuesheet() {
+        return cuesheet;
+    }
+    
+    public ArrayList<Command> getCommandList(){
+            return commandList;
+    }
+
+
+    
+
 }

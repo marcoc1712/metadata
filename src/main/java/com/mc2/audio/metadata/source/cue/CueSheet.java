@@ -111,7 +111,7 @@ public class CueSheet extends jwbroek.cuelib.CueSheet implements ImputLinesSourc
             
     public Metadata getMedata(String genericKey){
 
-        return this.getAlbumSection().getMedata(Section.ALBUM,genericKey);
+        return this.getAlbumSection().getMedata(CueSection.ALBUM,genericKey);
     }
    /**
      * @return the source

@@ -23,7 +23,7 @@ package com.mc2.audio.metadata.source.cue;
  *
  * @author marco
  */
-public class TrackSection extends Section {
+public class TrackSection extends CueSection {
     
      private final TrackData trackdata;
      

@@ -4,7 +4,7 @@ import fm.last.musicbrainz.coverart.CoverArtType;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import com.mc2.audio.metadata.impl.MusicBrainzCoverArtImpl;
+import com.mc2.audio.metadata.source.coverart.MusicBrainzCoverArtImpl;
 import com.mc2.musicbrainz.coverart.Image;
 import com.mc2.musicbrainz.coverart.ImageGetter;
 

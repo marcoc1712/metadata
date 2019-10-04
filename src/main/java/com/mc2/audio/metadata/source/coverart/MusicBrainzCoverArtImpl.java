@@ -1,9 +1,8 @@
-package com.mc2.audio.metadata.impl;
+package com.mc2.audio.metadata.source.coverart;
 
 import java.io.File;
 import com.mc2.audio.metadata.API.musicbrainz.MusicBrainzCoverArt;
 import com.mc2.audio.metadata.API.CoverArt;
-import com.mc2.audio.metadata.source.coverart.CoverArtAbstract;
 import com.mc2.musicbrainz.coverart.Image;
 
 /*
@@ -26,6 +25,8 @@ public class MusicBrainzCoverArtImpl extends CoverArtAbstract implements CoverAr
         super();
         this.mbId=mbId;
         this.image=image;
+		
+		this.url = "";
         
         init();
         
@@ -48,11 +49,6 @@ public class MusicBrainzCoverArtImpl extends CoverArtAbstract implements CoverAr
         return com.mc2.audio.metadata.API.CoverArt.SOURCE_MUSICBRAINZ_COVER_ARCHIVE;
     }
     
-    @Override
-    public String getUrl() {
-       return "";
-    }
-
     @Override
     public File getFile() {
        return null;
@@ -80,7 +76,21 @@ public class MusicBrainzCoverArtImpl extends CoverArtAbstract implements CoverAr
         return mbId;
     }
 
-   
+   @Override
+	public String toString() {
+		
+		String description =  this.getSource()+" "+this.getType();
+		if (description == null || description.isEmpty()){
+
+			description = this.getComment()== null ? 
+						  "" : 
+						  this.getComment();
+		}
+
+		description = description+  " - "+this.getImageUrl();
+
+		return description;
+	}
     
 
     

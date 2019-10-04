@@ -24,7 +24,7 @@
  */
 package Test.sources;
 
-import Test.utils.TestUtils;
+import com.mc2.audio.metadata.utils.TestUtils;
 import java.io.File;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -48,7 +48,7 @@ public class CueTest {
         System.setOut(new PrintStream(System.out, true, "utf-8"));
         
     }
-    //@Test
+    @Test
     public void TestSingleFile() throws Exception{
          
         //String directory = "F:\\SVILUPPO\\01 - SqueezeboxServer Plugins\\musica campione\\Albinoni Adagios - Anthony Camden, Julia Girdwood (1993 Naxos)";

@@ -47,7 +47,7 @@ import com.mc2.audio.metadata.API.MetadataSource;
 import com.mc2.audio.metadata.API.RawKeyValuePair;
 import com.mc2.audio.metadata.API.RawKeyValuePairSource;
 import com.mc2.audio.metadata.API.SupportedFileFormat;
-import com.mc2.audio.metadata.impl.RawKeyValuePairDefaultImpl;
+import com.mc2.audio.metadata.impl.GenericRawKeyValuePair;
 import com.mc2.audio.metadata.source.tags.TagsSource;
 import com.mc2.audio.metadata.source.tags.schema.TagSchema;
 import org.apache.commons.io.FilenameUtils;
@@ -215,27 +215,27 @@ public abstract class AudioFile implements TagsSource, RawKeyValuePairSource, Me
         
         AudioHeader audioHeader = this.getAudioHeader();
 
-        out.add(new RawKeyValuePairDefaultImpl("Audio Data Length: ",audioHeader.getAudioDataLength()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Audio Data Start Position: ",audioHeader.getAudioDataStartPosition()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Audio Data End Position: ",audioHeader.getAudioDataEndPosition()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Byte Rate: ",audioHeader.getByteRate()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Bit Rate: ",audioHeader.getBitRate()));
-        out.add(new RawKeyValuePairDefaultImpl("Bit Rate As Number: ",audioHeader.getBitRateAsNumber()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Sample Rate: ",audioHeader.getSampleRate()));
-        out.add(new RawKeyValuePairDefaultImpl("Sample Rate As Number: ",audioHeader.getSampleRateAsNumber()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Bits PerSample: ",audioHeader.getBitsPerSample()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Channels: ",audioHeader.getChannels()));
-        out.add(new RawKeyValuePairDefaultImpl("Encoding Type: ",audioHeader.getEncodingType()));
-        out.add(new RawKeyValuePairDefaultImpl("Format: ",audioHeader.getFormat()));
-        out.add(new RawKeyValuePairDefaultImpl("No Of Samples: ",audioHeader.getNoOfSamples()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Is Variable Bit Rate: ",audioHeader.isVariableBitRate()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Track Length: ",audioHeader.getTrackLength()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Precise Track Length: ",audioHeader.getPreciseTrackLength()+""));
-        out.add(new RawKeyValuePairDefaultImpl("Is Lossless: ",audioHeader.isLossless()+""));
+        out.add(new GenericRawKeyValuePair("Audio Data Length: ",audioHeader.getAudioDataLength()+""));
+        out.add(new GenericRawKeyValuePair("Audio Data Start Position: ",audioHeader.getAudioDataStartPosition()+""));
+        out.add(new GenericRawKeyValuePair("Audio Data End Position: ",audioHeader.getAudioDataEndPosition()+""));
+        out.add(new GenericRawKeyValuePair("Byte Rate: ",audioHeader.getByteRate()+""));
+        out.add(new GenericRawKeyValuePair("Bit Rate: ",audioHeader.getBitRate()));
+        out.add(new GenericRawKeyValuePair("Bit Rate As Number: ",audioHeader.getBitRateAsNumber()+""));
+        out.add(new GenericRawKeyValuePair("Sample Rate: ",audioHeader.getSampleRate()));
+        out.add(new GenericRawKeyValuePair("Sample Rate As Number: ",audioHeader.getSampleRateAsNumber()+""));
+        out.add(new GenericRawKeyValuePair("Bits PerSample: ",audioHeader.getBitsPerSample()+""));
+        out.add(new GenericRawKeyValuePair("Channels: ",audioHeader.getChannels()));
+        out.add(new GenericRawKeyValuePair("Encoding Type: ",audioHeader.getEncodingType()));
+        out.add(new GenericRawKeyValuePair("Format: ",audioHeader.getFormat()));
+        out.add(new GenericRawKeyValuePair("No Of Samples: ",audioHeader.getNoOfSamples()+""));
+        out.add(new GenericRawKeyValuePair("Is Variable Bit Rate: ",audioHeader.isVariableBitRate()+""));
+        out.add(new GenericRawKeyValuePair("Track Length: ",audioHeader.getTrackLength()+""));
+        out.add(new GenericRawKeyValuePair("Precise Track Length: ",audioHeader.getPreciseTrackLength()+""));
+        out.add(new GenericRawKeyValuePair("Is Lossless: ",audioHeader.isLossless()+""));
         
         for ( TagField tagField : geTagFields()){
             String value = tagField.isBinary() ? "[bynary content]" : tagField.toString();
-            RawKeyValuePair pair = new RawKeyValuePairDefaultImpl(tagField.getId(), value);
+            RawKeyValuePair pair = new GenericRawKeyValuePair(tagField.getId(), value);
             out.add(pair);
         }
         return out;

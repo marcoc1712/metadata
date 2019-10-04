@@ -23,7 +23,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.mc2.audio.metadata.impl;
+package com.mc2.audio.metadata.fromFiles;
 
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;

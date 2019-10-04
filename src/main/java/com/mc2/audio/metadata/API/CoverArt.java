@@ -14,7 +14,7 @@ public interface CoverArt {
     public static final String SOURCE_IMAGE_FILE ="IMAGE_FILE";
     public static final String SOURCE_EMBEDDED_FILE ="EMBEDDED_PICTURE";
     public static final String SOURCE_MUSICBRAINZ_COVER_ARCHIVE ="MUSICBRAINZ_COVER_ARCHIVE";
-    
+ 	
     public String getId();
     
     public String getSource();
@@ -46,4 +46,7 @@ public interface CoverArt {
     public String getThumbnail150Url();
     public String getThumbnail250Url();
     public String getThumbnail500Url();
+	
+	@Override
+	public String toString();
 }

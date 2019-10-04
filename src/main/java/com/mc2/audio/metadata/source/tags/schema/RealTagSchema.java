@@ -33,8 +33,8 @@ import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.TagField;
 import com.mc2.audio.metadata.API.Metadata;
 import com.mc2.audio.metadata.API.MetadataOrigin;
-import com.mc2.audio.metadata.impl.MetadataDefaultImpl;
-import com.mc2.audio.metadata.impl.TagMetadataOrigin;
+import com.mc2.audio.metadata.impl.GenericMetadata;
+import com.mc2.audio.metadata.fromFiles.TagMetadataOrigin;
 import com.mc2.audio.metadata.source.tags.TagsSource;
 
 /**
@@ -85,7 +85,7 @@ public class RealTagSchema extends TagSchema  {
                 ArrayList<TagField> discarded = new ArrayList<>();
                 discarded.add(tagField);
                 TagMetadataOrigin origin= new TagMetadataOrigin(source.getSourceId() , tagField.getId(), new ArrayList<>(), discarded, new ArrayList<>());
-                Metadata metadata= new MetadataDefaultImpl(tagField.getId(),origin);
+                Metadata metadata= new GenericMetadata(tagField.getId(),origin);
                 
                 out.add(metadata);
 

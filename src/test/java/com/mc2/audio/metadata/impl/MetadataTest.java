@@ -26,12 +26,13 @@ package com.mc2.audio.metadata.impl;
  */
 
 
+import com.mc2.audio.metadata.fromFiles.AlbumFromFiles;
 import com.mc2.audio.metadata.API.Metadata;
 import com.mc2.audio.metadata.API.MetadataKey.METADATA_KEY;
 import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
-import com.mc2.audio.metadata.API.Factory;
+import com.mc2.audio.metadata.API.Controller;
 
 
 public class MetadataTest {
@@ -50,7 +51,7 @@ public class MetadataTest {
 		//String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
 		//String directory = "Y:/Audiophile/aavv/The Best acoustic Album In The World... Ever (2005 EMI)/cd2";
 
-		AlbumDefaultImpl album = (AlbumDefaultImpl) Factory.parse(directory);
+		AlbumFromFiles album = (AlbumFromFiles) Controller.parse(directory);
 		//String key = METADATA_KEY.ALBUM.name();
 		String key = METADATA_KEY.ALBUM.name();
 		

@@ -25,7 +25,7 @@
 
 package Test.sources;
 
-import Test.utils.TestUtils;
+import com.mc2.audio.metadata.utils.TestUtils;
 import java.io.PrintStream;
 //import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.tag.FieldKey;

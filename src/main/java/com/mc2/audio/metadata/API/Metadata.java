@@ -48,7 +48,38 @@ public interface Metadata {
         EMPTY
         
     };
+	/**
+     * @return the key
+     */
+    String getKey();
+	
+	/**
+     * @return the value
+     */
+    String getValue();
+    
+	/**
+     * True if the metadata carry no values (valid or discarded).
+     * @return isEmpty.
+     */
+    Boolean isEmpty();
+	
+	 /**
+     * @return the status.
+     */
+    STATUS getStatus();
+	
+	 /**
+     * @return the valid value.
+     */
+    String getValidValue();
+
     /**
+     * @return the valid values
+     */
+    ArrayList<String> getValidValues();
+	
+	/**
      * @return the discarded value.
      */
     String getDiscardedValue();
@@ -68,35 +99,12 @@ public interface Metadata {
      */
     ArrayList<String> getInvalidValues();
 
-    /**
-     * @return the key
-     */
-    String getKey();
+    /* END OF SimpleMetadata */ 
 
     /**
      * @return the origins
      */
     ArrayList<MetadataOrigin> getOrigins();
-
-    /**
-     * @return the status.
-     */
-    STATUS getStatus();
-
-    /**
-     * @return the valid value.
-     */
-    String getValidValue();
-
-    /**
-     * @return the valid values
-     */
-    ArrayList<String> getValidValues();
-
-    /**
-     * @return the value
-     */
-    String getValue();
 
     /** Return the value, merging values accordingly with the input flags.
      * @param mergeDiscarded
@@ -116,13 +124,7 @@ public interface Metadata {
      * @return the values.
      */
 	ArrayList<String> getValues(boolean mergeDiscarded, boolean mergeInvalid);
-			
-    /**
-     * True if the metadata carry no values (valid or discarded).
-     * @return isEmpty.
-     */
-    boolean isEmpty();
-	
+
 	 /**
      * 'standard' name  for the metadata Key, at Album level.
 	 * @return METADATA_KEY

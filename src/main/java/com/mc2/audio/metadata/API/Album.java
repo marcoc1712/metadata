@@ -31,57 +31,22 @@ import java.util.ArrayList;
  * @author marco
  */
 public interface Album {
-    
-     /*
-     * @return the album url (a directory or a playlist).
-    */
-    String getUrl();
 
-    /**
-     * @return the sources of Raw Key Value Pairs, like tag or cue files lines.
-    */
-    ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources();
-    
-    /**
-     * @return the messageList
-     */
-    ArrayList<StatusMessage> getMessageList();
-    
-     /**
-     * @return the overall Album status
-     */
-    StatusMessage.Severity getStatus();
-
-    /**
-     * @return the totalLength
-     */
-    Integer getTotalLength();
-
-    /**
-     * @return the trackList
-     */
-    ArrayList<? extends Track> getTrackList();
-
-	/**
-     * @return the media
-     */
-    ArrayList<? extends Medium> getMediaList();
-
-    /**
-     * @return the coverArtList
-     */
-    ArrayList<CoverArt> getcoverArtList();
-   
-	/**
-	 *@return the most representative coverArt
-	 */
-	CoverArt getCoverArt();
+	final static String UNKNOWN_MEDIA_TYPE = "disc";
+	final static String UNKNOWN_DISC_NO = "?";
+	final static String UNKNOWN_DISC_TOT = "?";
 	
-    /**
+     /*
+     * @return the album orignal ID (for external sevices) or URL (for local directories or playlists).
+    */
+    String getId();
+
+	/**
      * @return the Album title
     */
     String getAlbum();
-    /**
+	
+	    /**
      * @return the Album main artist(s).
     */
     String getAlbumArtist();
@@ -130,11 +95,7 @@ public interface Album {
      * @return the Disc title (in case of single disk in a boxset)
     */
 	String getDiscTitle();
-	 /**
-     * @return the Media descriptor (es. 2 CD + 1 DVD)
-    */
-	String getMedia();
-	
+	 	
 	/**
 	 * @return the corresponding musicbrainz release ID, if any.
 	 */
@@ -181,7 +142,44 @@ public interface Album {
 	Boolean isHiRes();
 	
 	/**
-     * @return the metadataList
+	 *@return the most representative coverArt
+	 */
+	CoverArt getCoverArt();
+	
+	/**
+     * @return the coverArtList
+     */
+    ArrayList<CoverArt> getcoverArtList();
+	/**
+     * @return the Media descriptor (es. 2 CD + 1 DVD)
+    */
+	String getMedia();
+	
+	/**
+     * @return the totalLength
+     */
+    Integer getTotalLength();
+	
+	/**
+     * @return the media
+     */
+    ArrayList<? extends Medium> getMediaList();
+	
+	 /**
+     * @return the trackList
+     */
+    ArrayList<? extends Track> getTrackList();
+	
+	/*
+	* returns the complete and unordered list of tracks extracted form all the
+	* files in the directory. This is similar to a playlist, but is made by 'real' 
+	* files, more a 'compilation' or a 'collection' of songs.
+	*/
+	
+	ArrayList<? extends Track> getSingleTrackList();
+	
+	/**
+     * @return the metadata List
      */
     ArrayList<Metadata> getMetadataList();
 	
@@ -196,14 +194,24 @@ public interface Album {
 	ArrayList<? extends MetadataRow> getOtherInvolvedPersonMetadataList();
 	ArrayList<? extends MetadataRow> getMediaDescriptorMetadataList();
 	ArrayList<? extends MetadataRow> getWorkDescriptorMetadataList();
+	ArrayList<? extends MetadataRow> getRecordingDescriptorMetadataList();
 	ArrayList<? extends MetadataRow> getMiscellaneaMetadataList();
 	ArrayList<? extends MetadataRow> getRatingMetadataList();
 	ArrayList<? extends MetadataRow> getMetadaWithNoCategory();
 	
-	/*
-	* returns the complete and unordered list of tracks extracted form all the
-	* files in the directory. This is similar to a playlist, but is made by 'real' 
-	* files, more a 'compilation' or a 'collection' of songs.
-	*/
-	ArrayList<? extends Track> getSingleTrackList();
+	/**
+     * @return the sources of Raw Key Value Pairs, like tag or cue files lines.
+    */
+    ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources();
+	
+	  /**
+     * @return the overall Album status
+     */
+    StatusMessage.Severity getStatus();
+	
+    /**
+     * @return the messageList
+     */
+    ArrayList<StatusMessage> getMessageList();
+   
 }

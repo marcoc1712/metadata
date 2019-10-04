@@ -34,12 +34,12 @@ import jwbroek.cuelib.Warning;
 import org.apache.commons.lang3.StringUtils;
 import com.mc2.audio.metadata.API.Metadata;
 
-import com.mc2.audio.metadata.impl.CueMetadataOrigin;
+import com.mc2.audio.metadata.fromFiles.CueMetadataOrigin;
 import com.mc2.audio.metadata.source.cue.CommandKeys.COMMAND_KEY;
 import com.mc2.audio.metadata.API.MetadataKey.METADATA_KEY;
 import static com.mc2.audio.metadata.API.MetadataKey.getAlbumLevelMetadataAlias;
 import static com.mc2.audio.metadata.API.MetadataKey.getTrackLevelMetadataAlias;
-import com.mc2.audio.metadata.impl.MetadataDefaultImpl;
+import com.mc2.audio.metadata.impl.GenericMetadata;
 
 /**
  *
@@ -118,7 +118,7 @@ public class CueSheetMetadaParser {
     /**
     * Parse cuesheet validCommands and valorize metadata.
     * @param cuesheet The {@link com.mc2.audio.metadata.source.cue.CueSheet} to be analized to produce metadata.
-    * @return A MetadataDefaultImpl representation of the cue sheet.
+    * @return A GenericMetadata representation of the cue sheet.
     */
     public static CueSheet parse(CueSheet cuesheet){
         
@@ -348,7 +348,7 @@ public class CueSheetMetadaParser {
     * 
     * @param input
     */
-    private static void parsePerformer(Section section, Command command ) {
+    private static void parsePerformer(CueSection section, Command command ) {
         
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parsePerformer(Command)", command);
 
@@ -431,7 +431,7 @@ public class CueSheetMetadaParser {
    * 
    * @param input
    */
-    private static void parseSongwriter(Section section, Command command ) {
+    private static void parseSongwriter(CueSection section, Command command ) {
         
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseSongwriter(Command)", command);
 
@@ -508,7 +508,7 @@ public class CueSheetMetadaParser {
     * 
     * @param input
     */
-    private static void parseTitle(Section section, Command command) {
+    private static void parseTitle(CueSection section, Command command) {
         
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseTitle(command)", command);
 
@@ -705,7 +705,7 @@ public class CueSheetMetadaParser {
     * 
     * @param input
     */
-    private static void parseRem(Section section, Command command){
+    private static void parseRem(CueSection section, Command command){
         
         /* This is a comment, but popular implementation like Exact Audio Copy 
         * may still embed information here.
@@ -761,7 +761,7 @@ public class CueSheetMetadaParser {
     * 
     * @param input
     */
-    private static void parseRemComment(Section section, Command command) {
+    private static void parseRemComment(CueSection section, Command command) {
         
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseRemComment(Command)", command);
 
@@ -795,7 +795,7 @@ public class CueSheetMetadaParser {
     * 
     * @param command
     */
-    private static void parseRemGenre(Section section, Command command) {
+    private static void parseRemGenre(CueSection section, Command command) {
       
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseRemGenre(Command)", command);
         
@@ -837,7 +837,7 @@ public class CueSheetMetadaParser {
     * 
     * @param command
     */
-    private static void parseRemYear(Section section, Command command) {
+    private static void parseRemYear(CueSection section, Command command) {
       
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseRemYear(Command)", command);
         
@@ -896,7 +896,7 @@ public class CueSheetMetadaParser {
     * 
     * @param command
     */
-    private static void parseRemDiscId(Section section, Command command) {
+    private static void parseRemDiscId(CueSection section, Command command) {
       
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseRemDiscId(Command)", command);
         
@@ -943,7 +943,7 @@ public class CueSheetMetadaParser {
     * 
     * @param command
     */
-    private static void parseRemDiscNumber(Section section, Command command) {
+    private static void parseRemDiscNumber(CueSection section, Command command) {
       
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseRemDate(Command)", command);
         
@@ -992,7 +992,7 @@ public class CueSheetMetadaParser {
     * 
     * @param command
     */
-    private static void parseRemDiscTotal(Section section, Command command) {
+    private static void parseRemDiscTotal(CueSection section, Command command) {
       
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseRemDate(Command)", command);
         
@@ -1042,7 +1042,7 @@ public class CueSheetMetadaParser {
     * 
     * @param input
     */
-    private static void parseRemOther(Section section, Command command){
+    private static void parseRemOther(CueSection section, Command command){
    
         logger.entering(CueSheetMetadaParser.class.getCanonicalName(), "parseRemOther(Command)", command);
         
@@ -1069,7 +1069,7 @@ public class CueSheetMetadaParser {
         
         logger.exiting(CueSheetMetadaParser.class.getCanonicalName(), "parseRemOther(Command)");
    }
-   private static Metadata addOrUpdateMetadata(Section section, 
+   private static Metadata addOrUpdateMetadata(CueSection section, 
                                             COMMAND_KEY commandKey, 
                                             String remSubkey,
                                             String metadataKey,
@@ -1078,7 +1078,7 @@ public class CueSheetMetadaParser {
                                             List<Command> invalidCommands,
                                             List<Message> messages){
         
-        String level = section instanceof AlbumSection ? Section.ALBUM : Section.TRACK;
+        String level = section instanceof AlbumSection ? CueSection.ALBUM : CueSection.TRACK;
        
         CueMetadataOrigin origin = new CueMetadataOrigin(section.getSourceId(),
                                                             commandKey.name(),
@@ -1093,7 +1093,7 @@ public class CueSheetMetadaParser {
         if (metadata == null ){
            
             String alias;
-            if (level.equals(Section.ALBUM)){
+            if (level.equals(CueSection.ALBUM)){
                 alias =getAlbumLevelMetadataAlias(metadataKey);
             } else {
                  alias =getTrackLevelMetadataAlias(metadataKey);
@@ -1102,12 +1102,15 @@ public class CueSheetMetadaParser {
             if (alias != null && !alias.isEmpty()){
             
                 metadataKey= alias;
+				metadata = section.getMedata(level, metadataKey);
             }
-            
-            metadata = new MetadataDefaultImpl (metadataKey, origin);
+		}
+		
+		if (metadata == null ){
+            metadata = new GenericMetadata (metadataKey, origin);
             section.getMetadata().add(metadata);
         } else  {
-            ((MetadataDefaultImpl)metadata).addOrigin(origin);
+            ((GenericMetadata)metadata).addOrigin(origin);
         }
         
         return metadata;
@@ -1120,7 +1123,7 @@ public class CueSheetMetadaParser {
     * @param input The content of the line the warning pertains to.
     * @param warning The warning to write.
     */
-    protected static void addWarning(ArrayList<Message> messages, Section section, final int lineNumber, final String input, final String warning) {
+    protected static void addWarning(ArrayList<Message> messages, CueSection section, final int lineNumber, final String input, final String warning) {
         logger.warning(warning);
         Message msg= new Warning(input, lineNumber, warning);
         section.getCuesheet().getMessages().add( msg);

@@ -34,7 +34,7 @@ import com.mc2.audio.metadata.API.MetadataKey.METADATA_KEY;
 import com.mc2.audio.metadata.API.MetadataOrigin;
 
 /**
- * An unique MetadataDefaultImpl.
+ * An unique GenericMetadata.
  * It normally correspond to a single TAG field in an audio file or COMMAND 
  * in a cue sheet, but if more than one instance is found either in different 
  * sources (i.e. wav id3v2 tags and cue sheet) or different command/tags in same 
@@ -46,7 +46,7 @@ import com.mc2.audio.metadata.API.MetadataOrigin;
  * @author marco
  */
 
-public class MetadataDefaultImpl implements Metadata {
+public class GenericMetadata implements Metadata {
 
     private final boolean defaultMergeDiscarded=false;
     private final boolean defaultMergeInvalid=false;
@@ -54,13 +54,13 @@ public class MetadataDefaultImpl implements Metadata {
     String key;
     private final ArrayList<MetadataOrigin> origins = new ArrayList<>();
 
-    public MetadataDefaultImpl(String key, MetadataOrigin origin){
+    public GenericMetadata(String key, MetadataOrigin origin){
         
         this.key=key;
         this.origins.add(origin);
    
     }
-    public MetadataDefaultImpl(String key, List<MetadataOrigin> origins){
+    public GenericMetadata(String key, List<MetadataOrigin> origins){
         
         this.key=key;
         this.origins.addAll(origins);
@@ -169,12 +169,13 @@ public class MetadataDefaultImpl implements Metadata {
         if (getInvalidValue().isEmpty()) {return STATUS.HAS_DISCARDED_ORIGINS;}   
         return STATUS.HAS_DISCARDED_AND_INVALID_ORIGINS;
     }
+	
     /**
      * True if the metadata carry no values (valid or discarded).
      * @return isEmpty.
      */
     @Override
-    public boolean isEmpty() {
+    public Boolean isEmpty() {
         return this.getValidValues().isEmpty() &&  
                this.getDiscardedValues().isEmpty() &&
                this.getInvalidValues().isEmpty();
@@ -365,7 +366,7 @@ public class MetadataDefaultImpl implements Metadata {
 	}
 
 	@Override
-	public MetadataKey.METADATA_CATEGORY getTrackLevelCategory() {
+	public METADATA_CATEGORY getTrackLevelCategory() {
 	
 		METADATA_KEY mk = getTrackLevelMetadataKey();
 		

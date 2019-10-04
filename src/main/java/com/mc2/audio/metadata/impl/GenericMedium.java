@@ -33,21 +33,21 @@ import com.mc2.util.miscellaneous.CalendarUtils;
  *
  * @author marco
  */
-public class MediumDefaultImpl implements Medium {
+public class GenericMedium implements Medium {
 
 	private final String id;
 	private final String type;
 	private final String number;
 	private final String title;
 	
-	private final ArrayList<TrackDefaultImpl> trackList;
+	private final ArrayList<Track> trackList;
 	private final ArrayList<Integer> discIdOffsets;	
 	
 	private Integer index;
 	private Integer offset;
 	private Integer totalLength;
 
-	MediumDefaultImpl(String id, String type, String number, String title) {
+	GenericMedium(String id, String type, String number, String title) {
 		this.id = id;
 		this.type = type;
 		this.number = number;
@@ -140,7 +140,7 @@ public class MediumDefaultImpl implements Medium {
 		this.index = index;
 	}
 	
-	void addTrack(TrackDefaultImpl track) {
+	void addTrack(Track track) {
 
 		//track.setOffset(offset);
 		

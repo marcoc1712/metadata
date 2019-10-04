@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import jwbroek.cuelib.Message;
 
-import com.mc2.audio.metadata.impl.MetadataDefaultImpl;
 import com.mc2.audio.metadata.API.exceptions.InvalidAudioFileException;
 import com.mc2.audio.metadata.API.exceptions.InvalidAudioFileFormatException;
 import com.mc2.audio.metadata.API.exceptions.InvalidCueSheetException;
@@ -39,18 +38,15 @@ import com.mc2.audio.metadata.source.cue.FileData;
 import com.mc2.audio.metadata.source.cue.TrackData;
 import com.mc2.audio.metadata.source.cue.file.CueFile;
 import com.mc2.audio.metadata.source.tags.file.AudioFile;
-import com.mc2.audio.metadata.impl.AlbumDefaultImpl;
+import com.mc2.audio.metadata.fromFiles.AlbumFromFiles;
 import com.mc2.audio.metadata.API.CoverArt;
 import com.mc2.audio.metadata.API.Metadata;
-import static com.mc2.audio.metadata.API.MetadataKey.getAlbumLevelMetadataAlias;
-import static com.mc2.audio.metadata.API.MetadataKey.getTrackLevelMetadataAlias;
 import com.mc2.audio.metadata.API.StatusMessage;
 import com.mc2.audio.metadata.API.StatusMessage.Severity;
 import com.mc2.audio.metadata.impl.GenericStatusMessage;
-import com.mc2.audio.metadata.impl.TrackDefaultImpl;
+import com.mc2.audio.metadata.fromFiles.TrackFromFile;
 import com.mc2.audio.metadata.source.coverart.FileCoverArt;
-import com.mc2.audio.metadata.source.cue.Section;
-import static com.mc2.audio.metadata.source.cue.Section.ALBUM;
+import com.mc2.audio.metadata.source.cue.CueSection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static com.mc2.util.miscellaneous.ImageHandler.isFileAnImage;
@@ -65,11 +61,11 @@ public class DirectoryParser {
 	private static Logger logger = Logger.getLogger(DirectoryParser.class.getName()); 
 	private static PerformanceLogger performanceLogger = new PerformanceLogger(DirectoryParser.class.getName()); 
 
-    public static AlbumDefaultImpl parse(String directory) throws IOException, InvalidAudioFileException, InvalidAudioFileFormatException {
+    public static AlbumFromFiles parse(String directory) throws IOException, InvalidAudioFileException, InvalidAudioFileFormatException {
          return parse(new File(directory));
     }
 	
-    public static AlbumDefaultImpl parse(File directory) throws IOException,  InvalidAudioFileException, InvalidAudioFileFormatException{
+    public static AlbumFromFiles parse(File directory) throws IOException,  InvalidAudioFileException, InvalidAudioFileFormatException{
         
 		PerformanceSnapshot start = performanceLogger.log( Level.INFO, "");
 		PerformanceSnapshot now = start;
@@ -106,9 +102,9 @@ public class DirectoryParser {
 		ArrayList<Metadata> atAlbumLevel= new ArrayList<>();
 		ArrayList<CoverArt> coverArtList= new ArrayList<>();
 		
-		ArrayList<TrackDefaultImpl> singleTrackList = new ArrayList<>();
+		ArrayList<TrackFromFile> singleTrackList = new ArrayList<>();
 
-		HashMap<String,TrackDefaultImpl> trackMap = new HashMap<>();
+		HashMap<String,TrackFromFile> trackMap = new HashMap<>();
 
 		PerformanceSnapshot beforeAudio= now;
 		
@@ -152,7 +148,7 @@ public class DirectoryParser {
 					
 					if (cueFileList.size() == 1) {
 					
-						merge(Section.ALBUM, atAlbumLevel, cueFile.getCuesheet().getMetadata());
+						MetadataParser.merge(CueSection.ALBUM, atAlbumLevel, cueFile.getCuesheet().getMetadata());
 					}
 					
 					for (FileData fileData : cueFile.getCuesheet().getFileDataList()){
@@ -172,15 +168,15 @@ public class DirectoryParser {
 
 								String trackId = trackData.getTrackId();
 								ArrayList<Metadata> fromAlbum = new ArrayList<>();
-								merge(Section.TRACK,  fromAlbum, cueFile.getCuesheet().getMetadata());
+								MetadataParser.merge(CueSection.TRACK,  fromAlbum, cueFile.getCuesheet().getMetadata());
 								
 								ArrayList<CoverArt> trackCoverArt = new ArrayList<>();
 								trackCoverArt.addAll(fileCoverArtList);
 								trackCoverArt.addAll(directorycoverArtList);
 
-								TrackDefaultImpl singleTrack = new TrackDefaultImpl(
+								TrackFromFile singleTrack = new TrackFromFile(
 									trackData.getTrackId(), 
-									merge(Section.TRACK,fromAlbum, trackData.getMetadata()), 
+									MetadataParser.merge(CueSection.TRACK,fromAlbum, trackData.getMetadata()), 
 									trackCoverArt);
 
 								completeTrack (	singleTrack,
@@ -194,12 +190,12 @@ public class DirectoryParser {
 								
 								singleTrackList.add(singleTrack);
 
-								TrackDefaultImpl track = trackMap.get(trackId);
+								TrackFromFile track = trackMap.get(trackId);
 								if ( track == null){
 									
-									track = new TrackDefaultImpl(
+									track = new TrackFromFile(
 										trackData.getTrackId(), 
-										merge(Section.TRACK,fromAlbum, trackData.getMetadata()), 
+										MetadataParser.merge(CueSection.TRACK,fromAlbum, trackData.getMetadata()), 
 										trackCoverArt);
 
 									completeTrack (	track,
@@ -215,8 +211,8 @@ public class DirectoryParser {
 
 								} else {
 
-									merge(Section.TRACK, track.getMetadataList(), fromAlbum);
-									merge(Section.TRACK, track.getMetadataList(), trackData.getMetadata());
+									MetadataParser.merge(CueSection.TRACK, track.getMetadataList(), fromAlbum);
+									MetadataParser.merge(CueSection.TRACK, track.getMetadataList(), trackData.getMetadata());
 									//track.getMetadataList().addAll(trackData.getMetadata());
 
 									track.getCoverArtList().addAll(fileCoverArtList);
@@ -292,10 +288,10 @@ public class DirectoryParser {
 					trackCoverArt.addAll(fileCoverArtList);
 					trackCoverArt.addAll(directorycoverArtList);
 					
-					TrackDefaultImpl singleTrack = 
-							new TrackDefaultImpl(
+					TrackFromFile singleTrack = 
+							new TrackFromFile(
 									trackId, 
-									merge(Section.TRACK,new ArrayList<>(),audiofile.getMetadata()),
+									MetadataParser.merge(CueSection.TRACK,new ArrayList<>(),audiofile.getMetadata()),
 									trackCoverArt);	
 					
 					prev=now;
@@ -331,13 +327,13 @@ public class DirectoryParser {
 					
 					singleTrackList.add(singleTrack);
 
-					TrackDefaultImpl track = trackMap.get(trackId);
+					TrackFromFile track = trackMap.get(trackId);
 
 					if ( track == null){
 
-						track =  new TrackDefaultImpl(
+						track =  new TrackFromFile(
 									trackId, 
-									merge(Section.TRACK,new ArrayList<>(),audiofile.getMetadata()),
+									MetadataParser.merge(CueSection.TRACK,new ArrayList<>(),audiofile.getMetadata()),
 									trackCoverArt);	
 						
 						track.setPlayListUrl(directory.getCanonicalPath());
@@ -357,7 +353,7 @@ public class DirectoryParser {
 					} else {    
 
 						track.getCoverArtList().addAll(fileCoverArtList);
-						merge(Section.TRACK, track.getMetadataList(), audiofile.getMetadata());
+						MetadataParser.merge(CueSection.TRACK, track.getMetadataList(), audiofile.getMetadata());
 
 						GenericStatusMessage statusMessage = new GenericStatusMessage(
 								statusMessageList.size()+1,
@@ -465,7 +461,7 @@ public class DirectoryParser {
 			Object[] keys = trackMap.keySet().toArray();
 			Arrays.sort(keys);
 
-			ArrayList<TrackDefaultImpl> tracklist= new ArrayList<>();
+			ArrayList<TrackFromFile> tracklist= new ArrayList<>();
 			for (Object key : keys){
 				tracklist.add(trackMap.get((String)key));
 			}
@@ -481,7 +477,7 @@ public class DirectoryParser {
 					"Library: parse - Directory Parsed",
 					prev);
 			
-			AlbumDefaultImpl out = new AlbumDefaultImpl(url, coverArtList, atAlbumLevel, tracklist,  cueFileList, audioFileList, statusMessageList, singleTrackList);
+			AlbumFromFiles out = new AlbumFromFiles(url, coverArtList, atAlbumLevel, tracklist,  cueFileList, audioFileList, statusMessageList, singleTrackList);
 
 			prev=now;
 			now = performanceLogger.log(	
@@ -511,7 +507,7 @@ public class DirectoryParser {
 		
 		return null;
     }
-	private static void completeTrack(	TrackDefaultImpl track,
+	private static void completeTrack(	TrackFromFile track,
 										String playListUrl, //CueFile cueFile, directory.getCanonicalPath()
 										AudioFile audiofile,
 										Integer trackCount,
@@ -626,33 +622,6 @@ public class DirectoryParser {
 
 		}
 	}
-    private static ArrayList<Metadata> merge(String level, ArrayList<Metadata> target, ArrayList<Metadata> source){
-        
-        for (Metadata toAdd : source){
-
-            String alias = level.equals(ALBUM) ?  getAlbumLevelMetadataAlias(toAdd.getKey()) :
-                                                  getTrackLevelMetadataAlias(toAdd.getKey());
-        
-            String key = alias == null ? toAdd.getKey() : alias;
-            
-            boolean found = false;
-            
-            for (Metadata existing : target){
-                
-                if (existing.getKey().equals(key)){
-                    
-                    existing.getOrigins().addAll(toAdd.getOrigins());
-                    found = true;
-                    break;
-                }
-            }
-            if (!found){
-                target.add(new MetadataDefaultImpl(key, toAdd.getOrigins()));
-            }
-        }
-         
-        return target;
-    }
     
 	private static ArrayList<File> getFileList(File directory){
 		

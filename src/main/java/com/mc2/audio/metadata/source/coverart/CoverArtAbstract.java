@@ -40,6 +40,8 @@ public abstract class CoverArtAbstract implements CoverArt {
     public static final String JPG = "jpg";
     
     private final String id;
+	protected String type;
+	protected String url;
     
     private String originalSizeImageUrl="";
     private BufferedImage originalSizeImage; //no limits
@@ -69,6 +71,22 @@ public abstract class CoverArtAbstract implements CoverArt {
     @Override
     public String getId() {
         return id;
+    }
+	@Override
+	public abstract String getSource();
+	/**
+     * @return the URL
+     */
+    @Override
+    public String getUrl() {
+        return url;
+    }
+	/**
+     * @return the Type
+     */
+    @Override
+    public String getType() {
+        return type;
     }
     @Override
     public String getOriginalSizeImageUrl() {
@@ -287,5 +305,5 @@ public abstract class CoverArtAbstract implements CoverArt {
     protected void setThumbnail250Data(byte[] thumbnail250Data) {
         this.thumbnail250Data = thumbnail250Data;
     }
-   
+
 }

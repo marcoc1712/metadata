@@ -39,14 +39,14 @@ import java.util.List;
 public class MetadataTable {
 	
 	private final METADATA_LEVEL level;
-	private final AlbumDefaultImpl album;
-	private final TrackDefaultImpl track;
-	private final List<MetadataRowDefaultImpl> metadataRowList;
+	private final AbstractAlbum album;
+	private final AbstractTrack track;
+	private final List<GenericMetadataRow> metadataRowList;
 	
-	public MetadataTable(TrackDefaultImpl track){
+	public MetadataTable(AbstractTrack track){
 		
 		this.level = METADATA_LEVEL.TRACK;
-		this.album = (AlbumDefaultImpl)track.getAlbum();
+		this.album = track.getAlbum();
 		this.track = track;
 		this.metadataRowList = new ArrayList<>();
 		
@@ -65,7 +65,7 @@ public class MetadataTable {
 		
 	}
 	
-	public MetadataTable(AlbumDefaultImpl album){
+	public MetadataTable(AbstractAlbum album){
 		
 		this.level = METADATA_LEVEL.ALBUM;
 		this.album = album;
@@ -85,7 +85,7 @@ public class MetadataTable {
 			}
 		}
 		
-		for (MetadataRowDefaultImpl albumMetadataRow : this.metadataRowList){
+		for (GenericMetadataRow albumMetadataRow : this.metadataRowList){
 			
 			if  (albumMetadataRow.getKeyName() != null && 
 				 albumMetadataRow.getTrackLevelValue() != null &&
@@ -93,7 +93,7 @@ public class MetadataTable {
 				
 				for (Track track : album.getTrackList()){
 					
-					for (MetadataRowDefaultImpl trackMetadataRow : ((TrackDefaultImpl)track).getMetadataTable().metadataRowList){
+					for (GenericMetadataRow trackMetadataRow : ((AbstractTrack)track).getMetadataTable().metadataRowList){
 						
 						if(trackMetadataRow.getKeyName() != null &&
 							trackMetadataRow.getKeyName().equals(albumMetadataRow.getKeyName()) &&
@@ -107,7 +107,7 @@ public class MetadataTable {
 			}
 		}
 	}
-	protected List<MetadataRowDefaultImpl> getMetadataRows(){
+	protected List<GenericMetadataRow> getMetadataRows(){
 		
 		return metadataRowList;
 	}
@@ -139,8 +139,8 @@ public class MetadataTable {
 
 			if (value != null && !value.isEmpty()){
 
-				MetadataRowDefaultImpl metadataRow = 
-					new MetadataRowDefaultImpl(METADATA_LEVEL.ALBUM,
+				GenericMetadataRow metadataRow = 
+					new GenericMetadataRow(METADATA_LEVEL.ALBUM,
 										 metadata.getAlbumLevelCategory(),
 										 metadata.getAlbumLevelMetadataKey(),
 										 "",
@@ -179,8 +179,8 @@ public class MetadataTable {
 
 			if (value != null && !value.isEmpty()){
 
-				MetadataRowDefaultImpl metadataCategory = 
-					new MetadataRowDefaultImpl(METADATA_LEVEL.TRACK,
+				GenericMetadataRow metadataCategory = 
+					new GenericMetadataRow(METADATA_LEVEL.TRACK,
 										 metadata.getTrackLevelCategory(),
 										 metadata.getTrackLevelMetadataKey(),
 										 this.track.getTrackNo(),
@@ -196,11 +196,11 @@ public class MetadataTable {
 	}
 	
 	
-	public ArrayList<MetadataRowDefaultImpl> getMetadaPerCategory(METADATA_CATEGORY category){
+	public ArrayList<GenericMetadataRow> getMetadaPerCategory(METADATA_CATEGORY category){
 		
-		ArrayList<MetadataRowDefaultImpl> out = new ArrayList<>();
+		ArrayList<GenericMetadataRow> out = new ArrayList<>();
 		
-		for (MetadataRowDefaultImpl mk : metadataRowList){
+		for (GenericMetadataRow mk : metadataRowList){
 			
 			if  (mk.getCategory() != null && mk.getCategory().equals(category)){		
 				out.add(mk);
@@ -208,11 +208,11 @@ public class MetadataTable {
 		}
 		return out;
 	}
-	public ArrayList<MetadataRowDefaultImpl> getMetadaWithNoCategory(){
+	public ArrayList<GenericMetadataRow> getMetadaWithNoCategory(){
 		
-		ArrayList<MetadataRowDefaultImpl> out = new ArrayList<>();
+		ArrayList<GenericMetadataRow> out = new ArrayList<>();
 		
-		for (MetadataRowDefaultImpl mk : metadataRowList){
+		for (GenericMetadataRow mk : metadataRowList){
 			
 			if  (mk.getCategory() == null){		
 				out.add(mk);

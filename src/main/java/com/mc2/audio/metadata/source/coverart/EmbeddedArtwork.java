@@ -110,7 +110,7 @@ public class EmbeddedArtwork extends CoverArtAbstract implements CoverArt {
 		
 		return super.getOriginalSizeImage();
 	}
-	 @Override
+	@Override
     public byte[] getOriginalSizeImageData() {
 		
 		if (!loaded && artwork.isLinked()){
@@ -168,5 +168,19 @@ public class EmbeddedArtwork extends CoverArtAbstract implements CoverArt {
     public int getWidth(){
        return artwork.getWidth();
     }
+	@Override
+	public String toString() {
+		
+		String description =  this.getSource()+" "+this.getType();
+		if (description == null || description.isEmpty()){
 
+			description = this.getComment()== null ? 
+						  "" : 
+						  this.getComment();
+		}
+
+		description = description+  " - "+this.getFile().getPath();
+
+		return description;
+	}
 }

@@ -132,7 +132,7 @@ public class TrackData extends jwbroek.cuelib.TrackData implements MetadataSourc
     }
     public Metadata getMedata(String genericKey){
 
-        return this.getTrackSection().getMedata(Section.TRACK, genericKey);
+        return this.getTrackSection().getMedata(CueSection.TRACK, genericKey);
     }
     
     public AudioFile getAudiofile(){

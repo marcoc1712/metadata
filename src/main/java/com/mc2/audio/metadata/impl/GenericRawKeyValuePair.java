@@ -30,12 +30,12 @@ import com.mc2.audio.metadata.API.RawKeyValuePair;
  *
  * @author marco
  */
-public class RawKeyValuePairDefaultImpl implements RawKeyValuePair {
+public class GenericRawKeyValuePair implements RawKeyValuePair {
     
     private final String key;
     private final String value;
     
-    public RawKeyValuePairDefaultImpl(String key, String value){
+    public GenericRawKeyValuePair(String key, String value){
         
         this.key = key;
         this.value = value;
@@ -45,6 +45,7 @@ public class RawKeyValuePairDefaultImpl implements RawKeyValuePair {
     /**
      * @return the key
      */
+	@Override
     public String getKey() {
         return key;
     }
@@ -52,6 +53,7 @@ public class RawKeyValuePairDefaultImpl implements RawKeyValuePair {
     /**
      * @return the value
      */
+	@Override
     public String getValue() {
         return value;
     }

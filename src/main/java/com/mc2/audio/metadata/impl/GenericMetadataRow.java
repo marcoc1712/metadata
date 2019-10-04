@@ -31,7 +31,7 @@ import com.mc2.audio.metadata.API.MetadataRow;
  *
  * @author marco
  */
-public class MetadataRowDefaultImpl implements MetadataRow {
+public class GenericMetadataRow implements MetadataRow {
 	
 	private final MetadataKey.METADATA_LEVEL level;
 	private final MetadataKey.METADATA_CATEGORY category;
@@ -46,7 +46,7 @@ public class MetadataRowDefaultImpl implements MetadataRow {
 	private final String trackLevelValue;
 	private final String value;
 	
-	public MetadataRowDefaultImpl (MetadataKey.METADATA_LEVEL level, 
+	public GenericMetadataRow (MetadataKey.METADATA_LEVEL level, 
 							 MetadataKey.METADATA_CATEGORY category,
 							 MetadataKey.METADATA_KEY metadataKey,
 							 String trackNo,
