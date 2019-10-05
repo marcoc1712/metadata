@@ -31,6 +31,7 @@ import static com.mc2.audio.metadata.API.CoverArt.SOURCE_EMBEDDED_FILE;
 import static com.mc2.audio.metadata.API.CoverArt.SOURCE_IMAGE_FILE;
 import static com.mc2.audio.metadata.API.CoverArt.SOURCE_MUSICBRAINZ_COVER_ARCHIVE;
 import com.mc2.audio.metadata.API.Metadata;
+import com.mc2.audio.metadata.API.MetadataKey;
 import com.mc2.audio.metadata.API.RawKeyValuePairSource;
 import com.mc2.audio.metadata.API.StatusMessage;
 import com.mc2.audio.metadata.API.Track;
@@ -74,6 +75,27 @@ public class AlbumFromFiles extends AbstractAlbum implements Album {
 	@Override
     public String getId() {
         return albumId;
+    }
+	/**
+     * @return the copyright
+     */
+	@Override
+    public String getCopyright() {
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.COPYRIGHT.name());
+    }
+	
+	/**
+     * @return the parental warning
+     */
+    @Override
+	public Boolean getParentalWarning() {
+		String pw = this.getMetadataValue(MetadataKey.METADATA_KEY.PARENTAL_WARNING.name());
+        if (pw.isEmpty()|| 
+			pw.toUpperCase().equals("FALSE") || 
+			pw.toUpperCase().equals("NO") ||
+			pw.equals("0") ||
+			pw.equals(" ")){return false;}
+		return true;
     }
 	
 	@Override

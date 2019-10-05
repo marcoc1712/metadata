@@ -479,7 +479,10 @@ public abstract class AbstractTrack implements Track {
 	public ArrayList<? extends MetadataRow> getWorkDescriptorMetadataList() {
 		return metadataTable.getMetadaPerCategory(MetadataKey.METADATA_CATEGORY.WORK_DESCRIPTOR);
 	}
-
+	@Override
+	public ArrayList<? extends MetadataRow> getRecordingDescriptorMetadataList() {
+		return metadataTable.getMetadaPerCategory(MetadataKey.METADATA_CATEGORY.MISCELLANEA);
+	}
 	@Override
 	public ArrayList<? extends MetadataRow> getMiscellaneaMetadataList() {
 		return metadataTable.getMetadaPerCategory(MetadataKey.METADATA_CATEGORY.MISCELLANEA);

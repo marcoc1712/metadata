@@ -177,11 +177,14 @@ public class TestUtils {
 		System.out.println("Cover art: "+album.getCoverArt().toString());
 		System.out.println("- COVER ARTS:");
 		TestUtils.printArtworks(album.getcoverArtList(),"   ");
-		
 		System.out.println("");
-		System.out.println("Media: "+album.getMedia());
+		System.out.println("Copyright: "+album.getCopyright());
+		System.out.println("Parental Warning: "+album.getParentalWarning());
+		System.out.println("");
+		System.out.println("Media type: "+album.getMediaType());
 		System.out.println("Total Length: "+album.getTotalLength());
 		System.out.println("");
+		
 		
 		System.out.println("- MEDIA: ");
 		for (Medium medium  : album.getMediaList()){
@@ -306,7 +309,12 @@ public class TestUtils {
             System.out.println(ident+"  - METADATA:");
 
             TestUtils.printMetadata(track.getMetadataList(),ident+"   ");
-            
+            System.out.println("");
+			System.out.println(ident+"  - RAW KEY AND VALUE PAIR SOURCES:");
+			for (RawKeyValuePairSource rawKeyValuePairSource : track.getRawKeyValuePairSources()){
+
+				System.out.println(ident+"    "+ rawKeyValuePairSource.getSourceId());
+			}
             System.out.println("");
             System.out.println(ident+"  Status : "+track.getStatus().name());
             System.out.println("");

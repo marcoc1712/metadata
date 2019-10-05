@@ -211,6 +211,7 @@ public interface Track {
 	ArrayList<? extends MetadataRow> getOtherInvolvedPersonMetadataList();
 	ArrayList<? extends MetadataRow> getMediaDescriptorMetadataList();
 	ArrayList<? extends MetadataRow> getWorkDescriptorMetadataList();
+	ArrayList<? extends MetadataRow> getRecordingDescriptorMetadataList();
 	ArrayList<? extends MetadataRow> getMiscellaneaMetadataList();
 	ArrayList<? extends MetadataRow> getRatingMetadataList();
 	ArrayList<? extends MetadataRow> getAlbumInfoMetada();

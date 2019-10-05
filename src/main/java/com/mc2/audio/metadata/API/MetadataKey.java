@@ -21,13 +21,15 @@ public class MetadataKey {
 	
     public static enum METADATA_CATEGORY {
 		
+		
 		RESERVED,
 		NOT_TO_SHOW,
 		ALBUM_INFO,
+		COVERART,
+			
 		DESCRIPTION,
 		COMMENT,
-        COVERART,
-		AWARD,
+        AWARD,
 		COLLECTION,
 		GOODIES,
 		URL,

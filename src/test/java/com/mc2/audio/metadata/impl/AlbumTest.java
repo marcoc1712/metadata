@@ -32,16 +32,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.mc2.audio.metadata.API.Album;
-import com.mc2.audio.metadata.API.Medium;
 import com.mc2.audio.metadata.API.MetadataKey;
 import com.mc2.audio.metadata.API.MetadataRow;
 import com.mc2.audio.metadata.API.RawKeyValuePair;
 import com.mc2.audio.metadata.API.RawKeyValuePairSource;
-import com.mc2.audio.metadata.API.StatusMessage;
-import com.mc2.audio.metadata.API.Track;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import com.mc2.audio.metadata.API.Controller;
 
 public class AlbumTest {

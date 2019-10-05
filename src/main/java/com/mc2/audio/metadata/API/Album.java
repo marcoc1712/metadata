@@ -150,16 +150,28 @@ public interface Album {
      * @return the coverArtList
      */
     ArrayList<CoverArt> getcoverArtList();
+	
+	/**
+     * @return the copyright
+     */
+    String getCopyright();
+	
+	/**
+     * @return the parental warning
+     */
+	
+    Boolean getParentalWarning();
+	
 	/**
      * @return the Media descriptor (es. 2 CD + 1 DVD)
     */
-	String getMedia();
+	String getMediaType();
 	
 	/**
      * @return the totalLength
      */
     Integer getTotalLength();
-	
+	   
 	/**
      * @return the media
      */

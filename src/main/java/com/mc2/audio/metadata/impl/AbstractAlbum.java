@@ -214,7 +214,7 @@ public abstract class AbstractAlbum implements Album{
     }
 	
 	@Override
-	public String getMedia(){
+	public String getMediaType(){
 		return mediaString;
 	}
 	
@@ -222,6 +222,17 @@ public abstract class AbstractAlbum implements Album{
     public Integer getTotalLength() {
         return totalLength;
     }
+	/**
+     * @return the copyright
+     */
+	@Override
+    public abstract String getCopyright();
+	
+	/**
+     * @return the parental warning
+     */
+	@Override
+    public abstract Boolean getParentalWarning();
 	
 	@Override
 	public ArrayList<? extends Medium> getMediaList() {
