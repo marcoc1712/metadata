@@ -98,7 +98,16 @@ public abstract class AbstractAlbum implements Album{
     public String getAlbumArtist(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.ALBUM_ARTIST.name());
     }
+
+	@Override
+    public String getTrackLevelArtists(){
+		return this.getMetadataValueFromTracks(MetadataKey.METADATA_KEY.ARTIST.name()); 
+    }
 	
+	@Override
+    public String getArtists(){
+        return this.getMetadataValueFromAlbumAndTracks(MetadataKey.METADATA_KEY.ARTIST.name());
+    }
 	@Override
     public String getAlbumComposer(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.COMPOSER.name());
@@ -113,7 +122,16 @@ public abstract class AbstractAlbum implements Album{
     public String getComposers(){
 		return this.getMetadataValueFromAlbumAndTracks(MetadataKey.METADATA_KEY.COMPOSER.name());
     }
+	@Override
+    public String getCredits(){
+		return this.getMetadataValueFromAlbumAndTracks(MetadataKey.METADATA_KEY.CREDITS.name());
+    }
 	
+	@Override
+    public String getWorks(){
+        return this.getMetadataValueFromTracks(MetadataKey.METADATA_KEY.WORK.name());
+		
+    }
 	@Override
     public String getGenre(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.GENRE.name());

@@ -46,11 +46,24 @@ public interface Album {
     */
     String getAlbum();
 	
-	    /**
+	/**
      * @return the Album main artist(s).
     */
     String getAlbumArtist();
    /**
+     * @return the Artist(s) from tracks.
+    */
+	String getTrackLevelArtists();
+	/**
+     * @return all Artist(s)from Album and form tracks.
+    */
+	String getArtists();
+   /**
+     * @return all Credits from Album and form tracks.
+    */
+	String getCredits();
+   
+	/**
      * @return the Album composer(s).
     */
 	String getAlbumComposer();
@@ -63,6 +76,10 @@ public interface Album {
     */
 	String getComposers();
     /**
+	 * @return the Works in the album
+	 */
+	String getWorks();
+	/**
      * @return the Album genre(s);
     */
 	String getGenre();
