@@ -88,6 +88,11 @@ public interface Track {
      * @return the artist
     */
     String getArtist();
+	
+	/**
+     * @return the composer
+    */
+    String getComposer();
 
 	/**
 	 *@return the coverArt List

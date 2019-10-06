@@ -151,12 +151,18 @@ public abstract class AbstractAlbum implements Album{
     public String getLabel(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.LABEL.name());
     }
-    
+    @Override
+    public String getCollection(){
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.COLLECTION.name());
+    }
     @Override
     public String getCatalogNo(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.CATALOG_NO.name());
     }
-	
+	@Override
+    public String getUpc(){
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.UPC.name());
+    }
 	@Override
 	public String getDisc(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_NO.name());

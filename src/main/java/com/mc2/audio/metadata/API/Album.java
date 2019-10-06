@@ -95,11 +95,19 @@ public interface Album {
      * @return the Album release Label
     */
     String getLabel();
+	/**
+     * @return the Collection by the label.
+    */
+	String getCollection();
     /**
      * @return the Album CatalogNo
     */
     String getCatalogNo();
-   
+   /**
+     * @return the Album UPC code
+    */
+	String getUpc();
+	
 	/**
      * @return the Disc number (in case of single disk in a boxset)
     */

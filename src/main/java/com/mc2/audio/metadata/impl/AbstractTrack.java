@@ -180,6 +180,11 @@ public abstract class AbstractTrack implements Track {
 	public String getArtist() {
 		return this.getMetadataValue(MetadataKey.METADATA_KEY.ARTIST.name());
 	}
+	
+	@Override
+	public String getComposer() {
+		return this.getMetadataValue(MetadataKey.METADATA_KEY.COMPOSER.name());
+	}
 
 	/**
 	 * @return the coverArtList
