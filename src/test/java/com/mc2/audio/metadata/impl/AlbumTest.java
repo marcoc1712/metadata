@@ -52,12 +52,12 @@ public class AlbumTest {
 		//String directory = "F:/SVILUPPO/01 - SqueezeboxServer Plugins/musica campione";
 		//String directory = "Z:\\recorder\\Alicia de Larrocha\\Albéniz_ Ibéria; Navarra; Suite Española\\CD1";
 		//String directory =  "Z:/recorder/Berlziot - Te Deum, Abbado";
-		String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
+		//String directory = "Z:/Classica/Albinoni, Tomaso/12 Concertos OP. 10 - I Solisti Veneti; Claudio Scimone (ERATO, 1981)/CD 1";
 		//String directory = "Y:/Audiophile/aavv/The Best acoustic Album In The World... Ever (2005 EMI)/cd2";
 		//String directory = "Z:\\Classica\\aavv\\Anne-Sophie Mutter\\The Four Seasons and The Devil's Trill";
 		//String directory = "Z:\\Classica\\aavv\\111 Years Of Deutsche Grammophon (55 CD) (2009 DG)\\01 - Abbado - Brahms - Hungarian Dances\\art";
 		//String directory = "X:\\musica-test\\TestCase\\02- flac singoli\\021 - flc singoli con embedded";
-
+		String directory = "Z:\\Classica\\aavv\\111 Years Of Deutsche Grammophon (55 CD) (2009 DG)\\07 - Böhm - Mozart - Requiem";
 		printAlbum(directory);
 		
 		

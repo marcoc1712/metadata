@@ -162,7 +162,7 @@ public abstract class AbstractTrack implements Track {
      * @return the Work
      */
 	@Override
-	public abstract String getWork();
+	public abstract String getWorkTitle();
 	
 	/**
      * @return the title
@@ -182,7 +182,7 @@ public abstract class AbstractTrack implements Track {
 	}
 	
 	@Override
-	public String getComposer() {
+	public String getComposerName() {
 		return this.getMetadataValue(MetadataKey.METADATA_KEY.COMPOSER.name());
 	}
 
@@ -439,7 +439,7 @@ public abstract class AbstractTrack implements Track {
 	public ArrayList<? extends MetadataRow> getCommentMetadataList() {
 		return metadataTable.getMetadaPerCategory(MetadataKey.METADATA_CATEGORY.COMMENT);
 	}
-
+	
 	@Override
 	public ArrayList<? extends MetadataRow> getAwardMetadataList() {
 		return metadataTable.getMetadaPerCategory(MetadataKey.METADATA_CATEGORY.AWARD);

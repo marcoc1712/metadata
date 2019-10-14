@@ -55,7 +55,7 @@ public class TrackFromFile extends AbstractTrack implements Track {
 		return trackId;
 	}
 	@Override
-	public String getWork() {
+	public String getWorkTitle() {
 		return this.getMetadataValue(MetadataKey.METADATA_KEY.WORK.name());
 	}
 	@Override

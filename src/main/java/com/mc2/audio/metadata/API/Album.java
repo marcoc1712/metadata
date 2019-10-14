@@ -72,13 +72,13 @@ public interface Album {
     */
 	String getTrackLevelComposers();
 	/**
-     * @return all composer(s)from Album and form tracks.
+     * @return all composer(s) naames from Album and form tracks.
     */
-	String getComposers();
+	String getComposerNames();
     /**
-	 * @return the Works in the album
+	 * @return the Works titles in the album, joined in a single string.
 	 */
-	String getWorks();
+	String getWorkTitles();
 	/**
      * @return the Album genre(s);
     */

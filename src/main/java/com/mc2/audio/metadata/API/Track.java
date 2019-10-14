@@ -70,9 +70,9 @@ public interface Track {
     Integer getPlayListIndex();
 
 	/**
-     * @return the Work
+     * @return the Work Title
      */
-	String getWork();
+	String getWorkTitle();
 	
 	/**
      * @return the title
@@ -92,7 +92,7 @@ public interface Track {
 	/**
      * @return the composer
     */
-    String getComposer();
+    String getComposerName();
 
 	/**
 	 *@return the coverArt List

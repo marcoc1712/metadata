@@ -119,7 +119,7 @@ public abstract class AbstractAlbum implements Album{
     }
 	
 	@Override
-    public String getComposers(){
+    public String getComposerNames(){
 		return this.getMetadataValueFromAlbumAndTracks(MetadataKey.METADATA_KEY.COMPOSER.name());
     }
 	@Override
@@ -128,7 +128,7 @@ public abstract class AbstractAlbum implements Album{
     }
 	
 	@Override
-    public String getWorks(){
+    public String getWorkTitles(){
         return this.getMetadataValueFromTracks(MetadataKey.METADATA_KEY.WORK.name());
 		
     }

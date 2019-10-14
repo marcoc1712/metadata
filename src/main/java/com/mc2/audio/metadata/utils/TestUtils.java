@@ -153,11 +153,11 @@ public class TestUtils {
 		System.out.println("Artists: "+album.getArtists());
 		System.out.println("Composer: "+album.getAlbumComposer());
 		System.out.println("Track level Composer: "+album.getTrackLevelComposers());
-		System.out.println("Composers: "+album.getComposers());
+		System.out.println("Composers: "+album.getComposerNames());
 		System.out.println("");
 		System.out.println("Credits: "+album.getCredits());
 		System.out.println("");
-        System.out.println("Works: "+album.getWorks());
+        System.out.println("Works: "+album.getWorkTitles());
 		System.out.println("");
 		System.out.println("Genre: "+album.getGenre());
         System.out.println("Date: "+album.getDate());
@@ -278,7 +278,7 @@ public class TestUtils {
 			System.out.println(ident+"  PlayList URL "+track.getPlayListUrl());
 			System.out.println(ident+"  PlayList index : "+track.getPlayListIndex());
 			System.out.println();
-			System.out.println(ident+"  work: "+track.getWork());
+			System.out.println(ident+"  work: "+track.getWorkTitle());
 			System.out.println(ident+"  title: "+track.getTitle());
 			System.out.println(ident+"  version: "+track.getVersion());
 			System.out.println();
