@@ -570,7 +570,7 @@ public abstract class AbstractTrack implements Track {
 		for (Metadata metadata : metadataList) {
 			if (metadata.getKey().equals(key)) {
 				value = metadata.getValue();
-				if (!value.isEmpty()) {
+				if (value != null && !value.isEmpty()) {
 					return value;
 				}
 				break;
@@ -580,7 +580,7 @@ public abstract class AbstractTrack implements Track {
 		// WARNING: it keeps only the first found.
 		for (String alias : aliases) {
 			value = getMetadataFromTrack(alias);
-			if (!value.isEmpty()) {
+			if (value != null && !value.isEmpty()) {
 				return value;
 			}
 		}
@@ -588,7 +588,7 @@ public abstract class AbstractTrack implements Track {
 		// WARNING: it keeps only the first found.
 		for (String alias : aliases) {
 			value = getMetadataFromTrack(alias);
-			if (!value.isEmpty()) {
+			if (value != null && !value.isEmpty()) {
 				return value;
 			}
 		}
@@ -605,7 +605,7 @@ public abstract class AbstractTrack implements Track {
 		for (Metadata metadata : metadataList) {
 			if (metadata.getKey().equals(key)) {
 				value = metadata.getValue();
-				if (!value.isEmpty()) {
+				if (value != null && !value.isEmpty()) {
 					return value;
 				}
 			}
@@ -614,7 +614,7 @@ public abstract class AbstractTrack implements Track {
 		// WARNING: it keeps only the first found.
 		for (String alias : aliases) {
 			value = getMetadataFromTrack(alias);
-			if (!value.isEmpty()) {
+			if (value != null && !value.isEmpty()) {
 				return value;
 			}
 		}
@@ -627,7 +627,7 @@ public abstract class AbstractTrack implements Track {
 	 */
 	protected String getMetadataValue(String key) {
 		String value = getMetadataFromTrack(key);
-		if (!value.isEmpty()) {
+		if (value != null && !value.isEmpty()) {
 			return value;
 		}
 		if (album == null) {
@@ -645,7 +645,7 @@ public abstract class AbstractTrack implements Track {
 		for (Metadata metadata : metadataList) {
 			if (metadata.getKey().equals(key)) {
 				values = metadata.getValues();
-				if (!values.isEmpty()) {
+				if (values != null && !values.isEmpty()) {
 					return values;
 				}
 			}
@@ -653,7 +653,7 @@ public abstract class AbstractTrack implements Track {
 		ArrayList<String> aliases = getTrackLevelMetadataAliases(key);
 		for (String alias : aliases) {
 			values = getMetadataValuesFromTrack(alias);
-			if (!values.isEmpty()) {
+			if (values != null &&!values.isEmpty()) {
 				return values;
 			}
 		}

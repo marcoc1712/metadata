@@ -460,18 +460,22 @@ public abstract class AbstractAlbum implements Album{
         return out;
     }
 	protected String getMetadataValueFromTracks(String key){
-		
-		ArrayList<String> values= getMetadataValuesFromTracks(key);
-
 		String out="";
-		for (String value : values){
-			value= value.trim();
-            if (!out.isEmpty()){
-                out=out+SEPARATOR+value;
-            } else{
-                out=value;
-            }
-        }
+		ArrayList<String> values= getMetadataValuesFromTracks(key);
+		if (values != null){
+			
+			for (String value : values){
+				
+				if (value != null){
+					value= value.trim();
+					if (!out.isEmpty()){
+						out=out+SEPARATOR+value;
+					} else{
+						out=value;
+					}
+				}
+			}
+		}
 		return out;
 	}
 
@@ -481,15 +485,17 @@ public abstract class AbstractAlbum implements Album{
 		String out="";
 		ArrayList<String> list = new ArrayList<>(Arrays.asList(metadata.split(SEPARATOR)));
 		ArrayList<String> newList=new ArrayList<>();
-		
+
 		for (String value : list){
-		
-			value= value.trim();
-			
-			if (!newList.contains(value)){
-				newList.add(value);
+			if (value != null){
+				value= value.trim();
+
+				if (!newList.contains(value)){
+					newList.add(value);
+				}
 			}
 		}
+		
 		return String.join(SEPARATOR, newList);
 	}
 
@@ -498,14 +504,17 @@ public abstract class AbstractAlbum implements Album{
 		ArrayList<String> values=getMetadataValuesFromAlbumAndTracks(key);
 		
 		String out="";
-		for (String value : values){
-			
-			if (!out.isEmpty()){
-                out=out+SEPARATOR+value;
-            } else{
-                out=value;
-            }
-        }
+		if (values != null){
+			for (String value : values){
+				if (value != null){
+					if (!out.isEmpty()){
+						out=out+SEPARATOR+value;
+					} else{
+						out=value;
+					}
+				}
+			}
+		}
 		return cleanMetadada(out);
 		
 	}
