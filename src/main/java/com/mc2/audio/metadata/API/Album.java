@@ -84,9 +84,9 @@ public interface Album {
     */
 	String getGenre();
     /**
-     * @return the Album awards
+     * @return the names of awards the album earned.
     */
-	String getAwards();
+	String getAwardNames();
 		 /**
      * @return the Album Releease Date (or year)
     */	
