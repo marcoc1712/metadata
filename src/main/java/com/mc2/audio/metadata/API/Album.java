@@ -44,20 +44,20 @@ public interface Album {
 	/**
      * @return the Album title
     */
-    String getAlbum();
+    String getTitle();
 	
 	/**
      * @return the Album main artist(s).
     */
-    String getAlbumArtist();
+    String getAlbumArtistNames();
    /**
      * @return the Artist(s) from tracks.
     */
-	String getTrackLevelArtists();
+	String getTrackLevelArtistNames();
 	/**
      * @return all Artist(s)from Album and form tracks.
     */
-	String getArtists();
+	String getArtistNames();
    /**
      * @return all Credits from Album and form tracks.
     */
@@ -66,11 +66,11 @@ public interface Album {
 	/**
      * @return the Album composer(s).
     */
-	String getAlbumComposer();
+	String getAlbumComposerNames();
 	/**
      * @return the composer(s) from tracks.
     */
-	String getTrackLevelComposers();
+	String getTrackLevelComposerNames();
 	/**
      * @return all composer(s) naames from Album and form tracks.
     */
@@ -84,8 +84,12 @@ public interface Album {
     */
 	String getGenre();
     /**
-     * @return the Album Releease Date (or year)
+     * @return the Album awards
     */
+	String getAwards();
+		 /**
+     * @return the Album Releease Date (or year)
+    */	
     String getDate();
     /**
      * @return the Album release Country
@@ -165,17 +169,7 @@ public interface Album {
 	 * @return ture if the file is in hight resolution Audio
 	*/
 	Boolean isHiRes();
-	
-	/**
-	 *@return the most representative coverArt
-	 */
-	CoverArt getCoverArt();
-	
-	/**
-     * @return the coverArtList
-     */
-    ArrayList<CoverArt> getcoverArtList();
-	
+
 	/**
      * @return the copyright
      */
@@ -216,6 +210,28 @@ public interface Album {
 	ArrayList<? extends Track> getSingleTrackList();
 	
 	/**
+	 *@return the most representative coverArt
+	 */
+	CoverArt getCoverArt();
+	
+	/**
+     * @return the coverArtList
+     */
+    ArrayList<CoverArt> getcoverArtList();
+	
+	/**
+     * @return the overall Album status
+     */
+    StatusMessage.Severity getStatus();
+	
+    /**
+     * @return the messageList
+     */
+    ArrayList<StatusMessage> getMessageList();
+	
+	// End One to one with Metadata //
+	
+	/**
      * @return the metadata List
      */
     ArrayList<Metadata> getMetadataList();
@@ -240,15 +256,9 @@ public interface Album {
      * @return the sources of Raw Key Value Pairs, like tag or cue files lines.
     */
     ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources();
+
 	
-	  /**
-     * @return the overall Album status
-     */
-    StatusMessage.Severity getStatus();
 	
-    /**
-     * @return the messageList
-     */
-    ArrayList<StatusMessage> getMessageList();
+	
    
 }

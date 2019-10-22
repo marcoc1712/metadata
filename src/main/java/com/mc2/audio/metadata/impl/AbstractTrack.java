@@ -177,7 +177,7 @@ public abstract class AbstractTrack implements Track {
 	public abstract String getVersion();
 
 	@Override
-	public String getArtist() {
+	public String getArtistNames() {
 		return this.getMetadataValue(MetadataKey.METADATA_KEY.ARTIST.name());
 	}
 	

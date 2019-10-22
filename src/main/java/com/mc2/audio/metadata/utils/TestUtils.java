@@ -147,12 +147,12 @@ public class TestUtils {
 		System.out.println("");
         System.out.println("ALBUM:");
 		System.out.println("");
-        System.out.println("Title: "+album.getAlbum() );
-        System.out.println("Artist: "+album.getAlbumArtist());
-		System.out.println("Track level Artists: "+album.getTrackLevelArtists());
-		System.out.println("Artists: "+album.getArtists());
-		System.out.println("Composer: "+album.getAlbumComposer());
-		System.out.println("Track level Composer: "+album.getTrackLevelComposers());
+        System.out.println("Title: "+album.getTitle() );
+        System.out.println("Artist: "+album.getAlbumArtistNames());
+		System.out.println("Track level Artists: "+album.getTrackLevelArtistNames());
+		System.out.println("Artists: "+album.getArtistNames());
+		System.out.println("Composer: "+album.getAlbumComposerNames());
+		System.out.println("Track level Composer: "+album.getTrackLevelComposerNames());
 		System.out.println("Composers: "+album.getComposerNames());
 		System.out.println("");
 		System.out.println("Credits: "+album.getCredits());
@@ -271,7 +271,7 @@ public class TestUtils {
 			System.out.println(ident+"  trackNo : "+track.getTrackNo());
 			System.out.println(ident+"  length "+track.getLength()+" ["+track.getLengthString()+"]");
 			System.out.println();
-			System.out.println(ident+"  album: "+(track.getAlbum() == null ? "" : track.getAlbum().getAlbum()));
+			System.out.println(ident+"  album: "+(track.getAlbum() == null ? "" : track.getAlbum().getTitle()));
 			System.out.println(ident+"  album index : "+track.getIndex());
 			System.out.println();
 			System.out.println(ident+"  URL "+track.getUrl());
@@ -282,7 +282,7 @@ public class TestUtils {
 			System.out.println(ident+"  title: "+track.getTitle());
 			System.out.println(ident+"  version: "+track.getVersion());
 			System.out.println();
-			System.out.println(ident+"  artist: "+track.getArtist());
+			System.out.println(ident+"  artist: "+track.getArtistNames());
 			System.out.println("");
 			
 			System.out.println(ident+"  cover art: "+(track.getCoverArt() == null ? "" : track.getCoverArt().toString()));

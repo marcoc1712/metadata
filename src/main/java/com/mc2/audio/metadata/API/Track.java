@@ -68,7 +68,17 @@ public interface Track {
 	 * stating from 0.
      */
     Integer getPlayListIndex();
-
+	
+	/**
+     * @return the artist
+    */
+    String getArtistNames();
+	
+	/**
+     * @return the composer
+    */
+    String getComposerName();
+	
 	/**
      * @return the Work Title
      */
@@ -84,16 +94,6 @@ public interface Track {
      */
 	String getVersion();
 	
-    /**
-     * @return the artist
-    */
-    String getArtist();
-	
-	/**
-     * @return the composer
-    */
-    String getComposerName();
-
 	/**
 	 *@return the coverArt List
 	 */
