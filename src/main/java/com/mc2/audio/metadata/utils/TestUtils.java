@@ -160,6 +160,7 @@ public class TestUtils {
         System.out.println("Works: "+album.getWorkTitles());
 		System.out.println("");
 		System.out.println("Genre: "+album.getGenre());
+		System.out.println("Awards: "+album.getAwards());
         System.out.println("Date: "+album.getDate());
         System.out.println("Country: "+album.getCountry());
         System.out.println("Label: "+album.getLabel());
