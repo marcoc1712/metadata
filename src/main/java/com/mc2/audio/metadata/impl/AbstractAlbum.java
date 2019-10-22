@@ -134,7 +134,7 @@ public abstract class AbstractAlbum implements Album{
     }
 	@Override
     public String getAwardNames(){
-        return this.getMetadataValue(MetadataKey.METADATA_KEY.GENRE.name());
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.AWARD.name());
     }
 	
 	@Override
