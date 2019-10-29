@@ -73,137 +73,96 @@ public abstract class AbstractTrack implements Track {
 		this.metadataTable = new MetadataTable(this);
     }
 	
-	/**
-	 *  @return the trackId (normally discNo.trackNo)
-	 */
 	@Override
 	public abstract String getTrackId();
-	
-	/**
-	 * @return the trackNo
-	 */
+
 	@Override
-	public String getTrackNo() {
+	public String getTrackNumber() {
 		return this.getMetadataValue(MetadataKey.METADATA_KEY.TRACK_NO.name());
+	}
+	
+	@Override
+	public String getMediaType() {
+		return this.getMetadataValue(MetadataKey.METADATA_KEY.MEDIA.name());
+	}
+	
+	@Override
+	public String getMediumNumber() {
+		return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_NO.name());
+	}
+	
+	@Override
+	public String getMediumIdentification() {
+		String mediaType = getMediaType();
+		String no = getMediumNumber();
+		if (!mediaType.isEmpty() && !no.isEmpty()) {
+			return mediaType + " " + no;
+		} else if (!no.isEmpty()) {
+			return no;
+		}
+		return "";
+	}
+
+	@Override
+	public String getMediaTitle() {
+		return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_SUBTITLE.name());
 	}
 	
 	@Override
 	public AbstractAlbum getAlbum() {
 		return album;
 	}
-
-	/**
-	 * @param album the album to set
-	 */
-	public void setAlbum(AbstractAlbum album) {
-		this.album = album;
-	}
 	
-	/**
-	 * @return the Index position of the track in the Album (normally trackNo -1).
-	 */
 	@Override
 	public Integer getIndex() {
 		return index;
 	}
-
-	/**
-	 * @param index the index to set
-	 */
-	public void setIndex(Integer index) {
-		this.index = index;
-	}
-	/**
-	 * @return the playback url of the track
-	 */
+	
 	@Override
 	public String getUrl() {
 		return url;
 	}
 
-	/**
-	 * @param url the url to set
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	/**
-	 * @return the playback playlist url
-	 */
 	@Override
 	public String getPlayListUrl() {
 		return playListUrl;
 	}
 
-	/**
-	 * @param playListUrl the playListUrl to set
-	 */
-	public void setPlayListUrl(String playListUrl) {
-		this.playListUrl = playListUrl;
-	}
-	
-	/**
-	 * @return the playback Playlist index position of the track in the playlist,
-	 * stating from 0.
-	 */
 	@Override
 	public Integer getPlayListIndex() {
 		return playListIndex;
 	}
-
-	/**
-	 * @param playListIndex the playListIndex to set
-	 */
-	public void setPlayListIndex(Integer playListIndex) {
-		this.playListIndex = playListIndex;
-	}
-	/**
-     * @return the Work
-     */
-	@Override
-	public abstract String getWorkTitle();
 	
-	/**
-     * @return the title
-     */
-	@Override
-	public abstract String getTitle();
-	
-	/**
-     * @return the version of the recording (i.e. recording date).
-     */
-	@Override
-	public abstract String getVersion();
-
 	@Override
 	public String getArtistNames() {
 		return this.getMetadataValue(MetadataKey.METADATA_KEY.ARTIST.name());
 	}
 	
 	@Override
-	public String getComposerName() {
+	public String getComposerNames() {
 		return this.getMetadataValue(MetadataKey.METADATA_KEY.COMPOSER.name());
 	}
+	
+	@Override
+	public String getWorkTitle() {
+		return this.getMetadataValue(MetadataKey.METADATA_KEY.WORK.name());
+	}
+	
+	@Override
+	public String getTitle() {
+		return this.getMetadataValue(MetadataKey.METADATA_KEY.TITLE.name());
+	}
 
-	/**
-	 * @return the coverArtList
-	 */
+	@Override
+	public String getVersion() {
+		return this.getMetadataValue(MetadataKey.METADATA_KEY.VERSION.name());
+	}
+
 	@Override
 	public ArrayList<CoverArt> getCoverArtList() {
 		return coverArtList;
 	}
 
-	/**
-	 * @param coverArtList the coverArtList to set
-	 */
-	public void setCoverArtList(ArrayList<CoverArt> coverArtList) {
-		this.coverArtList = coverArtList;
-	}
-
-	/**
-	 *@return the most representative coverArt
-	 */
 	@Override
 	public CoverArt getCoverArt() {
 		if (coverArtList == null || coverArtList.isEmpty()) {
@@ -213,218 +172,103 @@ public abstract class AbstractTrack implements Track {
 	}
 	
 	@Override
-	public abstract String getMediaType();
-
-	@Override
-	public String getMedium() {
-		String mediaType = getMediaType();
-		String no = getDiscNo();
-		if (!mediaType.isEmpty() && !no.isEmpty()) {
-			return mediaType + " " + no;
-		} else if (!no.isEmpty()) {
-			return no;
-		}
-		return "";
-	}
-
-	/**
-	 * @return the discNo
-	 */
-	@Override
-	public String getDiscNo() {
-		return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_NO.name());
-	}
-
-	/**
-	 * @return the discTitle
-	 */
-	@Override
-	public String getDiscTitle() {
-		return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_SUBTITLE.name());
-	}
-	
-	/**
-	 * @return the format
-	 */
-	@Override
 	public String getFormat() {
 		return format;
 	}
 
-	/**
-	 * @param format the format to set
-	 */
-	public void setFormat(String format) {
-		this.format = format;
-	}
-	
-	/**
-	 * @return the sampleRate
-	 */
 	@Override
 	public Integer getSampleRate() {
 		return sampleRate;
 	}
 	
-	/**
-	 * @param sampleRate the sampleRate to set
-	 */
-	public void setSampleRate(Integer sampleRate) {
-		this.sampleRate = sampleRate;
-	}
-	
-	/**
-	 * @return the bitsPerSample
-	 */
 	@Override
 	public Integer getBitsPerSample() {
 		return bitsPerSample;
 	}
 	
-	/**
-	 * @param bitsPerSample the bitsPerSample to set
-	 */
-	public void setBitsPerSample(Integer bitsPerSample) {
-		this.bitsPerSample = bitsPerSample;
-	}
-
-	/**
-	 * @return the channels
-	 */
 	@Override
 	public String getChannels() {
 		return channels;
 	}
 	
-	/**
-	 * @param channels the channels to set
-	 */
-	public void setChannels(String channels) {
-		this.channels = channels;
-	}
-	/**
-	 * @return if the sampling bitRate is variable or constant
-	 */
 	@Override
 	public Boolean isVariableBitRate() {
 		return isVariableBitRate;
 	}
 	
-	/**
-	 * @param isVariableBitRate the VariableBitRate to set
-	 */
-	public void setVariableBitRate(Boolean isVariableBitRate) {
-		this.isVariableBitRate = isVariableBitRate;
-	}
-	/**
-	 * @return bitRate as a number, this is the amount of kilobits of data sampled per second
-	 */
 	@Override
 	public Long getBitRate() {
 		return bitRate;
 	}
 	
-	/**
-	 * @param bitRate the bitrate to set
-	 */
-	public void setBitRate(Long bitRate) {
-		this.bitRate = bitRate;
-	}
-
-	/**
-	 * @return the isLossless
-	 */
 	@Override
 	public Boolean isLossless() {
 		return isLossless;
 	}
 	
-	/**
-	 * @param isLossless the isLossless to set
-	 */
-	public void setLossless(Boolean isLossless) {
-		this.isLossless = isLossless;
-	}
-	/**
-	 * @return ture if the file is in hight resolution Audio
-	 */
 	@Override
-	public abstract Boolean isHiRes();
+	public Boolean isHiRes() {
+		if (getBitsPerSample() != null && getBitsPerSample() > 16) {
+			return true;
+		}
+		if (getSampleRate() != null && getSampleRate() > 44100) {
+			return true;
+		}
+		return false;
+	}	
 
-	/**
-	 * @return the length in sectors.
-	 */
 	@Override
 	public Integer getLength() {
 		return length;
 	}
-	/**
-	 * @param length the length in sectors to set
-	 */
-	public void setLength(int length) {
-		this.length = length;
-	}
-	/** @return length in msec */
+	
 	@Override
-	public Long getLengthInMillis() {
+	public Long getDuration(){
+		return this.getDurationInMillis()*1000;
+    }
+
+	@Override
+	public Long getDurationInMillis() {
+		if (this.getLength() == null) return (long)0;
 		return CalendarUtils.getMilliseconds(getLength());
 	}
-
-	/** @return length string */
+	
 	@Override
-	public String getLengthString() {
-		return CalendarUtils.getTimeString(getLengthInMillis());
+	public String getDurationString() {
+		return CalendarUtils.getTimeString(getDurationInMillis());
 	}
 	
-	/**
-	 * @return the offset in sectors
-	 */
 	@Override
 	public Integer getOffset() {
 		return offset;
 	}
 
-	/**
-	 * @param offset the offset in sectors to set
-	 */
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
-
-	/**
-	 * @return the track End position refferred to the Album (not the file).
-	 */
 	@Override
 	public Integer getEnd() {
 		return offset + length;
 	}
-	/**
-	* Get the ISRC code of this track. Null signifies that it has not been set.
-	* @return The ISRC code of this track. Null signifies that it has not been set.
-	*/
-	@Override
-	public abstract String getIsrcCode();
-	/**
-     * @return the copyright
-     */
-	@Override
-    public abstract String getCopyright();
 	
-	/**
-     * @return the parental warning
-     */
 	@Override
-    public abstract Boolean getParentalWarning();
-	
-	/**
-	 * @return the metadataTable;
-	 */
-	public MetadataTable getMetadataTable() {
-		return metadataTable;
+	public String getIsrc(){
+		return this.getMetadataValue(MetadataKey.METADATA_KEY.ISRC.name());
 	}
-	/**
-	 * @return the metadataList
-	 */
+	
+	@Override
+    public String getCopyright() {
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.COPYRIGHT.name());
+    }
+	
+	 @Override
+	public Boolean getParentalWarning() {
+		String pw = this.getMetadataValue(MetadataKey.METADATA_KEY.PARENTAL_WARNING.name());
+        if (pw.isEmpty()|| 
+			pw.toUpperCase().equals("FALSE") || 
+			pw.toUpperCase().equals("NO") ||
+			pw.equals("0") ||
+			pw.equals(" ")){return false;}
+		return true;
+    }
+	
 	@Override
 	public ArrayList<Metadata> getMetadataList() {
 		return metadataList;
@@ -508,9 +352,6 @@ public abstract class AbstractTrack implements Track {
 		return metadataTable.getMetadaWithNoCategory();
 	}
 	
-	/**
-	 * @return the sources of Raw Key Value Pairs, like tags or cue files commands.
-	 */
 	@Override
 	public ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources() {
 		return rawKeyValuePairSources;
@@ -529,14 +370,118 @@ public abstract class AbstractTrack implements Track {
 		return status;
 	}
 
-	/**
-	 * @return the messageList
-	 */
 	@Override
 	public ArrayList<StatusMessage> getMessageList() {
 		return messageList;
 	}
+	
+	// -- PUBLIC SETTERS --
+	
+	/**
+	 * @param album the album to set
+	 */
+	public void setAlbum(AbstractAlbum album) {
+		this.album = album;
+	}
+	
+	/**
+	 * @param index the index to set
+	 */
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
 
+	/**
+	 * @param url the url to set
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
+	/**
+	 * @param playListUrl the playListUrl to set
+	 */
+	public void setPlayListUrl(String playListUrl) {
+		this.playListUrl = playListUrl;
+	}
+	
+	/**
+	 * @param playListIndex the playListIndex to set
+	 */
+	public void setPlayListIndex(Integer playListIndex) {
+		this.playListIndex = playListIndex;
+	}
+	
+	/**
+	 * @param coverArtList the coverArtList to set
+	 */
+	public void setCoverArtList(ArrayList<CoverArt> coverArtList) {
+		this.coverArtList = coverArtList;
+	}
+	
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(String format) {
+		this.format = format;
+	}
+	
+	/**
+	 * @param sampleRate the sampleRate to set
+	 */
+	public void setSampleRate(Integer sampleRate) {
+		this.sampleRate = sampleRate;
+	}
+	
+	/**
+	 * @param bitsPerSample the bitsPerSample to set
+	 */
+	public void setBitsPerSample(Integer bitsPerSample) {
+		this.bitsPerSample = bitsPerSample;
+	}
+	
+	/**
+	 * @param channels the channels to set
+	 */
+	public void setChannels(String channels) {
+		this.channels = channels;
+	}
+	
+	/**
+	 * @param isVariableBitRate the VariableBitRate to set
+	 */
+	public void setVariableBitRate(Boolean isVariableBitRate) {
+		this.isVariableBitRate = isVariableBitRate;
+	}
+	
+	/**
+	 * @param bitRate the bitrate to set
+	 */
+	public void setBitRate(Long bitRate) {
+		this.bitRate = bitRate;
+	}
+	
+	/**
+	 * @param isLossless the isLossless to set
+	 */
+	public void setLossless(Boolean isLossless) {
+		this.isLossless = isLossless;
+	}
+	
+	/**
+	 * @param length the length in sectors to set
+	 */
+	public void setLength(int length) {
+		this.length = length;
+	}
+	
+	/**
+	 * @param offset the offset in sectors to set
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+	
 	/**
 	 * add a message to the messageList
 	 * @param message
@@ -546,7 +491,6 @@ public abstract class AbstractTrack implements Track {
 			messageList.add(message);
 		}
 	}
-	
 
 	/**
 	 * add a souce to the list
@@ -560,11 +504,21 @@ public abstract class AbstractTrack implements Track {
 	
 	// -- end OF pUBLIC METHODS --
 	
+	/**
+	 * @return the metadataTable;
+	 */
+	
+	protected MetadataTable getMetadataTable() {
+		return metadataTable;
+	}
+	
+	
 	/*
 	 * Returns the value stored in the current track for an album level metadata.
 	 * Different from getMetadataFromTrack, becouse it uses album level aliases
 	 * before.
 	 */
+	
 	protected String getAlbumMetadataFromTrack(String key) {
 		String value = "";
 		for (Metadata metadata : metadataList) {
@@ -659,5 +613,5 @@ public abstract class AbstractTrack implements Track {
 		}
 		return values;
 	}
-	
+
 }

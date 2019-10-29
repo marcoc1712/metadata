@@ -183,7 +183,7 @@ public class MetadataTable {
 					new GenericMetadataRow(METADATA_LEVEL.TRACK,
 										 metadata.getTrackLevelCategory(),
 										 metadata.getTrackLevelMetadataKey(),
-										 this.track.getTrackNo(),
+										 this.track.getTrackNumber(),
 										 metadataCategoryName,
 										 metadataKey,
 										 albumValue,

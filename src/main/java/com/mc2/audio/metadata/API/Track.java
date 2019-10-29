@@ -33,19 +33,35 @@ import java.util.ArrayList;
 public interface Track {
 	
 	/**
-     * @return the trackId (normally discNo.trackNo)
+     * @return the trackId (normally MediumNumber + TrackNumber)
      */
     String getTrackId();
 	
 	/**
 	 * @return the trackNo
 	 */
-	String getTrackNo();
+	String getTrackNumber();
 	
+	/**
+	 * @return the media type (ie: cd, dvd, tape, reel, lp, ...)
+	 */
+	String getMediaType();
+	/**
+	 * @return the  Medium Number.
+	 */
+    String getMediumNumber();
+	/**
+	 * @return the  Medium identification, es. Cd 1, DVD 2, LP side A....
+	*/
+	String getMediumIdentification();
+	/**
+     * @return the  media Title
+     */
+    String getMediaTitle();
+
 	/**
      * @return the album.
      */
-	
 	Album getAlbum();
 	
 	/**
@@ -70,14 +86,14 @@ public interface Track {
     Integer getPlayListIndex();
 	
 	/**
-     * @return the artist
+     * @return the artist name
     */
     String getArtistNames();
 	
 	/**
-     * @return the composer
+     * @return the composer name
     */
-    String getComposerName();
+    String getComposerNames();
 	
 	/**
      * @return the Work Title
@@ -103,28 +119,9 @@ public interface Track {
 	 *@return the most representative coverArt
 	 */
 	CoverArt getCoverArt();
-	
-	/**
-     * @return the media type
-    */
-	String getMediaType();
-	/**
-     * @return the media number if availlable.
-    */
-	String getMedium();
-	/**
-     * @return the discNo
-     */
-     String getDiscNo();
-	
-	/**
-     * @return the discTitle
-     */
-    String getDiscTitle();
-	
-	
+
 	 /**
-     * @return the format
+     * @return the format (WAW, FLAC, MP3,...)
      */
     String getFormat();
 	/**
@@ -133,7 +130,7 @@ public interface Track {
     Integer getSampleRate();
 	
 	/**
-	 * @return the bitsPerSample
+	 * @return the bitsPerSample (akd bit depth or precision)
 	 */
 	Integer getBitsPerSample();
 
@@ -165,31 +162,36 @@ public interface Track {
      * @return the track length in sectors
      */
     Integer getLength();
+	
+	 /** 
+	 * @return the track duration in seconds
+	 */
+	Long getDuration();
 
     /** 
-	 * @return file length in msec 
+	 * @return the track duration in milliseconds 
 	 */
-    Long getLengthInMillis();
+    Long getDurationInMillis();
 
     /** 
-	 * @return file length string
+	 * @return the track duration as a string.
 	 */
-    String getLengthString();
+    String getDurationString();
 	
 	/**
-	 * @return the offset in sectors
+	 * @return the offset in sectors from the medium  begnning
 	 */
 	Integer getOffset();
 	
 	/**
-	 * @return the track End position refferred to the Album (not the file).
+	 * @return the track End position refferred to the medium (not the file).
 	 */
 	Integer getEnd();
 	/**
 	* Get the ISRC code of this track. Null signifies that it has not been set.
 	* @return The ISRC code of this track. Null signifies that it has not been set.
 	*/
-	String getIsrcCode();
+	String getIsrc();
 	/**
      * @return the copyright
      */

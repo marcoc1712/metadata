@@ -159,16 +159,16 @@ public class TestUtils {
 		System.out.println("");
         System.out.println("Works: "+album.getWorkTitles());
 		System.out.println("");
-		System.out.println("Genre: "+album.getGenre());
+		System.out.println("Genre: "+album.getGenreNames());
 		System.out.println("Awards: "+album.getAwardNames());
         System.out.println("Date: "+album.getDate());
         System.out.println("Country: "+album.getCountry());
-        System.out.println("Label: "+album.getLabel());
+        System.out.println("Label: "+album.getLabelNames());
         System.out.println("Catalog: "+album.getCatalogNo());
 		System.out.println("");
-		System.out.println("discNo: "+album.getDisc());
-		System.out.println("discTot: "+album.getTotalDiscs());
-		System.out.println("discTitle: "+album.getDiscTitle());
+		System.out.println("discNo: "+album.getMediumNumber());
+		System.out.println("discTot: "+album.getTotalMedia());
+		System.out.println("discTitle: "+album.getMediaTitle());
         System.out.println("");
 		System.out.println("Musicbrainz Release Id: "+album.getMbReleaseId());
 		System.out.println("");
@@ -269,8 +269,8 @@ public class TestUtils {
                 
             System.out.println("");
             System.out.println(ident+"- TRACK: "+track.getTrackId());
-			System.out.println(ident+"  trackNo : "+track.getTrackNo());
-			System.out.println(ident+"  length "+track.getLength()+" ["+track.getLengthString()+"]");
+			System.out.println(ident+"  trackNo : "+track.getTrackNumber());
+			System.out.println(ident+"  length "+track.getLength()+" ["+track.getDurationString()+"]");
 			System.out.println();
 			System.out.println(ident+"  album: "+(track.getAlbum() == null ? "" : track.getAlbum().getTitle()));
 			System.out.println(ident+"  album index : "+track.getIndex());
@@ -291,10 +291,10 @@ public class TestUtils {
 			TestUtils.printArtworks(track.getCoverArtList(),ident+"    ");
 			System.out.println("");
 			System.out.println(ident+"  Media Type: "+track.getMediaType());
-			System.out.println(ident+"  Medium: "+track.getMedium());
+			System.out.println(ident+"  Medium: "+track.getMediumIdentification());
 			System.out.println("");
-			System.out.println(ident+"  discNo: "+track.getDiscNo());
-			System.out.println(ident+"  discTitle: "+track.getDiscTitle());
+			System.out.println(ident+"  discNo: "+track.getMediumNumber());
+			System.out.println(ident+"  discTitle: "+track.getMediaTitle());
 			System.out.println("");
 			System.out.println(ident+"  Format: "+track.getFormat());
 			System.out.println(ident+"  SampleRate: "+track.getSampleRate());
@@ -308,7 +308,7 @@ public class TestUtils {
 			System.out.println(ident+"  Offset: "+track.getOffset());
 			System.out.println(ident+"  End: "+track.getEnd());
 			System.out.println("");
-			System.out.println(ident+"  IsrcCode: "+track.getIsrcCode());
+			System.out.println(ident+"  IsrcCode: "+track.getIsrc());
 			System.out.println(ident+"  Copyright: "+track.getCopyright());
 			System.out.println(ident+"  ParentalWarning: "+track.getParentalWarning());
 			

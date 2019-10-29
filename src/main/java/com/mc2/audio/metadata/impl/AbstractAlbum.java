@@ -44,6 +44,7 @@ import static com.mc2.audio.metadata.API.Album.UNKNOWN_DISC_TOT;
 import static com.mc2.audio.metadata.API.Album.UNKNOWN_MEDIA_TYPE;
 import static com.mc2.audio.metadata.API.Metadata.SEPARATOR;
 import static com.mc2.audio.metadata.API.MetadataKey.getAlbumLevelMetadataAliases;
+import com.mc2.util.miscellaneous.CalendarUtils;
 
 /**
  *
@@ -108,6 +109,12 @@ public abstract class AbstractAlbum implements Album{
     public String getArtistNames(){
         return this.getMetadataValueFromAlbumAndTracks(MetadataKey.METADATA_KEY.ARTIST.name());
     }
+	
+	@Override
+    public String getCredits(){
+		return this.getMetadataValueFromAlbumAndTracks(MetadataKey.METADATA_KEY.CREDITS.name());
+    }
+	
 	@Override
     public String getAlbumComposerNames(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.COMPOSER.name());
@@ -122,26 +129,23 @@ public abstract class AbstractAlbum implements Album{
     public String getComposerNames(){
 		return this.getMetadataValueFromAlbumAndTracks(MetadataKey.METADATA_KEY.COMPOSER.name());
     }
-	@Override
-    public String getCredits(){
-		return this.getMetadataValueFromAlbumAndTracks(MetadataKey.METADATA_KEY.CREDITS.name());
-    }
 	
 	@Override
     public String getWorkTitles(){
         return this.getMetadataValueFromTracks(MetadataKey.METADATA_KEY.WORK.name());
 		
     }
+	
 	@Override
-    public String getAwardNames(){
-        return this.getMetadataValue(MetadataKey.METADATA_KEY.AWARD.name());
+    public String getGenreNames(){
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.GENRE.name());
     }
 	
 	@Override
-    public String getGenre(){
-        return this.getMetadataValue(MetadataKey.METADATA_KEY.GENRE.name());
+    public String getAwardNames(){ //in metadata?
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.AWARD.name());
     }
-    
+
     @Override
     public String getDate(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.DATE.name());
@@ -153,11 +157,12 @@ public abstract class AbstractAlbum implements Album{
     }
 	
 	@Override
-    public String getLabel(){
+    public String getLabelNames(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.LABEL.name());
     }
+	
     @Override
-    public String getCollection(){
+    public String getCollectionNames(){ //in metadata?
         return this.getMetadataValue(MetadataKey.METADATA_KEY.COLLECTION.name());
     }
     @Override
@@ -169,18 +174,25 @@ public abstract class AbstractAlbum implements Album{
         return this.getMetadataValue(MetadataKey.METADATA_KEY.UPC.name());
     }
 	@Override
-	public String getDisc(){
+	public String getMediaType(){
+		return this.getMetadataValue(MetadataKey.METADATA_KEY.MEDIA.name());
+	}	
+	@Override
+	public String getMediumNumber(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_NO.name());
     }
 	@Override
-    public String getTotalDiscs(){
-        return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_TOTAL.name());
-    }
+	public String getMediumIdentification() {
+		return mediaString;
+	}
 	@Override
-	public String getDiscTitle(){
+	public String getMediaTitle(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_SUBTITLE.name());
     }
-	
+	@Override
+    public String getTotalMedia(){
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.DISC_TOTAL.name());
+    }
 	@Override
     public String getMbReleaseId(){
         return this.getMetadataValue(MetadataKey.METADATA_KEY.MUSICBRAINZ_RELEASEID.name());
@@ -231,37 +243,40 @@ public abstract class AbstractAlbum implements Album{
 	}
 
 	@Override
-	public CoverArt getCoverArt(){
-		
-		if (coverArtList == null || coverArtList.isEmpty()) {return null;}
-		return coverArtList.get(0);
-	}
-
-	@Override
-	public ArrayList<CoverArt> getcoverArtList() {
-        return coverArtList;
+    public String getCopyright() {
+        return this.getMetadataValue(MetadataKey.METADATA_KEY.COPYRIGHT.name());
     }
 	
 	@Override
-	public String getMediaType(){
-		return mediaString;
-	}
+	public Boolean getParentalWarning() {
+		String pw = this.getMetadataValue(MetadataKey.METADATA_KEY.PARENTAL_WARNING.name());
+        if (pw.isEmpty()|| 
+			pw.toUpperCase().equals("FALSE") || 
+			pw.toUpperCase().equals("NO") ||
+			pw.equals("0") ||
+			pw.equals(" ")){return false;}
+		return true;
+    }
 	
 	@Override
     public Integer getTotalLength() {
         return totalLength;
     }
-	/**
-     * @return the copyright
-     */
 	@Override
-    public abstract String getCopyright();
+	public Long getDuration(){
+		return this.getDurationInMillis()*1000;
+    }
+
+	@Override
+	public Long getDurationInMillis() {
+		if (this.getTotalLength() == null) return (long)0;
+		return CalendarUtils.getMilliseconds(getTotalLength());
+	}
 	
-	/**
-     * @return the parental warning
-     */
 	@Override
-    public abstract Boolean getParentalWarning();
+	public String getDurationString() {
+		return CalendarUtils.getTimeString(getDurationInMillis());
+	}
 	
 	@Override
 	public ArrayList<? extends Medium> getMediaList() {
@@ -277,11 +292,19 @@ public abstract class AbstractAlbum implements Album{
 	public ArrayList<? extends Track> getSingleTrackList() {
 		return singleTracksList;
 	}
-    	
-	public MetadataTable getMetadataTable(){
-		 return metadataTable;
+    
+	@Override
+	public CoverArt getCoverArt(){
+		
+		if (coverArtList == null || coverArtList.isEmpty()) {return null;}
+		return coverArtList.get(0);
 	}
-   
+
+	@Override
+	public ArrayList<CoverArt> getcoverArtList() {
+        return coverArtList;
+    }
+	
     @Override
     public ArrayList<Metadata> getMetadataList() {
         return metadataList;
@@ -388,7 +411,11 @@ public abstract class AbstractAlbum implements Album{
     public ArrayList<StatusMessage> getMessageList() {
         return messageList;
     }
-	
+
+	protected MetadataTable getMetadataTable(){
+		 return metadataTable;
+	}
+
 	protected String getMetadataValue(String key){
 		
 		String out="";
@@ -600,25 +627,25 @@ public abstract class AbstractAlbum implements Album{
 			String type = ((String)key).trim().isEmpty() ? UNKNOWN_MEDIA_TYPE : ((String)key).trim();
 
 			if (keys.length == 1 && count < 2 && 
-				type.equals(UNKNOWN_MEDIA_TYPE) && getDisc().isEmpty() && getTotalDiscs().isEmpty()){
+				type.equals(UNKNOWN_MEDIA_TYPE) && getMediumNumber().isEmpty() && getTotalMedia().isEmpty()){
 				
 				return "";
 			}
 			if (keys.length == 1 && count < 2 && 
-				type.equals(UNKNOWN_MEDIA_TYPE) && getDisc().isEmpty() && !getTotalDiscs().isEmpty()){
+				type.equals(UNKNOWN_MEDIA_TYPE) && getMediumNumber().isEmpty() && !getTotalMedia().isEmpty()){
 				
-				return UNKNOWN_MEDIA_TYPE+" "+UNKNOWN_DISC_NO+" of "+getTotalDiscs();
+				return UNKNOWN_MEDIA_TYPE+" "+UNKNOWN_DISC_NO+" of "+getTotalMedia();
 			}
 			
-			if (keys.length == 1 && count < 2 && !getDisc().isEmpty()){
+			if (keys.length == 1 && count < 2 && !getMediumNumber().isEmpty()){
 				
 				Integer disc=0;
 				String discNo;
 				
 				try {
 					
-					disc = Integer.parseInt(getDisc());
-					if (  disc == 1 &&  type.equals(UNKNOWN_MEDIA_TYPE) && getTotalDiscs().isEmpty()) {
+					disc = Integer.parseInt(getMediumNumber());
+					if (  disc == 1 &&  type.equals(UNKNOWN_MEDIA_TYPE) && getTotalMedia().isEmpty()) {
 					
 						return "";
 					
@@ -633,9 +660,9 @@ public abstract class AbstractAlbum implements Album{
 								
 				String value = type+" "+discNo;
 	
-				if (!getTotalDiscs().isEmpty()){
+				if (!getTotalMedia().isEmpty()){
 
-					value = value +" of "+ getTotalDiscs();
+					value = value +" of "+ getTotalMedia();
 				} else {
 					value = value +" of "+ UNKNOWN_DISC_TOT;
 				}
@@ -661,12 +688,12 @@ public abstract class AbstractAlbum implements Album{
 
         for (Track track : trackList){
 
-			String mediumId = track.getMedium();
+			String mediumId = track.getMediumIdentification();
 			GenericMedium medium  = mediaMap.get(mediumId);
 			
 			if (medium == null) {
 				
-				medium = new GenericMedium(mediumId, track.getMediaType(), track.getDiscNo(), track.getDiscTitle());
+				medium = new GenericMedium(mediumId, track.getMediaType(), track.getMediumNumber(), track.getMediaTitle());
 				mediaMap.put(mediumId, medium);
 			}
 			//tracks are already ordered by medium and TrackNo.

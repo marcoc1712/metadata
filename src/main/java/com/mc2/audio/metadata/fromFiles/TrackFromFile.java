@@ -28,7 +28,6 @@ import com.mc2.audio.metadata.API.Track;
 import com.mc2.audio.metadata.API.CoverArt;
 import java.util.ArrayList;
 import com.mc2.audio.metadata.API.Metadata;
-import com.mc2.audio.metadata.API.MetadataKey;
 import com.mc2.audio.metadata.impl.AbstractTrack;
 import java.io.File;
 import java.util.HashMap;
@@ -54,62 +53,7 @@ public class TrackFromFile extends AbstractTrack implements Track {
 	public String getTrackId() {
 		return trackId;
 	}
-	@Override
-	public String getWorkTitle() {
-		return this.getMetadataValue(MetadataKey.METADATA_KEY.WORK.name());
-	}
-	@Override
-	public String getTitle() {
-		return this.getMetadataValue(MetadataKey.METADATA_KEY.TITLE.name());
-	}
-	@Override
-	public String getVersion() {
-		return this.getMetadataValue(MetadataKey.METADATA_KEY.VERSION.name());
-	}
-	@Override
-	public String getMediaType() {
-		return this.getMetadataValue(MetadataKey.METADATA_KEY.MEDIA.name());
-	}
-	/**
-	 * @return ture if the file is in hight resolution Audio
-	 */
-	@Override
-	public Boolean isHiRes() {
-		if (getBitsPerSample() != null && getBitsPerSample() > 16) {
-			return true;
-		}
-		if (getSampleRate() != null && getSampleRate() > 44100) {
-			return true;
-		}
-		return false;
-	}	
-	
-	@Override
-	public String getIsrcCode(){
-		return this.getMetadataValue(MetadataKey.METADATA_KEY.ISRC.name());
-	}
-	/**
-     * @return the copyright
-     */
-	@Override
-    public String getCopyright() {
-        return this.getMetadataValue(MetadataKey.METADATA_KEY.COPYRIGHT.name());
-    }
-	/**
-     * @return the parental warning
-     */
-    @Override
-	public Boolean getParentalWarning() {
-		String pw = this.getMetadataValue(MetadataKey.METADATA_KEY.PARENTAL_WARNING.name());
-        if (pw.isEmpty()|| 
-			pw.toUpperCase().equals("FALSE") || 
-			pw.toUpperCase().equals("NO") ||
-			pw.equals("0") ||
-			pw.equals(" ")){return false;}
-		return true;
-    }
-	
-	
+
 	/**
 	 * @return the file
 	 */
@@ -123,10 +67,7 @@ public class TrackFromFile extends AbstractTrack implements Track {
 	public void setFile(File file) {
 		this.file = file;
 	}
-	/**
-	 *  @return the trackId (normally discNo.trackNo)
-	 */
-
+	
 	private ArrayList<CoverArt> orderCoverArt(ArrayList<CoverArt> coverArtList) {
 		HashMap<Integer, ArrayList<CoverArt>> scored = new HashMap<>();
 		for (CoverArt coverArt : coverArtList) {

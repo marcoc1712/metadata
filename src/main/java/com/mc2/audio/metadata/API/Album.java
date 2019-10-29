@@ -62,7 +62,6 @@ public interface Album {
      * @return all Credits from Album and form tracks.
     */
 	String getCredits();
-   
 	/**
      * @return the Album composer(s).
     */
@@ -80,9 +79,9 @@ public interface Album {
 	 */
 	String getWorkTitles();
 	/**
-     * @return the Album genre(s);
+     * @return the Album genre(s) name;
     */
-	String getGenre();
+	String getGenreNames();
     /**
      * @return the names of awards the album earned.
     */
@@ -98,33 +97,39 @@ public interface Album {
     /**
      * @return the Album release Label
     */
-    String getLabel();
+    String getLabelNames();
 	/**
      * @return the Collection by the label.
     */
-	String getCollection();
+	String getCollectionNames();
     /**
-     * @return the Album CatalogNo
+     * @return the Album catalog number(s);
     */
     String getCatalogNo();
    /**
      * @return the Album UPC code
     */
 	String getUpc();
-	
+	/**
+     * @return the Media descriptor (es. 2 CD + 1 DVD)
+    */
+	String getMediaType();
 	/**
      * @return the Disc number (in case of single disk in a boxset)
     */
-	String getDisc();
+	String getMediumNumber();
 	/**
-     * @return the total Discs (in case of single disk in a boxset)
-    */
-    String getTotalDiscs();
+	 * @return the  Medium identification, es. Cd 1, DVD 2, LP side A....
+	*/
+	String getMediumIdentification();
 	/**
      * @return the Disc title (in case of single disk in a boxset)
     */
-	String getDiscTitle();
-	 	
+	String getMediaTitle();
+	/**
+     * @return the total Discs (in case of single disk in a boxset)
+    */
+    String getTotalMedia();
 	/**
 	 * @return the corresponding musicbrainz release ID, if any.
 	 */
@@ -134,68 +139,62 @@ public interface Album {
      * @return the format
      */
     String getFormat();
-	
 	/**
      * @return the Sampling rate, the number of samples taken per second
      */
     Integer getSampleRate();
-	
 	/**
 	 * @return the bitsPerSample
 	 */
 	Integer getBitsPerSample();
-
 	/**
 	 * @return the channels
 	 */
 	String getChannels();
-	
 	/**
      * @return if the sampling bitRate is variable or constant
      */
     Boolean isVariableBitRate();
-	
 	/**
      * @return bitRate as a number, this is the amount of kilobits of data sampled per second
      */
     Long getBitRate();
-	
 	/**
 	 * @return the isLossless
 	 */
 	Boolean isLossless();
-	
 	/**
 	 * @return ture if the file is in hight resolution Audio
 	*/
 	Boolean isHiRes();
-
 	/**
      * @return the copyright
      */
     String getCopyright();
-	
 	/**
      * @return the parental warning
      */
-	
     Boolean getParentalWarning();
-	
 	/**
-     * @return the Media descriptor (es. 2 CD + 1 DVD)
-    */
-	String getMediaType();
-	
-	/**
-     * @return the totalLength
+     * @return the totalLength in sector
      */
     Integer getTotalLength();
-	   
+	/**
+     * @return the Albumtotal duration in seconds
+     */
+	Long getDuration();
+	/**
+     * @return the Albumtotal duration in milli seconds
+     */
+	Long getDurationInMillis();
+	/**
+     * @return the Albumtotal duration as a string
+     */		
+	String getDurationString();
 	/**
      * @return the media
      */
     ArrayList<? extends Medium> getMediaList();
-	
 	 /**
      * @return the trackList
      */
@@ -218,17 +217,7 @@ public interface Album {
      * @return the coverArtList
      */
     ArrayList<CoverArt> getcoverArtList();
-	
-	/**
-     * @return the overall Album status
-     */
-    StatusMessage.Severity getStatus();
-	
-    /**
-     * @return the messageList
-     */
-    ArrayList<StatusMessage> getMessageList();
-	
+		
 	// End One to one with Metadata //
 	
 	/**
@@ -257,7 +246,15 @@ public interface Album {
     */
     ArrayList<RawKeyValuePairSource> getRawKeyValuePairSources();
 
+	/**
+     * @return the overall Album status
+     */
+    StatusMessage.Severity getStatus();
 	
+    /**
+     * @return the messageList
+     */
+    ArrayList<StatusMessage> getMessageList();
 	
 	
    
